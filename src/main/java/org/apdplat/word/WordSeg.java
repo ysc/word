@@ -26,9 +26,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * 基于词典的正向最大匹配算法
+ * 基于词典的逆向最大匹配算法
  * @author 杨尚川
  */
 public class WordSeg {
@@ -56,14 +58,19 @@ public class WordSeg {
         
     }
     public static void main(String[] args){
-        String text = "杨尚川是APDPlat应用级产品开发平台的作者";  
-        long start = System.currentTimeMillis();
-        for(int i=0;i<100;i++){
-            seg(text);
+        List<String> sentences = new ArrayList<>();
+        sentences.add("杨尚川是APDPlat应用级产品开发平台的作者");
+        sentences.add("中华人民共和国万岁万岁万万岁");
+        sentences.add("长春市长春节致辞");
+        sentences.add("和平民主");
+        sentences.add("提高人民生活水平");
+        sentences.add("大学生活象白纸");
+        sentences.add("他有各种才能");
+        sentences.add("什么时候我才能克服这个困难");
+        for(String sentence : sentences){
+            System.out.println("正向最大匹配: "+seg(sentence));
+            System.out.println("逆向最大匹配: "+segReverse(sentence));
         }
-        long cost = System.currentTimeMillis()-start;
-        System.out.println("cost time:"+cost+" ms");
-        System.out.println(seg(text));
     }
     public static List<String> seg(String text){        
         List<String> result = new ArrayList<>();
@@ -87,5 +94,33 @@ public class WordSeg {
             text=text.substring(tryWord.length());
         }
         return result;
+    }
+    public static List<String> segReverse(String text){        
+        Stack<String> result = new Stack<>();
+        while(text.length()>0){
+            int len=MAX_LENGTH;
+            if(text.length()<len){
+                len=text.length();
+            }
+            //取指定的最大长度的文本去词典里面匹配
+            String tryWord = text.substring(text.length() - len);
+            while(!DIC.contains(tryWord)){
+                //如果长度为一且在词典中未找到匹配，则按长度为一切分
+                if(tryWord.length()==1){
+                    break;
+                }
+                //如果匹配不到，则长度减一继续匹配
+                tryWord=tryWord.substring(1);
+            }
+            result.push(tryWord);
+            //从待分词文本中去除已经分词的文本
+            text=text.substring(0, text.length()-tryWord.length());
+        }
+        int len=result.size();
+        List<String> list = new ArrayList<>(len);
+        for(int i=0;i<len;i++){
+            list.add(result.pop());
+        }
+        return list;
     }
 }
