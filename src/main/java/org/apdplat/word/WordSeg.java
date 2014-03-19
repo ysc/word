@@ -60,10 +60,11 @@ public class WordSeg {
     public static void main(String[] args){
         List<String> sentences = new ArrayList<>();
         sentences.add("杨尚川是APDPlat应用级产品开发平台的作者");
-        sentences.add("中华人民共和国万岁万岁万万岁");
+        sentences.add("研究生命的起源");
         sentences.add("长春市长春节致辞");
-        sentences.add("和平民主");
-        sentences.add("提高人民生活水平");
+        sentences.add("他从马上下来");
+        sentences.add("乒乓球拍卖完了");
+        sentences.add("咬死猎人的狗");
         sentences.add("大学生活象白纸");
         sentences.add("他有各种才能");
         sentences.add("什么时候我才能克服这个困难");
