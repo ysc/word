@@ -20,10 +20,6 @@
 
 package org.apdplat.word;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -37,28 +33,7 @@ import org.apdplat.word.dictionary.DictionaryFactory;
  */
 public class WordSeg {
     private static final Dictionary DIC = DictionaryFactory.getDictionary();
-    private static int MAX_LENGTH=6;
-    static{
-        try {
-            System.out.println("开始初始化词典");
-            int max=1;
-            int count=0;
-            List<String> lines = Files.readAllLines(Paths.get("D:/dic.txt"), Charset.forName("utf-8"));
-            for(String line : lines){
-                DIC.add(line);
-                count++;
-                if(line.length()>max){
-                    max=line.length();
-                }
-            }
-            MAX_LENGTH = max;
-            System.out.println("完成初始化词典，词数目："+count);
-            System.out.println("最大分词长度："+MAX_LENGTH);
-        } catch (IOException ex) {
-            System.err.println("词典装载失败:"+ex.getMessage());
-        }
-        
-    }
+    
     public static void main(String[] args){
         long start = System.currentTimeMillis();
         List<String> sentences = new ArrayList<>();
@@ -80,8 +55,8 @@ public class WordSeg {
     }
     public static List<String> seg(String text){        
         List<String> result = new ArrayList<>();
-        while(text.length()>0){
-            int len=MAX_LENGTH;
+        int len=DIC.getMaxLength();
+        while(text.length()>0){            
             if(text.length()<len){
                 len=text.length();
             }
@@ -103,8 +78,8 @@ public class WordSeg {
     }
     public static List<String> segReverse(String text){        
         Stack<String> result = new Stack<>();
+        int len=DIC.getMaxLength();
         while(text.length()>0){
-            int len=MAX_LENGTH;
             if(text.length()<len){
                 len=text.length();
             }
@@ -122,7 +97,7 @@ public class WordSeg {
             //从待分词文本中去除已经分词的文本
             text=text.substring(0, text.length()-tryWord.length());
         }
-        int len=result.size();
+        len=result.size();
         List<String> list = new ArrayList<>(len);
         for(int i=0;i<len;i++){
             list.add(result.pop());
