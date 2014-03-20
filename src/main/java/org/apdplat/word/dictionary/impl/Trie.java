@@ -18,7 +18,7 @@
  * 
  */
 
-package org.apdplat.word;
+package org.apdplat.word.dictionary.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;

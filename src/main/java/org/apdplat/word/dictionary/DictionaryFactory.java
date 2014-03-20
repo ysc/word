@@ -20,7 +20,7 @@
 
 package org.apdplat.word.dictionary;
 
-import org.apdplat.word.TrieV3;
+import org.apdplat.word.dictionary.impl.TrieV3;
 
 /**
  * 词典工厂

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.apdplat.word;
+package org.apdplat.word.dictionary.impl;
 
 import java.util.List;
 import org.junit.Before;
@@ -15,11 +15,11 @@ import static org.junit.Assert.*;
  *
  * @author 杨尚川
  */
-public class TrieV1Test {
-    private TrieV1 trie = null;
+public class TrieV2Test {
+    private TrieV2 trie = null;
     @Before
     public void setUp() {
-        trie = new TrieV1();
+        trie = new TrieV2();
         trie.add("APDPlat");
         trie.add("APP");
         trie.add("APD");

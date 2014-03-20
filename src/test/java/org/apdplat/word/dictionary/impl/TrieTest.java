@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package org.apdplat.word;
+package org.apdplat.word.dictionary.impl;
 
 import java.util.List;
 import org.junit.Before;

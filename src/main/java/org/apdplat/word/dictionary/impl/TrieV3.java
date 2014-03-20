@@ -18,13 +18,12 @@
  * 
  */
 
-package org.apdplat.word;
+package org.apdplat.word.dictionary.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import org.apdplat.word.dictionary.Dictionary;
 
 /**
@@ -32,11 +31,11 @@ import org.apdplat.word.dictionary.Dictionary;
  * 用于查找一个指定的字符串是否在字典中
  * @author 杨尚川
  */
-public class TrieV1  implements Dictionary{
+public class TrieV3 implements Dictionary{
     private final TrieNode ROOT_NODE = new TrieNode('/');
 
     public List<String> prefix(String prefix){
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         //去掉首尾空白字符
         prefix=prefix.trim();
         int len = prefix.length();    
@@ -114,10 +113,10 @@ public class TrieV1  implements Dictionary{
         //设置终结字符，表示从根节点遍历到此是一个合法的词
         node.setTerminal(true);
     }
-    private static class TrieNode{
+    private static class TrieNode implements Comparable{
         private char character;
         private boolean terminal;
-        private final Map<Character,TrieNode> children = new HashMap<>();        
+        private TrieNode[] children = new TrieNode[0];
         public TrieNode(char character){
             this.character = character;
         }
@@ -134,10 +133,19 @@ public class TrieV1  implements Dictionary{
             this.character = character;
         }
         public Collection<TrieNode> getChildren() {
-            return this.children.values();
+            return Arrays.asList(children);            
         }
+        /**
+         * 利用二分搜索算法从有序数组中找到特定的节点
+         * @param character 待查找节点
+         * @return NULL OR 节点数据
+         */
         public TrieNode getChild(char character) {
-            return this.children.get(character);
+            int index = Arrays.binarySearch(children, character);
+            if(index >= 0){
+                return children[index];
+            }
+            return null;
         }        
         public TrieNode getChildIfNotExistThenCreate(char character) {
             TrieNode child = getChild(character);
@@ -148,11 +156,50 @@ public class TrieV1  implements Dictionary{
             return child;
         }
         public void addChild(TrieNode child) {
-            this.children.put(child.getCharacter(), child);
+            children = insert(children, child);
         }
-        public void removeChild(TrieNode child) {
-            this.children.remove(child.getCharacter());
-        }        
+        /**
+         * 将一个字符追加到有序数组
+         * @param array 有序数组
+         * @param element 字符
+         * @return 新的有序数字
+         */
+        private TrieNode[] insert(TrieNode[] array, TrieNode element){
+            int length = array.length;
+            if(length == 0){
+                array = new TrieNode[1];
+                array[0] = element;
+                return array;
+            }
+            TrieNode[] newArray = new TrieNode[length+1];
+            boolean insert=false;
+            for(int i=0; i<length; i++){
+                if(element.getCharacter() <= array[i].getCharacter()){
+                    //新元素找到合适的插入位置
+                    newArray[i]=element;
+                    //将array中剩下的元素依次加入newArray即可退出比较操作
+                    System.arraycopy(array, i, newArray, i+1, length-i);
+                    insert=true;
+                    break;
+                }else{
+                    newArray[i]=array[i];
+                }
+            }
+            if(!insert){
+                //将新元素追加到尾部
+                newArray[length]=element;
+            }
+            return newArray;
+        }
+        /**
+         * 注意这里的比较对象是char
+         * @param o char
+         * @return 
+         */
+        @Override
+        public int compareTo(Object o) {
+            return this.getCharacter()-(char)o;
+        }
     }
     
     public void show(){
@@ -169,7 +216,7 @@ public class TrieV1  implements Dictionary{
         }
     }
     public static void main(String[] args){
-        TrieV1 trie = new TrieV1();
+        TrieV3 trie = new TrieV3();
         trie.add("APDPlat");
         trie.add("APP");
         trie.add("APD");
