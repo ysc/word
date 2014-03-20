@@ -46,6 +46,7 @@ public final class DictionaryFactory {
         static{
             try {
                 System.out.println("开始初始化词典");
+                long start = System.currentTimeMillis();
                 //选择词典实现，可以通过参数选择不同的实现
                 String dicClass = System.getProperty("dic.class");
                 if(dicClass == null){
@@ -85,7 +86,8 @@ public final class DictionaryFactory {
                     //释放内存，上面已经一次性将词典加入内存，所以边加入词典边释放
                     iter.remove();
                 }
-                System.out.println("完成初始化词典，词数目："+wordCount);
+                long cost = System.currentTimeMillis() - start;
+                System.out.println("完成初始化词典，耗时"+cost+" 毫秒，词数目："+wordCount);
                 System.out.println("词典最大词长："+DIC.getMaxLength());
                 System.out.println("词典平均词长："+(float)totalLength/wordCount);
             } catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
