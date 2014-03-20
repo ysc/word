@@ -58,6 +58,7 @@ public class WordSeg {
         
     }
     public static void main(String[] args){
+        long start = System.currentTimeMillis();
         List<String> sentences = new ArrayList<>();
         sentences.add("杨尚川是APDPlat应用级产品开发平台的作者");
         sentences.add("研究生命的起源");
@@ -66,12 +67,14 @@ public class WordSeg {
         sentences.add("乒乓球拍卖完了");
         sentences.add("咬死猎人的狗");
         sentences.add("大学生活象白纸");
-        sentences.add("他有各种才能");
-        sentences.add("什么时候我才能克服这个困难");
+        sentences.add("安徽省合肥市长江路");
+        sentences.add("有意见分歧");
         for(String sentence : sentences){
             System.out.println("正向最大匹配: "+seg(sentence));
             System.out.println("逆向最大匹配: "+segReverse(sentence));
         }
+        long cost = System.currentTimeMillis() - start;
+        System.out.println("cost: "+cost);
     }
     public static List<String> seg(String text){        
         List<String> result = new ArrayList<>();
