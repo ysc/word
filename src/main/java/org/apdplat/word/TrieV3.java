@@ -24,13 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.apdplat.word.dictionary.Dictionary;
 
 /**
  * 前缀树的Java实现
  * 用于查找一个指定的字符串是否在字典中
  * @author 杨尚川
  */
-public class TrieV3 {
+public class TrieV3 implements Dictionary{
     private final TrieNode ROOT_NODE = new TrieNode('/');
 
     public List<String> prefix(String prefix){
@@ -60,6 +61,7 @@ public class TrieV3 {
         return result;
     }
     
+    @Override
     public boolean contains(String item){
         //去掉首尾空白字符
         item=item.trim();
@@ -85,11 +87,13 @@ public class TrieV3 {
         }
         return false;
     }
+    @Override
     public void addAll(List<String> items){
         for(String item : items){
             add(item);
         }
     }
+    @Override
     public void add(String item){
         //去掉首尾空白字符
         item=item.trim();
