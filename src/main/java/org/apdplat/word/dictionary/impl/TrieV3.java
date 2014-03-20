@@ -33,6 +33,7 @@ import org.apdplat.word.dictionary.Dictionary;
  */
 public class TrieV3 implements Dictionary{
     private final TrieNode ROOT_NODE = new TrieNode('/');
+    private int maxLength;
 
     public List<String> prefix(String prefix){
         List<String> result = new ArrayList<>();
@@ -102,6 +103,9 @@ public class TrieV3 implements Dictionary{
             //长度小于1则忽略
             return;
         }
+        if(len>maxLength){
+            maxLength=len;
+        }
         //从根节点开始添加
         TrieNode node = ROOT_NODE;
         for(int i=0;i<len;i++){
@@ -112,6 +116,11 @@ public class TrieV3 implements Dictionary{
         }
         //设置终结字符，表示从根节点遍历到此是一个合法的词
         node.setTerminal(true);
+    }
+    
+    @Override
+    public int getMaxLength() {
+        return maxLength;
     }
     private static class TrieNode implements Comparable{
         private char character;

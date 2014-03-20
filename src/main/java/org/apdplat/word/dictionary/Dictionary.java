@@ -26,7 +26,8 @@ import java.util.List;
  * 词典
  * @author 杨尚川
  */
-public interface Dictionary {    
+public interface Dictionary {
+    public int getMaxLength();
     public boolean contains(String item);
     public void addAll(List<String> items);
     public void add(String item);
