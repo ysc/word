@@ -18,7 +18,7 @@
  * 
  */
 
-package org.apdplat.word;
+package org.apdplat.word.test;
 
 import org.apdplat.word.dictionary.impl.TrieV3;
 import java.io.IOException;
