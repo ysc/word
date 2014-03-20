@@ -33,13 +33,15 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import org.apdplat.word.dictionary.Dictionary;
+import org.apdplat.word.dictionary.DictionaryFactory;
 
 /**
  * 基于词典的正向最大匹配算法
  * @author 杨尚川
  */
 public class SegFile {
-    private static final Trie DIC = new Trie();
+    private static final Dictionary DIC = DictionaryFactory.getDictionary();
     private static int MAX_LENGTH=6;
     static{
         try {

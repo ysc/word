@@ -20,7 +20,6 @@
 
 package org.apdplat.word;
 
-import org.apdplat.word.dictionary.impl.Trie;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -28,6 +27,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import org.apdplat.word.dictionary.Dictionary;
+import org.apdplat.word.dictionary.DictionaryFactory;
 
 /**
  * 基于词典的正向最大匹配算法
@@ -35,7 +36,7 @@ import java.util.Stack;
  * @author 杨尚川
  */
 public class WordSeg {
-    private static final Trie DIC = new Trie();
+    private static final Dictionary DIC = DictionaryFactory.getDictionary();
     private static int MAX_LENGTH=6;
     static{
         try {
