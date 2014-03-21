@@ -20,10 +20,12 @@
 
 package org.apdplat.word;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 /**
  * 将一个文件分词后保存到另一个文件
@@ -43,20 +45,30 @@ public class SegFile {
         System.out.println("cost time:"+cost+" ms");
     }
     public static void segFile(String input, String output) throws Exception{
-        byte[] bytes = Files.readAllBytes(Paths.get(input));
-        int byteLength = bytes.length;
-        String text = new String(bytes,"utf-8");   
-        int textLength = text.length();
-        bytes=null;
-        System.out.println("对字节数为："+byteLength+"，字符数为："+textLength+" 的文本进行分词");
-        long start = System.currentTimeMillis();
-        List<String> result = WordSeg.seg(text);
-        long cost = System.currentTimeMillis() - start;
-        float rateForByte = byteLength/cost;
-        float rateForCharacter = textLength/cost;
-        System.out.println("分词耗时："+cost+" 毫秒");
-        System.out.println("分词速度："+rateForByte+"字节/毫秒");
-        System.out.println("分词速度："+rateForCharacter+"字符/毫秒");
-        Files.write(Paths.get(output), result, Charset.forName("utf-8"));
+        float max=(float)Runtime.getRuntime().maxMemory()/1000000;
+        float total=(float)Runtime.getRuntime().totalMemory()/1000000;
+        float free=(float)Runtime.getRuntime().freeMemory()/1000000;
+        String pre="执行之前剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input),"utf-8"));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"))){
+            int textLength=0;
+            long start = System.currentTimeMillis();
+            String line = reader.readLine();
+            while(line != null){
+                textLength += line.length();
+                writer.write(WordSeg.seg(line).toString()+"\n");
+                line = reader.readLine();
+            }
+            long cost = System.currentTimeMillis() - start;
+            float rate = textLength/cost;
+            System.out.println("分词耗时："+cost+" 毫秒");
+            System.out.println("分词速度："+rate+" 字符/毫秒");
+        }
+        max=(float)Runtime.getRuntime().maxMemory()/1000000;
+        total=(float)Runtime.getRuntime().totalMemory()/1000000;
+        free=(float)Runtime.getRuntime().freeMemory()/1000000;
+        String post="执行之后剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
+        System.out.println(pre);
+        System.out.println(post);
     }
 }
