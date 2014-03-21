@@ -55,47 +55,80 @@ public class WordSeg {
     }
     public static List<String> seg(String text){        
         List<String> result = new ArrayList<>();
+        //文本长度
+        final int textLen=text.length();
+        //从未分词的文本中截取的长度
         int len=DIC.getMaxLength();
-        while(text.length()>0){            
-            if(text.length()<len){
-                len=text.length();
+        //剩下未分词的文本的索引
+        int start=0;
+        //只要有词未切分完就一直继续
+        while(start<textLen){
+            if(len>textLen-start){
+                //如果未分词的文本的长度小于截取的长度
+                //则缩短截取的长度
+                len=textLen-start;
             }
-            //取指定的最大长度的文本去词典里面匹配
-            String tryWord = text.substring(0, 0+len);
-            while(!DIC.contains(tryWord)){
-                //如果长度为一且在词典中未找到匹配，则按长度为一切分
-                if(tryWord.length()==1){
+            //用长为len的字符串查词典
+            while(!DIC.contains(text, start, len)){
+                //如果长度为一且在词典中未找到匹配
+                //则按长度为一切分
+                if(len==1){
                     break;
                 }
-                //如果匹配不到，则长度减一继续匹配
-                tryWord=tryWord.substring(0, tryWord.length()-1);
+                //如果查不到，则长度减一后继续
+                len--;
             }
-            result.add(tryWord);
-            //从待分词文本中去除已经分词的文本
-            text=text.substring(tryWord.length());
+            result.add(text.substring(start, start+len));
+            //从待分词文本中向后移动索引，滑过已经分词的文本
+            start+=len;
+            //每一次成功切词后都要重置截取长度
+            len=DIC.getMaxLength();
         }
         return result;
     }
     public static List<String> segReverse(String text){        
         Stack<String> result = new Stack<>();
+        //文本长度
+        final int textLen=text.length();
+        //从未分词的文本中截取的长度
         int len=DIC.getMaxLength();
-        while(text.length()>0){
-            if(text.length()<len){
-                len=text.length();
-            }
-            //取指定的最大长度的文本去词典里面匹配
-            String tryWord = text.substring(text.length() - len);
-            while(!DIC.contains(tryWord)){
-                //如果长度为一且在词典中未找到匹配，则按长度为一切分
-                if(tryWord.length()==1){
+        //剩下未分词的文本的索引
+        int start=textLen-len;
+        //处理文本长度小于最大词长的情况
+        if(start<0){
+            start=0;
+        }
+        if(len>textLen-start){
+            //如果未分词的文本的长度小于截取的长度
+            //则缩短截取的长度
+            len=textLen-start;
+        }
+        //只要有词未切分完就一直继续
+        while(start>=0 && len>0){
+            //用长为len的字符串查词典
+            while(!DIC.contains(text, start, len)){
+                //如果长度为一且在词典中未找到匹配
+                //则按长度为一切分
+                if(len==1){
                     break;
                 }
-                //如果匹配不到，则长度减一继续匹配
-                tryWord=tryWord.substring(1);
+                //如果查不到，则长度减一
+                //索引向后移动一个字，然后继续
+                len--;
+                start++;
             }
-            result.push(tryWord);
-            //从待分词文本中去除已经分词的文本
-            text=text.substring(0, text.length()-tryWord.length());
+            result.push(text.substring(start, start+len));
+            //每一次成功切词后都要重置截取长度
+            len=DIC.getMaxLength();            
+            if(len>start){
+                //如果未分词的文本的长度小于截取的长度
+                //则缩短截取的长度
+                len=start;
+            }
+            //每一次成功切词后都要重置开始索引位置
+            //从待分词文本中向前移动最大词长个索引
+            //将未分词的文本纳入下次分词的范围
+            start-=len;
         }
         len=result.size();
         List<String> list = new ArrayList<>(len);
