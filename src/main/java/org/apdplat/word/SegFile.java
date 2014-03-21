@@ -61,6 +61,7 @@ public class SegFile {
             }
             long cost = System.currentTimeMillis() - start;
             float rate = textLength/cost;
+            System.out.println("字符数目："+textLength);
             System.out.println("分词耗时："+cost+" 毫秒");
             System.out.println("分词速度："+rate+" 字符/毫秒");
         }
