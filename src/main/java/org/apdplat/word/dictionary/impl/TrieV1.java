@@ -65,16 +65,14 @@ public class TrieV1  implements Dictionary{
     
     @Override
     public boolean contains(String item){
-        //去掉首尾空白字符
-        item=item.trim();
-        int len = item.length();
-        if(len < 1){
-            return false;
-        }
+        return contains(item, 0, item.length());
+    }
+    @Override
+    public boolean contains(String item, int start, int length){
         //从根节点开始查找
         TrieNode node = ROOT_NODE;
-        for(int i=0;i<len;i++){
-            char character = item.charAt(i);
+        for(int i=0;i<length;i++){
+            char character = item.charAt(i+start);
             TrieNode child = node.getChild(character);
             if(child == null){
                 //未找到匹配节点
