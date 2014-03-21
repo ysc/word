@@ -20,12 +20,10 @@
 
 package org.apdplat.word.dictionary;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.List;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -64,27 +62,24 @@ public final class DictionaryFactory {
                 int totalLength=0;
                 //统计词长分布
                 Map<Integer,Integer> map = new TreeMap<>();
-                //这行代码够简洁
-                List<String> lines = Files.readAllLines(Paths.get(dicPath), Charset.forName("utf-8"));
-                //采用迭代器方式遍历，一边建Trie一边释放词典数据，以防止内存不够
-                Iterator<String> iter = lines.iterator();
-                while(iter.hasNext()){
-                    wordCount++;
-                    String line = iter.next();
-                    //加入词典
-                    DIC.add(line);
-                    //统计不同长度的词的数目
-                    int len = line.length();
-                    totalLength+=len;
-                    Integer value = map.get(len);
-                    if(value==null){
-                        value=1;
-                    }else{
-                        value++;
+                try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dicPath),"utf-8"))){
+                    String line = reader.readLine();
+                    while(line != null){
+                        wordCount++;
+                        //加入词典
+                        DIC.add(line);
+                        //统计不同长度的词的数目
+                        int len = line.length();
+                        totalLength+=len;
+                        Integer value = map.get(len);
+                        if(value==null){
+                            value=1;
+                        }else{
+                            value++;
+                        }
+                        map.put(len, value);
+                        line = reader.readLine();
                     }
-                    map.put(len, value);                    
-                    //释放内存，上面已经一次性将词典加入内存，所以边加入词典边释放
-                    iter.remove();
                 }
                 long cost = System.currentTimeMillis() - start;
                 System.out.println("完成初始化词典，耗时"+cost+" 毫秒，词数目："+wordCount);
