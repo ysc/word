@@ -50,12 +50,14 @@ public final class DictionaryFactory {
                 if(dicClass == null){
                     dicClass = "org.apdplat.word.dictionary.impl.TrieV3";
                 }
+                System.out.println("dic.class="+dicClass);
                 DIC = (Dictionary)Class.forName(dicClass).newInstance();
                 //选择词典
                 String dicPath = System.getProperty("dic.path");
                 if(dicPath == null){
                     dicPath = "dic.txt";
                 }
+                System.out.println("dic.path="+dicPath);
                 //统计词数
                 int wordCount=0;
                 //统计平均词长
