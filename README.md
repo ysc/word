@@ -1,4 +1,7 @@
-Chinese Word Segmentation Algorithm
+Chinese Word Segmentation Component
+
+使用方法：
+List<String> words = WordSeg.seg("杨尚川是APDPlat应用级产品开发平台的作者");
 
 相关文章：
 <p><a href="http://yangshangchuan.iteye.com/blog/2031813" target="_blank">中文分词算法 之 基于词典的正向最大匹配算法</a></p>
