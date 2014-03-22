@@ -65,8 +65,12 @@ public final class DictionaryFactory {
                 //统计词长分布
                 Map<Integer,Integer> map = new TreeMap<>();
                 try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dicPath),"utf-8"))){
-                    String line = reader.readLine();
-                    while(line != null){
+                    String line;
+                    while((line = reader.readLine()) != null){
+                        line = line.trim();
+                        if("".equals(line) || line.startsWith("#")){
+                            continue;
+                        }
                         wordCount++;
                         //加入词典
                         DIC.add(line);
@@ -80,7 +84,6 @@ public final class DictionaryFactory {
                             value++;
                         }
                         map.put(len, value);
-                        line = reader.readLine();
                     }
                 }
                 long cost = System.currentTimeMillis() - start;
