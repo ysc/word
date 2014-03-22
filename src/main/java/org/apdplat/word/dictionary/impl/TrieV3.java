@@ -68,6 +68,12 @@ public class TrieV3 implements Dictionary{
     }
     @Override
     public boolean contains(String item, int start, int length){
+        if(start < 0 || length < 1){
+            return false;
+        }
+        if(item == null || item.length() < length){
+            return false;
+        }
         //从根节点开始查找
         TrieNode node = ROOT_NODE;
         for(int i=0;i<length;i++){
