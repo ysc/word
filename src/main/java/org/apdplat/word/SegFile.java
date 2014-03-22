@@ -26,6 +26,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import org.apdplat.word.segmentation.SegmentationFactory;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
 
 /**
  * 将一个文件分词后保存到另一个文件
@@ -56,7 +58,7 @@ public class SegFile {
             String line = reader.readLine();
             while(line != null){
                 textLength += line.length();
-                writer.write(WordSeg.seg(line).toString()+"\n");
+                writer.write(SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching).seg(line).toString()+"\n");
                 line = reader.readLine();
             }
             long cost = System.currentTimeMillis() - start;
