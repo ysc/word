@@ -20,7 +20,6 @@
 
 package org.apdplat.word.dictionary.impl;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apdplat.word.dictionary.Dictionary;
@@ -29,8 +28,8 @@ import org.apdplat.word.dictionary.Dictionary;
  *
  * @author 杨尚川
  */
-public class HaseSet implements Dictionary{
-    private Set<String> set = new HashSet<>();
+public class HashSet implements Dictionary{
+    private final Set<String> set = new java.util.HashSet<>();
     private int maxLength;
     @Override
     public int getMaxLength() {
