@@ -58,6 +58,13 @@ public class WordSeg {
         sentences.add("大学生活象白纸");
         sentences.add("结合成分子式");
         sentences.add("有意见分歧");
+        sentences.add("发展中国家兔的计划");
+        sentences.add("明天他将来北京");
+        sentences.add("税收制度将来会更完善");
+        sentences.add("依靠群众才能做好工作");
+        sentences.add("现在是施展才能的好机会");
+        sentences.add("把手举起来");
+        sentences.add("茶杯的把手断了");
         for(String sentence : sentences){
             System.out.println("正向最大匹配: "+seg(sentence));
             System.out.println("逆向最大匹配: "+segReverse(sentence));
