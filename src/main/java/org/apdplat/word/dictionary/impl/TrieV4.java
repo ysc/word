@@ -23,7 +23,9 @@ package org.apdplat.word.dictionary.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apdplat.word.dictionary.Dictionary;
 
 /**
@@ -38,6 +40,44 @@ public class TrieV4 implements Dictionary{
     private final TrieNode[] ROOT_NODES_INDEX = new TrieNode[INDEX_LENGTH];
     private int maxLength;
 
+    /**
+     * 统计根节点冲突情况及预分配的数组空间利用情况
+     */
+    public void showConflict(){
+        int emptySlot=0;
+        //key:冲突长度 value:冲突个数
+        Map<Integer, Integer> map = new HashMap<>();
+        for(TrieNode node : ROOT_NODES_INDEX){
+            if(node == null){
+                emptySlot++;
+            }else{
+                int i=0;
+                while((node = node.getSibling()) != null){
+                    i++;
+                }
+                if(i > 0){
+                    Integer count = map.get(i);
+                    if(count == null){
+                        count = 1;
+                    }else{
+                        count++;
+                    }
+                    map.put(i, count);
+                }
+            }
+        }
+        int count=0;
+        for(int key : map.keySet()){
+            int value = map.get(key);
+            count += key*value;
+            System.out.println("冲突次数为："+key+" 的元素个数："+value);
+        }
+        System.out.println("冲突次数："+count);
+        System.out.println("总槽数："+INDEX_LENGTH);
+        System.out.println("用槽数："+(INDEX_LENGTH-emptySlot));
+        System.out.println("使用率："+(float)(INDEX_LENGTH-emptySlot)/INDEX_LENGTH*100+"%");
+        System.out.println("剩槽数："+emptySlot);
+    }
     /**
      * 获取字符对应的根节点
      * 如果节点不存在
