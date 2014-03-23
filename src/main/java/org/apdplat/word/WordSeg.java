@@ -61,6 +61,10 @@ public class WordSeg {
         sentences.add("现在是施展才能的好机会");
         sentences.add("把手举起来");
         sentences.add("茶杯的把手断了");
+        sentences.add("以新的姿态出现在世界东方");
+        sentences.add("使节约粮食进一步形成风气");
+        sentences.add("反映了一个人的精神面貌");
+        sentences.add("美国加州大学的科学家发现");
         for(String sentence : sentences){
             System.out.println("正向最大匹配: "+SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching).seg(sentence));
             System.out.println("逆向最大匹配: "+SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching).seg(sentence));
