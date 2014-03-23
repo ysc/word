@@ -41,7 +41,7 @@ public class WordSeg {
      * @param text
      * @return 
      */
-    public List<Word> seg(String text){
+    public static List<Word> seg(String text){
         return RMM.seg(text);
     }
     
