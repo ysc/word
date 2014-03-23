@@ -22,14 +22,29 @@ package org.apdplat.word;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
+import org.apdplat.word.segmentation.Word;
 
 /**
- * 中文分词使用方法
+ * 中文分词基础入口
  * @author 杨尚川
  */
-public class WordSeg {    
+public class WordSeg {
+    private static final Segmentation MM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
+    private static final Segmentation RMM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
+    
+    /**
+     * 默认使用基于词典的逆向最大匹配算法
+     * 实验表明，对于汉语来说，逆向最大匹配算法比(正向)最大匹配算法更有效
+     * @param text
+     * @return 
+     */
+    public List<Word> seg(String text){
+        return RMM.seg(text);
+    }
+    
     public static void main(String[] args){
         long start = System.currentTimeMillis();
         List<String> sentences = new ArrayList<>();
@@ -66,8 +81,8 @@ public class WordSeg {
         sentences.add("反映了一个人的精神面貌");
         sentences.add("美国加州大学的科学家发现");
         for(String sentence : sentences){
-            System.out.println("正向最大匹配: "+SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching).seg(sentence));
-            System.out.println("逆向最大匹配: "+SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching).seg(sentence));
+            System.out.println("正向最大匹配: "+MM.seg(sentence));
+            System.out.println("逆向最大匹配: "+RMM.seg(sentence));
         }
         long cost = System.currentTimeMillis() - start;
         System.out.println("cost: "+cost);
