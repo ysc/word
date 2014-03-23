@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.TreeMap;
+import org.apdplat.word.dictionary.impl.TrieV4;
 
 /**
  * 词典工厂
@@ -48,7 +49,7 @@ public final class DictionaryFactory {
                 //选择词典实现，可以通过参数选择不同的实现
                 String dicClass = System.getProperty("dic.class");
                 if(dicClass == null){
-                    dicClass = "org.apdplat.word.dictionary.impl.TrieV3";
+                    dicClass = "org.apdplat.word.dictionary.impl.TrieV4";
                 }
                 System.out.println("dic.class="+dicClass);
                 DIC = (Dictionary)Class.forName(dicClass).newInstance();
@@ -97,6 +98,10 @@ public final class DictionaryFactory {
                     }
                 }
                 System.out.println("词典平均词长："+(float)totalLength/wordCount);
+                if(DIC instanceof TrieV4){
+                    TrieV4 trieV4 = (TrieV4)DIC;
+                    trieV4.showConflict();
+                }
             } catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
                 System.err.println("词典装载失败:"+ex.getMessage());
                 throw new RuntimeException(ex);
