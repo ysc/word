@@ -23,6 +23,7 @@ package org.apdplat.word.dictionary;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,17 +56,26 @@ public final class DictionaryFactory {
                 DIC = (Dictionary)Class.forName(dicClass).newInstance();
                 //选择词典
                 String dicPath = System.getProperty("dic.path");
+                InputStream in = null;
                 if(dicPath == null){
-                    dicPath = "dic.txt";
+                    in = DictionaryFactory.class.getClassLoader().getResourceAsStream("dic.txt");
+                    System.out.println("从类路径dic.txt加载默认词典");
+                }else{
+                    dicPath = dicPath.trim();
+                    System.out.println("加载词典："+dicPath);
+                    if(dicPath.startsWith("classpath:")){
+                        in = DictionaryFactory.class.getClassLoader().getResourceAsStream(dicPath.replace("classpath:", ""));
+                    }else{
+                        in = new FileInputStream(dicPath);
+                    }                    
                 }
-                System.out.println("dic.path="+dicPath);
                 //统计词数
                 int wordCount=0;
                 //统计平均词长
                 int totalLength=0;
                 //统计词长分布
                 Map<Integer,Integer> map = new TreeMap<>();
-                try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dicPath),"utf-8"))){
+                try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
                     String line;
                     while((line = reader.readLine()) != null){
                         line = line.trim();
