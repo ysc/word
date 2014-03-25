@@ -80,7 +80,12 @@ public class WordSeg {
         sentences.add("使节约粮食进一步形成风气");
         sentences.add("反映了一个人的精神面貌");
         sentences.add("美国加州大学的科学家发现");
+        sentences.add("我好不挺好");
+        sentences.add("木有"); 
+        sentences.add("下雨天留客天天留我不留");
+        sentences.add("叔叔亲了我妈妈也亲了我");
         for(String sentence : sentences){
+            System.out.println("切分句子: "+sentence);
             System.out.println("正向最大匹配: "+MM.seg(sentence));
             System.out.println("逆向最大匹配: "+RMM.seg(sentence));
         }
