@@ -34,6 +34,7 @@ import org.apdplat.word.segmentation.Word;
 public class WordSeg {
     private static final Segmentation MM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
     private static final Segmentation RMM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
+    private static final Segmentation MIM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MinimumMatching);
     
     /**
      * 默认使用基于词典的逆向最大匹配算法
@@ -84,9 +85,11 @@ public class WordSeg {
         sentences.add("木有"); 
         sentences.add("下雨天留客天天留我不留");
         sentences.add("叔叔亲了我妈妈也亲了我");
+        sentences.add("白马非马");
         for(String sentence : sentences){
             System.out.println("切分句子: "+sentence);
             System.out.println("正向最大匹配: "+MM.seg(sentence));
+            System.out.println("正向最小匹配: "+MIM.seg(sentence));
             System.out.println("逆向最大匹配: "+RMM.seg(sentence));
         }
         long cost = System.currentTimeMillis() - start;
