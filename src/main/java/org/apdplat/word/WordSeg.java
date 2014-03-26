@@ -35,6 +35,7 @@ public class WordSeg {
     private static final Segmentation MM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
     private static final Segmentation RMM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
     private static final Segmentation MIM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MinimumMatching);
+    private static final Segmentation RMIM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMinimumMatching);
     
     /**
      * 默认使用基于词典的逆向最大匹配算法
@@ -91,6 +92,7 @@ public class WordSeg {
             System.out.println("正向最大匹配: "+MM.seg(sentence));
             System.out.println("正向最小匹配: "+MIM.seg(sentence));
             System.out.println("逆向最大匹配: "+RMM.seg(sentence));
+            System.out.println("逆向最小匹配: "+RMIM.seg(sentence));
         }
         long cost = System.currentTimeMillis() - start;
         System.out.println("cost: "+cost);
