@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
+import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
 
@@ -50,8 +51,8 @@ public class MaximumMatching implements Segmentation{
                 //则缩短截取的长度
                 len=textLen-start;
             }
-            //用长为len的字符串查词典
-            while(!DIC.contains(text, start, len)){
+            //用长为len的字符串查词典，并做特殊情况识别
+            while(!DIC.contains(text, start, len) && !RecognitionTool.recog(text, start, len)){
                 //如果长度为一且在词典中未找到匹配
                 //则按长度为一切分
                 if(len==1){
@@ -69,7 +70,7 @@ public class MaximumMatching implements Segmentation{
         return result;
     }
     public static void main(String[] args){
-        String text = "杨尚川是APDPlat应用级产品开发平台的作者";
+        String text = "ysc是杨尚川的英文名，杨尚川在2009年获得了系统架构设计师的职称";
         if(args !=null && args.length == 1){
             text = args[0];
         }
