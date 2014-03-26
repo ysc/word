@@ -27,5 +27,6 @@ package org.apdplat.word.segmentation;
  */
 public enum SegmentationAlgorithm {
     MaximumMatching,
-    ReverseMaximumMatching
+    ReverseMaximumMatching,
+    MinimumMatching
 }
