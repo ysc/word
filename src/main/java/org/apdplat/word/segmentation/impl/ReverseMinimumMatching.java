@@ -48,20 +48,20 @@ public class ReverseMinimumMatching implements Segmentation{
         while(start>=0){
             //用长为len的字符串查词典
             while(!DIC.contains(text, start, len)){
+                //如果查不到，则长度加一后继续
+                //索引向前移动一个字，然后继续
+                len++;
+                start--;
                 //如果长度为词典最大长度且在词典中未找到匹配
                 //或已经遍历完剩下的文本且在词典中未找到匹配
                 //则按长度为一切分
-                if(len==DIC.getMaxLength() || start<0){
+                if(len>DIC.getMaxLength() || start<0){
                     //重置截取长度为一
                     //向后移动start索引
                     start+=len-1;
                     len=1;
                     break;
                 }
-                //如果查不到，则长度加一后继续
-                //索引向前移动一个字，然后继续
-                len++;
-                start--;
             }
             result.push(new Word(text.substring(start, start+len)));       
             //每一次成功切词后都要重置开始索引位置
