@@ -68,4 +68,12 @@ public class MaximumMatching implements Segmentation{
         }
         return result;
     }
+    public static void main(String[] args){
+        String text = "杨尚川是APDPlat应用级产品开发平台的作者";
+        if(args !=null && args.length == 1){
+            text = args[0];
+        }
+        MaximumMatching m = new MaximumMatching();
+        System.out.println(m.seg(text));
+    }
 }
