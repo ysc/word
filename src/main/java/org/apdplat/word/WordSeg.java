@@ -65,7 +65,7 @@ public class WordSeg {
         sentences.add("他从马上摔下来了,你马上下来一下");
         sentences.add("乒乓球拍卖完了");
         sentences.add("咬死猎人的狗");
-        sentences.add("地面积了厚厚的的雪");
+        sentences.add("地面积了厚厚的雪");
         sentences.add("这几块地面积还真不小");
         sentences.add("大学生活象白纸");
         sentences.add("结合成分子式");

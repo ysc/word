@@ -54,7 +54,7 @@ public class ReverseMaximumMatchingTest {
         text.add("他从马上摔下来了,你马上下来一下");
         text.add("乒乓球拍卖完了");
         text.add("咬死猎人的狗");
-        text.add("地面积了厚厚的的雪");
+        text.add("地面积了厚厚的雪");
         text.add("这几块地面积还真不小");
         text.add("大学生活象白纸");
         text.add("结合成分子式");
@@ -94,7 +94,7 @@ public class ReverseMaximumMatchingTest {
         expResult.add("[他, 从, 马上, 摔下来, 了, ,, 你, 马上, 下来, 一下]");
         expResult.add("[乒乓球拍, 卖完, 了]");
         expResult.add("[咬, 死, 猎人, 的, 狗]");
-        expResult.add("[地, 面积, 了, 厚厚的, 的, 雪]");
+        expResult.add("[地, 面积, 了, 厚厚的, 雪]");
         expResult.add("[这, 几块, 地, 面积, 还, 真, 不小]");
         expResult.add("[大学生, 活象, 白纸]");
         expResult.add("[结, 合成, 分子式]");
