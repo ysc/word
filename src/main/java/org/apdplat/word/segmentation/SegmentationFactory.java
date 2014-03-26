@@ -20,9 +20,6 @@
 
 package org.apdplat.word.segmentation;
 
-import org.apdplat.word.segmentation.impl.MaximumMatching;
-import org.apdplat.word.segmentation.impl.ReverseMaximumMatching;
-
 ;
 
 /**
@@ -33,11 +30,12 @@ import org.apdplat.word.segmentation.impl.ReverseMaximumMatching;
 public class SegmentationFactory {
     private SegmentationFactory(){};
     public static Segmentation getSegmentation(SegmentationAlgorithm segmentationAlgorithm){
-        if(segmentationAlgorithm == SegmentationAlgorithm.MaximumMatching){
-            return new MaximumMatching();
-        }
-        if(segmentationAlgorithm == SegmentationAlgorithm.ReverseMaximumMatching){
-            return new ReverseMaximumMatching();
+        String clazz = "org.apdplat.word.segmentation.impl."+segmentationAlgorithm.name();
+        System.out.println("分词实现类："+clazz);
+        try {
+            return (Segmentation)Class.forName(clazz).newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            System.out.println("构造分词实现类失败："+ex.getMessage());
         }
         return null;
     }
