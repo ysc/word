@@ -22,6 +22,7 @@ package org.apdplat.word;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
@@ -89,10 +90,34 @@ public class WordSeg {
         sentences.add("白马非马");
         for(String sentence : sentences){
             System.out.println("切分句子: "+sentence);
-            System.out.println("正向最大匹配: "+MM.seg(sentence));
-            System.out.println("正向最小匹配: "+MIM.seg(sentence));
-            System.out.println("逆向最大匹配: "+RMM.seg(sentence));
-            System.out.println("逆向最小匹配: "+RMIM.seg(sentence));
+            List<Word> words = MM.seg(sentence);
+            int score=0;
+            for(int i=0; i<words.size()-1; i++){
+                score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
+            }
+            System.out.println("正向最大匹配: "+words);
+            System.out.println("分值："+score);
+            words = MIM.seg(sentence);
+            score=0;
+            for(int i=0; i<words.size()-1; i++){
+                score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
+            }
+            System.out.println("正向最小匹配: "+words);
+            System.out.println("分值："+score);
+            words = RMM.seg(sentence);
+            score=0;
+            for(int i=0; i<words.size()-1; i++){
+                score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
+            }
+            System.out.println("逆向最大匹配: "+words);
+            System.out.println("分值："+score);
+            words = RMIM.seg(sentence);
+            score=0;
+            for(int i=0; i<words.size()-1; i++){
+                score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
+            }
+            System.out.println("逆向最小匹配: "+words);
+            System.out.println("分值："+score);
         }
         long cost = System.currentTimeMillis() - start;
         System.out.println("cost: "+cost);
