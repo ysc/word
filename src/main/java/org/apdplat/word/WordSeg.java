@@ -23,6 +23,7 @@ package org.apdplat.word;
 import java.util.ArrayList;
 import java.util.List;
 import org.apdplat.word.corpus.Bigram;
+import org.apdplat.word.corpus.Trigram;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
@@ -87,39 +88,47 @@ public class WordSeg {
         sentences.add("木有"); 
         sentences.add("下雨天留客天天留我不留");
         sentences.add("叔叔亲了我妈妈也亲了我");
-        sentences.add("白马非马");
         for(String sentence : sentences){
             System.out.println("切分句子: "+sentence);
             List<Word> words = MM.seg(sentence);
+            System.out.println("正向最大匹配: "+words);
+            System.out.println("二元分值："+bigram(words));
+            System.out.println("三元分值："+trigram(words));
+            words = MIM.seg(sentence);
+            System.out.println("正向最小匹配: "+words);
+            System.out.println("二元分值："+bigram(words));
+            System.out.println("三元分值："+trigram(words));
+            words = RMM.seg(sentence);
+            System.out.println("逆向最大匹配: "+words);
+            System.out.println("二元分值："+bigram(words));
+            System.out.println("三元分值："+trigram(words));
+            
+            words = RMIM.seg(sentence);
+            System.out.println("逆向最小匹配: "+words);
+            System.out.println("二元分值："+bigram(words));
+            System.out.println("三元分值："+trigram(words));
+        }
+        long cost = System.currentTimeMillis() - start;
+        System.out.println("cost: "+cost);
+    }
+    private static int bigram(List<Word> words){
+        if(words.size() > 1){
             int score=0;
             for(int i=0; i<words.size()-1; i++){
                 score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
             }
-            System.out.println("正向最大匹配: "+words);
-            System.out.println("分值："+score);
-            words = MIM.seg(sentence);
-            score=0;
-            for(int i=0; i<words.size()-1; i++){
-                score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
-            }
-            System.out.println("正向最小匹配: "+words);
-            System.out.println("分值："+score);
-            words = RMM.seg(sentence);
-            score=0;
-            for(int i=0; i<words.size()-1; i++){
-                score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
-            }
-            System.out.println("逆向最大匹配: "+words);
-            System.out.println("分值："+score);
-            words = RMIM.seg(sentence);
-            score=0;
-            for(int i=0; i<words.size()-1; i++){
-                score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
-            }
-            System.out.println("逆向最小匹配: "+words);
-            System.out.println("分值："+score);
+            return score;
         }
-        long cost = System.currentTimeMillis() - start;
-        System.out.println("cost: "+cost);
-    }    
+        return 0;
+    }
+    private static int trigram(List<Word> words){
+        if(words.size() > 2){
+            int score=0;
+            for(int i=0; i<words.size()-2; i++){
+                score += Trigram.getCount(words.get(i).getText(), words.get(i+1).getText(), words.get(i+2).getText());
+            }
+            return score;
+        }
+        return 0;
+    }
 }
