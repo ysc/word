@@ -89,6 +89,8 @@
         <sonar-maven3-plugin.version>3.5</sonar-maven3-plugin.version>
         
         <junit.version>4.8.2</junit.version>
+        <slf4j-api.version>1.6.4</slf4j-api.version>
+        <logback-classic.version>0.9.28</logback-classic.version>
   </properties>
 
   <dependencies>
@@ -97,6 +99,25 @@
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
+    </dependency>
+    <!-- SLF4J日志框架API -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j-api.version}</version>
+    </dependency>
+    <!-- LOGBACK日志实现提供者 -->
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback-classic.version}</version>
+        <exclusions>
+            <exclusion>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+            </exclusion>
+        </exclusions>
+        <optional>true</optional>
     </dependency>
   </dependencies>
 </project>
