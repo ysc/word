@@ -116,6 +116,12 @@ public class WordSeg {
         sentences.add("木有"); 
         sentences.add("下雨天留客天天留我不留");
         sentences.add("叔叔亲了我妈妈也亲了我");
+        sentences.add("白马非马");
+        sentences.add("学生会写文章");
+        sentences.add("张掖市民陈军");
+        sentences.add("张掖市明乐县");
+        sentences.add("中华人民共和国万岁万岁万万岁");
+        sentences.add("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
         for(String sentence : sentences){
             System.out.println("切分句子: "+sentence);
             List<Word> words = MM.seg(sentence);
