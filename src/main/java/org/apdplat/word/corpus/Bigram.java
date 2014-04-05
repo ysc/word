@@ -33,17 +33,17 @@ import java.util.Map;
  * @author 杨尚川
  */
 public class Bigram {
-    private static final Map<String, Integer> BIGRAM = new HashMap<>();
+    private static final Map<String, Float> BIGRAM = new HashMap<>();
     /**
-     * 获取两个词一前一后紧挨着同时出现在语料库中的词数
+     * 获取两个词一前一后紧挨着同时出现在语料库中的分值
      * @param first 前一个词
      * @param second 后一个词
-     * @return 同时出现的词数
+     * @return 同时出现的分值
      */
-    public static int getCount(String first, String second) {
-        Integer value = BIGRAM.get(first+":"+second);
+    public static float getScore(String first, String second) {
+        Float value = BIGRAM.get(first+":"+second);
         if(value == null){
-            value = 0;
+            value = 0f;
         }
         return value;
     }
@@ -72,7 +72,7 @@ public class Bigram {
                     //忽略空行
                     if(!"".equals(line)){
                         String[] attr = line.split(" -> ");
-                        BIGRAM.put(attr[0], Integer.parseInt(attr[1]));
+                        BIGRAM.put(attr[0], Float.parseFloat(attr[1]));
                     }
                 }
             }

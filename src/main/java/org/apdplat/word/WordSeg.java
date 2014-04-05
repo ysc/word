@@ -111,21 +111,21 @@ public class WordSeg {
         long cost = System.currentTimeMillis() - start;
         System.out.println("cost: "+cost);
     }
-    private static int bigram(List<Word> words){
+    private static float bigram(List<Word> words){
         if(words.size() > 1){
-            int score=0;
+            float score=0;
             for(int i=0; i<words.size()-1; i++){
-                score += Bigram.getCount(words.get(i).getText(), words.get(i+1).getText());
+                score += Bigram.getScore(words.get(i).getText(), words.get(i+1).getText());
             }
             return score;
         }
         return 0;
     }
-    private static int trigram(List<Word> words){
+    private static float trigram(List<Word> words){
         if(words.size() > 2){
-            int score=0;
+            float score=0;
             for(int i=0; i<words.size()-2; i++){
-                score += Trigram.getCount(words.get(i).getText(), words.get(i+1).getText(), words.get(i+2).getText());
+                score += Trigram.getScore(words.get(i).getText(), words.get(i+1).getText(), words.get(i+2).getText());
             }
             return score;
         }

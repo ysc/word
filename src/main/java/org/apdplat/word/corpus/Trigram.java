@@ -33,18 +33,18 @@ import java.util.Map;
  * @author 杨尚川
  */
 public class Trigram {
-    private static final Map<String, Integer> TRIGRAM = new HashMap<>();
+    private static final Map<String, Float> TRIGRAM = new HashMap<>();
     /**
-     * 获取三个词前后紧挨着同时出现在语料库中的次数
+     * 获取三个词前后紧挨着同时出现在语料库中的分值
      * @param first 第一个词
      * @param second 第二个词
      * @param third 第三个词
-     * @return 同时出现的次数
+     * @return 同时出现的分值
      */
-    public static int getCount(String first, String second, String third) {
-        Integer value = TRIGRAM.get(first+":"+second+":"+third);
+    public static float getScore(String first, String second, String third) {
+        Float value = TRIGRAM.get(first+":"+second+":"+third);
         if(value == null){
-            value = 0;
+            value = 0f;
         }
         return value;
     }
@@ -73,7 +73,7 @@ public class Trigram {
                     //忽略空行
                     if(!"".equals(line)){
                         String[] attr = line.split(" -> ");
-                        TRIGRAM.put(attr[0], Integer.parseInt(attr[1]));
+                        TRIGRAM.put(attr[0], Float.parseFloat(attr[1]));
                     }
                 }
             }
