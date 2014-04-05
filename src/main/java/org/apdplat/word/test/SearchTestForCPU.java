@@ -28,6 +28,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 比较词典查询算法的性能（比较运算速度）
@@ -51,6 +53,7 @@ TrieV2         100000000次查询   cost time:483398 ms
  * @author 杨尚川
  */
 public class SearchTestForCPU {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchTestForCPU.class);
     //为了生成随机查询的词列表
     private static final List<String> DIC_FOR_TEST = new ArrayList<>();
     //分别使用以下3中DIC实现来测试性能    
@@ -63,7 +66,7 @@ public class SearchTestForCPU {
     private static final TrieV3 DIC = new TrieV3();
     static{
         try {
-            System.out.println("开始初始化词典");
+            LOGGER.info("开始初始化词典");
             int count=0;
             List<String> lines = Files.readAllLines(Paths.get("D:/dic.txt"), Charset.forName("utf-8"));
             for(String line : lines){
@@ -71,7 +74,7 @@ public class SearchTestForCPU {
                 DIC_FOR_TEST.add(line);
                 count++;
             }
-            System.out.println("完成初始化词典，词数目："+count);
+            LOGGER.info("完成初始化词典，词数目："+count);
         } catch (IOException ex) {
             System.err.println("词典装载失败:"+ex.getMessage());
         }      
@@ -87,6 +90,6 @@ public class SearchTestForCPU {
             DIC.contains(word);
         }
         long cost = System.currentTimeMillis()-start;
-        System.out.println("cost time:"+cost+" ms");
+        LOGGER.info("cost time:"+cost+" ms");
     }
 }

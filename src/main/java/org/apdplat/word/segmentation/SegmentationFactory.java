@@ -20,6 +20,9 @@
 
 package org.apdplat.word.segmentation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 ;
 
 /**
@@ -28,14 +31,15 @@ package org.apdplat.word.segmentation;
  * @author 杨尚川
  */
 public class SegmentationFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SegmentationFactory.class);
     private SegmentationFactory(){};
     public static Segmentation getSegmentation(SegmentationAlgorithm segmentationAlgorithm){
         String clazz = "org.apdplat.word.segmentation.impl."+segmentationAlgorithm.name();
-        System.out.println("分词实现类："+clazz);
+        LOGGER.info("分词实现类："+clazz);
         try {
             return (Segmentation)Class.forName(clazz).newInstance();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            System.out.println("构造分词实现类失败："+ex.getMessage());
+            LOGGER.info("构造分词实现类失败："+ex.getMessage());
         }
         return null;
     }

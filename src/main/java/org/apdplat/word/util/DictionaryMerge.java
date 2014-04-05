@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 词典合并清理
@@ -38,6 +40,7 @@ import java.util.regex.Pattern;
  * @author 杨尚川
  */
 public class DictionaryMerge {    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryMerge.class);
     public static void main(String[] args) throws IOException{
         List<String> sources = new ArrayList<>();
         sources.add("dic1.txt");
@@ -63,13 +66,13 @@ public class DictionaryMerge {
         for(String line : lines){
             line = line.trim();
             if(!pattern.matcher(line).find()){
-                System.out.println("过滤："+line);
+                LOGGER.info("过滤："+line);
                 continue;
             }
             set.add(line);
         }
-        System.out.println("合并词数："+lines.size());
-        System.out.println("保留词数："+set.size());
+        LOGGER.info("合并词数："+lines.size());
+        LOGGER.info("保留词数："+set.size());
         lines.clear();
         List<String> list = new ArrayList<>();
         list.addAll(set);

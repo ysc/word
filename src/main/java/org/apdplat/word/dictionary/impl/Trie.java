@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apdplat.word.dictionary.Dictionary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 前缀树的Java实现
@@ -33,6 +35,7 @@ import org.apdplat.word.dictionary.Dictionary;
  * @author 杨尚川
  */
 public class Trie  implements Dictionary{
+    private static final Logger LOGGER = LoggerFactory.getLogger(Trie.class);
     private final TrieNode ROOT_NODE = new TrieNode('/');
     private int maxLength;
 
@@ -173,9 +176,9 @@ public class Trie  implements Dictionary{
     }
     private void show(TrieNode node, String indent){
         if(node.isTerminal()){
-            System.out.println(indent+node.getCharacter()+"(T)");
+            LOGGER.info(indent+node.getCharacter()+"(T)");
         }else{
-            System.out.println(indent+node.getCharacter());
+            LOGGER.info(indent+node.getCharacter());
         }        
         for(TrieNode item : node.getChildren()){
             show(item,indent+"\t");
@@ -195,9 +198,9 @@ public class Trie  implements Dictionary{
         trie.add("中心思想");
         trie.add("杨家将");        
         trie.show();
-        System.out.println(trie.prefix("中"));
-        System.out.println(trie.prefix("中华"));
-        System.out.println(trie.prefix("杨"));
-        System.out.println(trie.prefix("杨尚"));
+        LOGGER.info(trie.prefix("中").toString());
+        LOGGER.info(trie.prefix("中华").toString());
+        LOGGER.info(trie.prefix("杨").toString());
+        LOGGER.info(trie.prefix("杨尚").toString());
     }
 }

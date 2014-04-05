@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * N元模型规范化
@@ -39,6 +41,7 @@ import java.util.regex.Pattern;
  * @author 杨尚川
  */
 public class GramNormalizer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GramNormalizer.class);
     public static void main(String[] args) throws IOException{
         uniformAndNormForBigramAndTrigram();
     }
@@ -56,7 +59,7 @@ public class GramNormalizer {
             uniform(src, dst, 3);
             norm(src, dst, 3);
         }catch(Exception e){
-            System.out.println("模型规范化失败："+e.getMessage());
+            LOGGER.info("模型规范化失败："+e.getMessage());
         }
     }
     /**
@@ -74,18 +77,18 @@ public class GramNormalizer {
         for(String line : lines){
             String[] attr = line.split(" -> ");
             if(attr == null || attr.length != 2){
-                System.out.println("错误数据："+line);
+                LOGGER.info("错误数据："+line);
                 continue;
             }
             String key = attr[0];
             String value = attr[1];
             String[] words = key.split(":");
             if(words == null || words.length != n || value == null){
-                System.out.println("错误数据："+line);
+                LOGGER.info("错误数据："+line);
                 continue;
             }
             if(value.indexOf(".") != -1){
-                System.out.println("已经做过归一化处理，忽略...");
+                LOGGER.info("已经做过归一化处理，忽略...");
                 //不用处理了，程序返回
                 return ;
             }
@@ -117,7 +120,7 @@ public class GramNormalizer {
         map.clear();
         //排序
         Collections.sort(list);
-        System.out.println("总的模型数："+list.size());
+        LOGGER.info("总的模型数："+list.size());
         Files.write(Paths.get(dst), list, Charset.forName("utf-8"));
     }
     /**
@@ -151,7 +154,7 @@ public class GramNormalizer {
             String line = iter.next();
             String[] attr = line.split(" -> ");
             if(attr == null || attr.length != 2){
-                System.out.println("错误数据："+line);
+                LOGGER.info("错误数据："+line);
                 error++;
                 iter.remove();
                 continue;
@@ -159,24 +162,24 @@ public class GramNormalizer {
             String key = attr[0];
             String[] words = key.split(":");
             if(words == null || words.length != n){
-                System.out.println("错误数据："+line);
+                LOGGER.info("错误数据："+line);
                 error++;
                 iter.remove();
                 continue;
             }
             for(int i=0; i<n; i++){
                 if(!pattern.matcher(words[i]).find()){
-                    System.out.println("过滤模型："+line);
+                    LOGGER.info("过滤模型："+line);
                     filte++;
                     iter.remove();
                     break;
                 }
             }            
         }
-        System.out.println("总的模型数："+len);
-        System.out.println("保留模型数："+lines.size());
-        System.out.println("错误模型数："+error);
-        System.out.println("过滤模型数："+filte);
+        LOGGER.info("总的模型数："+len);
+        LOGGER.info("保留模型数："+lines.size());
+        LOGGER.info("错误模型数："+error);
+        LOGGER.info("过滤模型数："+filte);
         Files.write(Paths.get(dst), lines, Charset.forName("utf-8"));
     }
 }

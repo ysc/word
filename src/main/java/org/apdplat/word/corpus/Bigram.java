@@ -27,12 +27,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 二元语法模型
  * @author 杨尚川
  */
 public class Bigram {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bigram.class);
     private static final Map<String, Float> BIGRAM = new HashMap<>();
     /**
      * 获取两个词一前一后紧挨着同时出现在语料库中的分值
@@ -49,13 +52,13 @@ public class Bigram {
     }
     static{
         try{
-            System.out.println("开始加载bigram文件");
+            LOGGER.info("开始加载bigram文件");
             long start = System.currentTimeMillis();
             String bigramPath = System.getProperty("bigram.path");
             InputStream in = null;
             if(bigramPath == null){
                 in = Bigram.class.getClassLoader().getResourceAsStream("bigram.txt");
-                System.out.println("从类路径bigram.txt加载默认二元语法模型");
+                LOGGER.info("从类路径bigram.txt加载默认二元语法模型");
             }else{
                 bigramPath = bigramPath.trim();
                 if(bigramPath.startsWith("classpath:")){
@@ -77,7 +80,7 @@ public class Bigram {
                 }
             }
             long cost = System.currentTimeMillis() - start;
-            System.out.println("成功加载bigram文件，耗时："+cost+" 毫秒");
+            LOGGER.info("成功加载bigram文件，耗时："+cost+" 毫秒");
         }catch (IOException ex) {
             System.err.println("bigram文件装载失败:"+ex.getMessage());
             throw new RuntimeException(ex);

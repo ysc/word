@@ -28,6 +28,8 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.TreeMap;
 import org.apdplat.word.dictionary.impl.TrieV4;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 词典工厂
@@ -37,6 +39,7 @@ import org.apdplat.word.dictionary.impl.TrieV4;
  * @author 杨尚川
  */
 public final class DictionaryFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryFactory.class);
     private DictionaryFactory(){}
     public static final Dictionary getDictionary(){
         return DictionaryHolder.DIC;
@@ -45,24 +48,24 @@ public final class DictionaryFactory {
         private static final Dictionary DIC;
         static{
             try {
-                System.out.println("开始初始化词典");
+                LOGGER.info("开始初始化词典");
                 long start = System.currentTimeMillis();
                 //选择词典实现，可以通过参数选择不同的实现
                 String dicClass = System.getProperty("dic.class");
                 if(dicClass == null){
                     dicClass = "org.apdplat.word.dictionary.impl.TrieV4";
                 }
-                System.out.println("dic.class="+dicClass);
+                LOGGER.info("dic.class="+dicClass);
                 DIC = (Dictionary)Class.forName(dicClass).newInstance();
                 //选择词典
                 String dicPath = System.getProperty("dic.path");
                 InputStream in = null;
                 if(dicPath == null){
                     in = DictionaryFactory.class.getClassLoader().getResourceAsStream("dic.txt");
-                    System.out.println("从类路径dic.txt加载默认词典");
+                    LOGGER.info("从类路径dic.txt加载默认词典");
                 }else{
                     dicPath = dicPath.trim();
-                    System.out.println("加载词典："+dicPath);
+                    LOGGER.info("加载词典："+dicPath);
                     if(dicPath.startsWith("classpath:")){
                         in = DictionaryFactory.class.getClassLoader().getResourceAsStream(dicPath.replace("classpath:", ""));
                     }else{
@@ -98,16 +101,16 @@ public final class DictionaryFactory {
                     }
                 }
                 long cost = System.currentTimeMillis() - start;
-                System.out.println("完成初始化词典，耗时"+cost+" 毫秒，词数目："+wordCount);
-                System.out.println("词典最大词长："+DIC.getMaxLength());
+                LOGGER.info("完成初始化词典，耗时"+cost+" 毫秒，词数目："+wordCount);
+                LOGGER.info("词典最大词长："+DIC.getMaxLength());
                 for(int len : map.keySet()){
                     if(len<10){
-                        System.out.println("词长  "+len+" 的词数为："+map.get(len));
+                        LOGGER.info("词长  "+len+" 的词数为："+map.get(len));
                     }else{
-                        System.out.println("词长 "+len+" 的词数为："+map.get(len));
+                        LOGGER.info("词长 "+len+" 的词数为："+map.get(len));
                     }
                 }
-                System.out.println("词典平均词长："+(float)totalLength/wordCount);
+                LOGGER.info("词典平均词长："+(float)totalLength/wordCount);
                 if(DIC instanceof TrieV4){
                     TrieV4 trieV4 = (TrieV4)DIC;
                     trieV4.showConflict();

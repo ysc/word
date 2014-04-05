@@ -49,6 +49,8 @@ import java.util.regex.Pattern;
 import org.apdplat.word.util.DictionaryMerge;
 import org.apdplat.word.util.GramNormalizer;
 import org.apdplat.word.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 语料库工具
@@ -57,6 +59,7 @@ import org.apdplat.word.util.Utils;
  * @author 杨尚川
  */
 public class CorpusTools {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CorpusTools.class);
     private static final Map<String, Integer> BIGRAM = new HashMap<>();
     private static final Map<String, Integer> TRIGRAM = new HashMap<>();
     private static final AtomicInteger WORD_COUNT = new AtomicInteger();   
@@ -96,16 +99,16 @@ public class CorpusTools {
      */
     private static void analyzeCorpus(){
         String zipFile = "src/main/resources/corpus/corpora.zip";        
-        System.out.println("开始分析语料库");
+        LOGGER.info("开始分析语料库");
         long start = System.currentTimeMillis();        
         try{
             analyzeCorpus(zipFile);
         } catch (IOException ex) {
-            System.out.println("分析语料库失败："+ex.getMessage());
+            LOGGER.info("分析语料库失败："+ex.getMessage());
         }
         long cost = System.currentTimeMillis() - start;
-        System.out.println("完成分析语料库，耗时："+cost+"毫秒");
-        System.out.println("语料库总字符数目为："+CHAR_COUNT.get()+"，总词数目为："+WORD_COUNT.get()+"，不重复词数目为："+WORDS.size());
+        LOGGER.info("完成分析语料库，耗时："+cost+"毫秒");
+        LOGGER.info("语料库总字符数目为："+CHAR_COUNT.get()+"，总词数目为："+WORD_COUNT.get()+"，不重复词数目为："+WORDS.size());
     }
     /**
      * 分析语料库
@@ -115,12 +118,12 @@ public class CorpusTools {
     private static void analyzeCorpus(String zipFile) throws IOException{
         try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipFile), CorpusTools.class.getClassLoader())) {
             for(Path path : fs.getRootDirectories()){                
-                System.out.println("处理目录："+path);
+                LOGGER.info("处理目录："+path);
                 Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
 
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        System.out.println("处理文件："+file);
+                        LOGGER.info("处理文件："+file);
                         // 拷贝到本地文件系统
                         Path temp = Paths.get("target/corpus-"+System.currentTimeMillis()+".txt");
                         Files.copy(file, temp, StandardCopyOption.REPLACE_EXISTING);
@@ -200,7 +203,7 @@ public class CorpusTools {
                 }
             }
         }catch(Exception e){
-            System.out.println("分析语料库 "+file+" 失败："+e.getMessage());
+            LOGGER.info("分析语料库 "+file+" 失败："+e.getMessage());
         }        
     }
     /**
@@ -224,7 +227,7 @@ public class CorpusTools {
                 writer.write(item.getKey()+" -> "+item.getValue()+"\n");
             }
         }catch(Exception e){
-            System.out.println("保存bigram模型失败："+e.getMessage());
+            LOGGER.info("保存bigram模型失败："+e.getMessage());
         }
     }
     /**
@@ -248,7 +251,7 @@ public class CorpusTools {
                 writer.write(item.getKey()+" -> "+item.getValue()+"\n");
             }
         }catch(Exception e){
-            System.out.println("保存trigram模型失败："+e.getMessage());
+            LOGGER.info("保存trigram模型失败："+e.getMessage());
         }
     }
     /**
@@ -266,7 +269,7 @@ public class CorpusTools {
                 }
             }
         }catch(Exception e){
-            System.out.println("保存target/dic.txt失败："+e.getMessage());
+            LOGGER.info("保存target/dic.txt失败："+e.getMessage());
         }
     }
     /**
@@ -280,7 +283,7 @@ public class CorpusTools {
         try {
             DictionaryMerge.merge(sources, target);
         } catch (IOException ex) {
-            System.out.println("和现有词典合并失败："+ex.getMessage());
+            LOGGER.info("和现有词典合并失败："+ex.getMessage());
         }
     }
 }

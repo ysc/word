@@ -28,12 +28,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 将一个文件分词后保存到另一个文件
  * @author 杨尚川
  */
 public class SegFile {    
+    private static final Logger LOGGER = LoggerFactory.getLogger(SegFile.class);
     public static void main(String[] args) throws Exception{
         String input = "input.txt";
         String output = "output.txt";
@@ -44,7 +47,7 @@ public class SegFile {
         long start = System.currentTimeMillis();
         segFile(input, output);
         long cost = System.currentTimeMillis()-start;
-        System.out.println("cost time:"+cost+" ms");
+        LOGGER.info("cost time:"+cost+" ms");
     }
     public static void segFile(String input, String output) throws Exception{
         float max=(float)Runtime.getRuntime().maxMemory()/1000000;
@@ -63,15 +66,15 @@ public class SegFile {
             }
             long cost = System.currentTimeMillis() - start;
             float rate = textLength/cost;
-            System.out.println("字符数目："+textLength);
-            System.out.println("分词耗时："+cost+" 毫秒");
-            System.out.println("分词速度："+rate+" 字符/毫秒");
+            LOGGER.info("字符数目："+textLength);
+            LOGGER.info("分词耗时："+cost+" 毫秒");
+            LOGGER.info("分词速度："+rate+" 字符/毫秒");
         }
         max=(float)Runtime.getRuntime().maxMemory()/1000000;
         total=(float)Runtime.getRuntime().totalMemory()/1000000;
         free=(float)Runtime.getRuntime().freeMemory()/1000000;
         String post="执行之后剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
-        System.out.println(pre);
-        System.out.println(post);
+        LOGGER.info(pre);
+        LOGGER.info(post);
     }
 }

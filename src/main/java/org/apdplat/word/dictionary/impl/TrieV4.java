@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apdplat.word.dictionary.Dictionary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 前缀树的Java实现
@@ -35,6 +37,7 @@ import org.apdplat.word.dictionary.Dictionary;
  * @author 杨尚川
  */
 public class TrieV4 implements Dictionary{
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrieV4.class);
     //词表的首字母数量在一个可控范围内，默认值为12000
     private static final int INDEX_LENGTH = 12000;
     private final TrieNode[] ROOT_NODES_INDEX = new TrieNode[INDEX_LENGTH];
@@ -70,13 +73,13 @@ public class TrieV4 implements Dictionary{
         for(int key : map.keySet()){
             int value = map.get(key);
             count += key*value;
-            System.out.println("冲突次数为："+key+" 的元素个数："+value);
+            LOGGER.info("冲突次数为："+key+" 的元素个数："+value);
         }
-        System.out.println("冲突次数："+count);
-        System.out.println("总槽数："+INDEX_LENGTH);
-        System.out.println("用槽数："+(INDEX_LENGTH-emptySlot));
-        System.out.println("使用率："+(float)(INDEX_LENGTH-emptySlot)/INDEX_LENGTH*100+"%");
-        System.out.println("剩槽数："+emptySlot);
+        LOGGER.info("冲突次数："+count);
+        LOGGER.info("总槽数："+INDEX_LENGTH);
+        LOGGER.info("用槽数："+(INDEX_LENGTH-emptySlot));
+        LOGGER.info("使用率："+(float)(INDEX_LENGTH-emptySlot)/INDEX_LENGTH*100+"%");
+        LOGGER.info("剩槽数："+emptySlot);
     }
     /**
      * 获取字符对应的根节点
@@ -334,9 +337,9 @@ public class TrieV4 implements Dictionary{
     }
     private void show(TrieNode node, String indent){
         if(node.isTerminal()){
-            System.out.println(indent+node.getCharacter()+"(T)");
+            LOGGER.info(indent+node.getCharacter()+"(T)");
         }else{
-            System.out.println(indent+node.getCharacter());
+            LOGGER.info(indent+node.getCharacter());
         }        
         for(TrieNode item : node.getChildren()){
             show(item,indent+"\t");
@@ -356,9 +359,9 @@ public class TrieV4 implements Dictionary{
         trie.add("中心思想");
         trie.add("杨家将");        
         trie.show();
-        System.out.println(trie.prefix("中"));
-        System.out.println(trie.prefix("中华"));
-        System.out.println(trie.prefix("杨"));
-        System.out.println(trie.prefix("杨尚"));
+        LOGGER.info(trie.prefix("中").toString());
+        LOGGER.info(trie.prefix("中华").toString());
+        LOGGER.info(trie.prefix("杨").toString());
+        LOGGER.info(trie.prefix("杨尚").toString());
     }
 }

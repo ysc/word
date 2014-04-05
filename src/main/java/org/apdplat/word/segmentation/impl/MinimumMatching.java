@@ -27,6 +27,8 @@ import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 基于词典的正向最小匹配算法
@@ -34,6 +36,7 @@ import org.apdplat.word.segmentation.Word;
  * @author 杨尚川
  */
 public class MinimumMatching implements Segmentation{
+    private static final Logger LOGGER = LoggerFactory.getLogger(MinimumMatching.class);
     private static final Dictionary DIC = DictionaryFactory.getDictionary();
     @Override
     public List<Word> seg(String text) {
@@ -73,6 +76,6 @@ public class MinimumMatching implements Segmentation{
             text = args[0];
         }
         MinimumMatching m = new MinimumMatching();
-        System.out.println(m.seg(text));
+        LOGGER.info(m.seg(text).toString());
     }
 }

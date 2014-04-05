@@ -28,12 +28,15 @@ import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.Word;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 中文分词基础入口
  * @author 杨尚川
  */
 public class WordSeg {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WordSeg.class);    
     private static final Segmentation MM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
     private static final Segmentation RMM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
     private static final Segmentation MIM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MinimumMatching);
@@ -74,7 +77,7 @@ public class WordSeg {
             result = words;
             max = score;
         }
-        System.out.println("最大分值："+max+", 消歧结果："+result);
+        LOGGER.info("最大分值："+max+", 消歧结果："+result);
         return result;
     }
     public static void main(String[] args){
@@ -123,27 +126,27 @@ public class WordSeg {
         sentences.add("中华人民共和国万岁万岁万万岁");
         sentences.add("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
         for(String sentence : sentences){
-            System.out.println("切分句子: "+sentence);
+            LOGGER.info("切分句子: "+sentence);
             List<Word> words = MM.seg(sentence);
-            System.out.println("正向最大匹配: "+words);
-            System.out.println("二元分值："+bigram(words));
-            System.out.println("三元分值："+trigram(words));
+            LOGGER.info("正向最大匹配: "+words);
+            LOGGER.info("二元分值："+bigram(words));
+            LOGGER.info("三元分值："+trigram(words));
             words = MIM.seg(sentence);
-            System.out.println("正向最小匹配: "+words);
-            System.out.println("二元分值："+bigram(words));
-            System.out.println("三元分值："+trigram(words));
+            LOGGER.info("正向最小匹配: "+words);
+            LOGGER.info("二元分值："+bigram(words));
+            LOGGER.info("三元分值："+trigram(words));
             words = RMM.seg(sentence);
-            System.out.println("逆向最大匹配: "+words);
-            System.out.println("二元分值："+bigram(words));
-            System.out.println("三元分值："+trigram(words));
+            LOGGER.info("逆向最大匹配: "+words);
+            LOGGER.info("二元分值："+bigram(words));
+            LOGGER.info("三元分值："+trigram(words));
             
             words = RMIM.seg(sentence);
-            System.out.println("逆向最小匹配: "+words);
-            System.out.println("二元分值："+bigram(words));
-            System.out.println("三元分值："+trigram(words));
+            LOGGER.info("逆向最小匹配: "+words);
+            LOGGER.info("二元分值："+bigram(words));
+            LOGGER.info("三元分值："+trigram(words));
         }
         long cost = System.currentTimeMillis() - start;
-        System.out.println("cost: "+cost);
+        LOGGER.info("cost: "+cost);
     }
     private static float bigram(List<Word> words){
         if(words.size() > 1){

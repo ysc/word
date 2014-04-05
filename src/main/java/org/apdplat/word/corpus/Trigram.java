@@ -27,12 +27,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 三元语法模型
  * @author 杨尚川
  */
 public class Trigram {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Trigram.class);
     private static final Map<String, Float> TRIGRAM = new HashMap<>();
     /**
      * 获取三个词前后紧挨着同时出现在语料库中的分值
@@ -50,13 +53,13 @@ public class Trigram {
     }
     static{
         try{
-            System.out.println("开始加载trigram文件");
+            LOGGER.info("开始加载trigram文件");
             long start = System.currentTimeMillis();
             String trigramPath = System.getProperty("trigram.path");
             InputStream in = null;
             if(trigramPath == null){
                 in = Trigram.class.getClassLoader().getResourceAsStream("trigram.txt");
-                System.out.println("从类路径trigram.txt加载默认三元语法模型");
+                LOGGER.info("从类路径trigram.txt加载默认三元语法模型");
             }else{
                 trigramPath = trigramPath.trim();
                 if(trigramPath.startsWith("classpath:")){
@@ -78,7 +81,7 @@ public class Trigram {
                 }
             }
             long cost = System.currentTimeMillis() - start;
-            System.out.println("成功加载trigram文件，耗时："+cost+" 毫秒");
+            LOGGER.info("成功加载trigram文件，耗时："+cost+" 毫秒");
         }catch (IOException ex) {
             System.err.println("trigram文件装载失败:"+ex.getMessage());
             throw new RuntimeException(ex);

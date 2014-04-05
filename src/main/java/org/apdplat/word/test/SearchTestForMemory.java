@@ -26,6 +26,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 比较词典查询算法的性能（比较内存占用）
@@ -33,6 +35,7 @@ import java.util.List;
  * @author 杨尚川
  */
 public class SearchTestForMemory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchTestForMemory.class);
     //分别使用以下3中DIC实现来测试性能    
     //private static final List<String> DIC = new LinkedList<>();
     //private static final List<String> DIC = new ArrayList<>();
@@ -43,14 +46,14 @@ public class SearchTestForMemory {
     private static final TrieV3 DIC = new TrieV3();
     static{
         try {
-            System.out.println("开始初始化词典");
+            LOGGER.info("开始初始化词典");
             int count=0;
             List<String> lines = Files.readAllLines(Paths.get("D:/dic.txt"), Charset.forName("utf-8"));
             for(String line : lines){
                 DIC.add(line);
                 count++;
             }
-            System.out.println("完成初始化词典，词数目："+count);
+            LOGGER.info("完成初始化词典，词数目："+count);
         } catch (IOException ex) {
             System.err.println("词典装载失败:"+ex.getMessage());
         }      
