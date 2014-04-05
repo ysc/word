@@ -25,7 +25,7 @@
                     <debug>true</debug>
                 </configuration>
             </plugin>
-            <!-- 打包插件，排除语料库和语料库工具 -->
+            <!-- 打包插件，排除语料库和语料库工具以及日志配置文件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -34,6 +34,7 @@
                     <excludes>
                         <exclude>**/org/apdplat/word/corpus/CorpusTools.class</exclude>                        
                         <exclude>**/corpus/**</exclude>
+                        <exclude>**/logback.xml</exclude>
                     </excludes>
                 </configuration>
             </plugin>
