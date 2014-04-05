@@ -47,13 +47,11 @@ public class WordSeg {
      * @return 
      */
     public static List<Word> seg(String text){
-        float max;
-        List<Word> result=null;
         //逆向最大匹配为默认选择，如果分值都一样的话
         List<Word> words = RMM.seg(text);
         float score = bigram(words);
-        result = words;
-        max = score;
+        List<Word> result = words;
+        float max = score;
         //正向最大匹配
         words = MM.seg(text);
         score = bigram(words);
