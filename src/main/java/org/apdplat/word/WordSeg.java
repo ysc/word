@@ -40,15 +40,45 @@ public class WordSeg {
     private static final Segmentation RMIM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMinimumMatching);
     
     /**
-     * 默认使用基于词典的逆向最大匹配算法
+     * 使用二元模型从4种切分结果中选择一种最好的
+     * 默认使用基于词典的逆向最大匹配算法，如果分值都一样的话
      * 实验表明，对于汉语来说，逆向最大匹配算法比(正向)最大匹配算法更有效
      * @param text
      * @return 
      */
     public static List<Word> seg(String text){
-        return RMM.seg(text);
+        float max;
+        List<Word> result=null;
+        //逆向最大匹配为默认选择，如果分值都一样的话
+        List<Word> words = RMM.seg(text);
+        float score = bigram(words);
+        result = words;
+        max = score;
+        //正向最大匹配
+        words = MM.seg(text);
+        score = bigram(words);
+        //只有正向最大匹配的分值大于逆向最大匹配，才会被选择
+        if(score > max){
+            result = words;
+            max = score;
+        }
+        //逆向最小匹配
+        words = RMIM.seg(text);
+        score = bigram(words);
+        if(score > max){
+            result = words;
+            max = score;
+        }
+        //正向最小匹配
+        words = MIM.seg(text);
+        score = bigram(words);
+        if(score > max){
+            result = words;
+            max = score;
+        }
+        System.out.println("最大分值："+max+", 消歧结果："+result);
+        return result;
     }
-    
     public static void main(String[] args){
         long start = System.currentTimeMillis();
         List<String> sentences = new ArrayList<>();
