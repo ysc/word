@@ -37,26 +37,44 @@ import java.util.regex.Pattern;
  * 去除非中文词
  * @author 杨尚川
  */
-public class DictionaryMerge {
+public class DictionaryMerge {    
     public static void main(String[] args) throws IOException{
+        List<String> sources = new ArrayList<>();
+        sources.add("dic1.txt");
+        sources.add("dic2.txt");
+        String target = "dic.txt";
+        merge(sources, target);
+    }
+    /**
+     * 把多个词典合并为一个
+     * @param sources 多个待词典
+     * @param target 合并后的词典
+     * @throws IOException 
+     */
+    public static void merge(List<String> sources, String target) throws IOException{
         //至少出现两次中文字符，且以中文字符开头和结束
         Pattern pattern = Pattern.compile("^[\\u4e00-\\u9fa5]{2,}$");
-        List<String> lines = Files.readAllLines(Paths.get("dic1.txt"), Charset.forName("utf-8"));
-        lines.addAll(Files.readAllLines(Paths.get("dic2.txt"), Charset.forName("utf-8")));
+        List<String> lines = new ArrayList<>();
+        //读取所有需要合并的词典
+        for(String source : sources){
+            lines.addAll(Files.readAllLines(Paths.get(source), Charset.forName("utf-8")));
+        }
         Set<String> set = new HashSet<>();
         for(String line : lines){
-            line = line.replace("[", "").replace("]", "");
+            line = line.trim();
             if(!pattern.matcher(line).find()){
                 System.out.println("过滤："+line);
                 continue;
             }
             set.add(line);
         }
-        System.out.println("词数："+lines.size());
+        System.out.println("合并词数："+lines.size());
         System.out.println("保留词数："+set.size());
+        lines.clear();
         List<String> list = new ArrayList<>();
         list.addAll(set);
+        set.clear();
         Collections.sort(list);
-        Files.write(Paths.get("dic.txt"), list, Charset.forName("utf-8"));
+        Files.write(Paths.get(target), list, Charset.forName("utf-8"));
     }
 }
