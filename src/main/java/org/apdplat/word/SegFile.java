@@ -26,8 +26,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import org.apdplat.word.segmentation.SegmentationFactory;
-import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +59,7 @@ public class SegFile {
             String line = reader.readLine();
             while(line != null){
                 textLength += line.length();
-                writer.write(SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching).seg(line).toString()+"\n");
+                writer.write(WordSeg.seg(line).toString()+"\n");
                 line = reader.readLine();
             }
             long cost = System.currentTimeMillis() - start;
