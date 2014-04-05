@@ -40,14 +40,24 @@ import java.util.regex.Pattern;
  */
 public class GramNormalizer {
     public static void main(String[] args) throws IOException{
-        String src = "src/main/resources/bigram.txt";
-        String dst = "src/main/resources/bigram.txt";
-        uniform(src, dst, 2);
-        norm(src, dst, 2);
-        src = "src/main/resources/trigram.txt";
-        dst = "src/main/resources/trigram.txt";
-        uniform(src, dst, 3);
-        norm(src, dst, 3);
+        uniformAndNormForBigramAndTrigram();
+    }
+    /**
+     * 对二元模型和三元模型进行归一化，然后去除非中文字符记录
+     */
+    public static void uniformAndNormForBigramAndTrigram(){
+        try{
+            String src = "src/main/resources/bigram.txt";
+            String dst = "src/main/resources/bigram.txt";
+            uniform(src, dst, 2);
+            norm(src, dst, 2);
+            src = "src/main/resources/trigram.txt";
+            dst = "src/main/resources/trigram.txt";
+            uniform(src, dst, 3);
+            norm(src, dst, 3);
+        }catch(Exception e){
+            System.out.println("模型规范化失败："+e.getMessage());
+        }
     }
     /**
      * 对N元模型的词频进行归一化处理
