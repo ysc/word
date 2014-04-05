@@ -77,7 +77,7 @@ public class WordSeg {
             result = words;
             max = score;
         }
-        LOGGER.info("最大分值："+max+", 消歧结果："+result);
+        LOGGER.debug("最大分值："+max+", 消歧结果："+result);
         return result;
     }
     public static void main(String[] args){
