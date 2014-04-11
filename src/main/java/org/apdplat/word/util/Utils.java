@@ -25,12 +25,26 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * 工具类
  * @author 杨尚川
  */
 public class Utils {
+    //至少出现两次中文字符，且以中文字符开头和结束
+    private static final Pattern PATTERN = Pattern.compile("^[\\u4e00-\\u9fa5]{2,}$");
+    /**
+     * 至少出现两次中文字符，且以中文字符开头和结束
+     * @param word
+     * @return 
+     */
+    public static boolean isChineseCharAndLengthAtLeastTwo(String word){
+        if(PATTERN.matcher(word).find()){
+            return true;
+        }
+        return false;
+    }
     /**
      * 根据MAP的VALUE进行排序
      * @param <K> key
