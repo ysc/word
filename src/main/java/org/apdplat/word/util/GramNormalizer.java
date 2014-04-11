@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,8 +142,6 @@ public class GramNormalizer {
      * @throws IOException 
      */
     public static void norm(String src, String dst, int n) throws IOException{
-        //至少出现1次中文字符，且以中文字符开头和结束
-        Pattern pattern = Pattern.compile("^[\\u4e00-\\u9fa5]+$");
         List<String> lines = Files.readAllLines(Paths.get(src), Charset.forName("utf-8"));
         int len = lines.size();
         int error=0;
@@ -168,7 +165,7 @@ public class GramNormalizer {
                 continue;
             }
             for(int i=0; i<n; i++){
-                if(!pattern.matcher(words[i]).find()){
+                if(!Utils.isChineseCharAndLengthAtLeastTwo(words[i])){
                     LOGGER.info("过滤模型："+line);
                     filte++;
                     iter.remove();

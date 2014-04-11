@@ -45,7 +45,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
 import org.apdplat.word.util.DictionaryMerge;
 import org.apdplat.word.util.GramNormalizer;
 import org.apdplat.word.util.Utils;
@@ -259,12 +258,10 @@ public class CorpusTools {
      * 过滤单字词或包含非中文字符的词
      */
     private static void processWords() {
-        //至少出现两次中文字符，且以中文字符开头和结束
-        Pattern pattern = Pattern.compile("^[\\u4e00-\\u9fa5]{2,}$");
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/dic.txt"),"utf-8"))){
             for(String word : WORDS){
                 //过滤单字词或包含非中文字符的词
-                if(pattern.matcher(word).find()){
+                if(Utils.isChineseCharAndLengthAtLeastTwo(word)){
                     writer.write(word+"\n");
                 }
             }

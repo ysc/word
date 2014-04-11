@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +54,6 @@ public class DictionaryMerge {
      * @throws IOException 
      */
     public static void merge(List<String> sources, String target) throws IOException{
-        //至少出现两次中文字符，且以中文字符开头和结束
-        Pattern pattern = Pattern.compile("^[\\u4e00-\\u9fa5]{2,}$");
         List<String> lines = new ArrayList<>();
         //读取所有需要合并的词典
         for(String source : sources){
@@ -65,7 +62,7 @@ public class DictionaryMerge {
         Set<String> set = new HashSet<>();
         for(String line : lines){
             line = line.trim();
-            if(!pattern.matcher(line).find()){
+            if(!Utils.isChineseCharAndLengthAtLeastTwo(line)){
                 LOGGER.info("过滤："+line);
                 continue;
             }
