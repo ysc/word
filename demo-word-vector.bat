@@ -1,0 +1,5 @@
+@echo off
+call mvn clean install dependency:copy-dependencies
+call java -Xms1200m -Xmx1200m -cp target/word-1.0.jar;target/dependency/slf4j-api-1.6.4.jar;target/dependency/logback-classic-0.9.28.jar;target/dependency/logback-core-0.9.28.jar org.apdplat.word.vector.ExtractText target/word.txt
+call java -Xms1200m -Xmx1200m -cp target/word-1.0.jar;target/dependency/slf4j-api-1.6.4.jar;target/dependency/logback-classic-0.9.28.jar;target/dependency/logback-core-0.9.28.jar org.apdplat.word.vector.Word2Vector target/word.txt target/vector.txt target/vocabulary.txt 2 30
+call java -Xms1200m -Xmx1200m -cp target/word-1.0.jar;target/dependency/slf4j-api-1.6.4.jar;target/dependency/logback-classic-0.9.28.jar;target/dependency/logback-core-0.9.28.jar org.apdplat.word.vector.Distance target/vector.txt gbk
