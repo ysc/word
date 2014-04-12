@@ -32,8 +32,9 @@
                 <version>${maven-jar-plugin.version}</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/org/apdplat/word/corpus/CorpusTools.class</exclude>                        
-                        <exclude>**/corpus/**</exclude>
+                        <exclude>**/org/apdplat/word/corpus/CorpusTools*</exclude>                        
+                        <exclude>**/corpus/corpora.zip</exclude>
+                       <exclude>**/corpus</exclude>                        
                         <exclude>**/logback.xml</exclude>
                     </excludes>
                 </configuration>
