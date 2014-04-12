@@ -26,6 +26,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.List;
+import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +38,8 @@ import org.slf4j.LoggerFactory;
 public class SegFile {    
     private static final Logger LOGGER = LoggerFactory.getLogger(SegFile.class);
     public static void main(String[] args) throws Exception{
-        String input = "input.txt";
-        String output = "output.txt";
+        String input = "target/text.txt";
+        String output = "target/word.txt";
         if(args.length == 2){
             input = args[0];
             output = args[1];
@@ -56,11 +58,14 @@ public class SegFile {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"))){
             int textLength=0;
             long start = System.currentTimeMillis();
-            String line = reader.readLine();
-            while(line != null){
+            String line = null;
+            while((line = reader.readLine()) != null){
                 textLength += line.length();
-                writer.write(WordSeg.seg(line).toString()+"\n");
-                line = reader.readLine();
+                List<Word> words = WordSeg.seg(line);
+                for(Word word : words){
+                    writer.write(word.getText()+" ");
+                }
+                writer.write("\n");
             }
             long cost = System.currentTimeMillis() - start;
             float rate = textLength/cost;
