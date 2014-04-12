@@ -32,15 +32,28 @@ import java.util.regex.Pattern;
  * @author 杨尚川
  */
 public class Utils {
+    //至少出现一次中文字符，且以中文字符开头和结束
+    private static final Pattern PATTERN_ONE = Pattern.compile("^[\\u4e00-\\u9fa5]+$");
     //至少出现两次中文字符，且以中文字符开头和结束
-    private static final Pattern PATTERN = Pattern.compile("^[\\u4e00-\\u9fa5]{2,}$");
+    private static final Pattern PATTERN_TWO = Pattern.compile("^[\\u4e00-\\u9fa5]{2,}$");
+    /**
+     * 至少出现一次中文字符，且以中文字符开头和结束
+     * @param word
+     * @return 
+     */
+    public static boolean isChineseCharAndLengthAtLeastOne(String word){
+        if(PATTERN_ONE.matcher(word).find()){
+            return true;
+        }
+        return false;
+    }
     /**
      * 至少出现两次中文字符，且以中文字符开头和结束
      * @param word
      * @return 
      */
     public static boolean isChineseCharAndLengthAtLeastTwo(String word){
-        if(PATTERN.matcher(word).find()){
+        if(PATTERN_TWO.matcher(word).find()){
             return true;
         }
         return false;
