@@ -63,6 +63,7 @@ public class CorpusTools {
     private static final Map<String, Integer> TRIGRAM = new HashMap<>();
     private static final AtomicInteger WORD_COUNT = new AtomicInteger();   
     private static final AtomicInteger CHAR_COUNT = new AtomicInteger();    
+    private static final AtomicInteger LINES_COUNT = new AtomicInteger();    
     private static final Set<String> WORDS = new HashSet<>();
     
     public static void main(String[] args){
@@ -107,7 +108,7 @@ public class CorpusTools {
         }
         long cost = System.currentTimeMillis() - start;
         LOGGER.info("完成分析语料库，耗时："+cost+"毫秒");
-        LOGGER.info("语料库总字符数目为："+CHAR_COUNT.get()+"，总词数目为："+WORD_COUNT.get()+"，不重复词数目为："+WORDS.size());
+        LOGGER.info("语料库行数为："+LINES_COUNT.get()+"，总字符数目为："+CHAR_COUNT.get()+"，总词数目为："+WORD_COUNT.get()+"，不重复词数目为："+WORDS.size());
     }
     /**
      * 分析语料库
@@ -143,6 +144,7 @@ public class CorpusTools {
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file.toFile()),"utf-8"));){
             String line;
             while( (line = reader.readLine()) != null ){
+                LINES_COUNT.incrementAndGet();
                 //去除首尾空白字符
                 line = line.trim();
                 //忽略空行
