@@ -64,10 +64,26 @@ public class Utils {
                     return (int)(o2.getValue().longValue() - o1.getValue().longValue());
                 }
                 if(o1.getValue() instanceof Float){
-                    return (int)(o2.getValue().floatValue() - o1.getValue().floatValue());
+                    float f1 = o1.getValue().floatValue();
+                    float f2 = o2.getValue().floatValue();
+                    if(f1 < f2){
+                        return 1;
+                    }
+                    if(f1 == f2){
+                        return 0;
+                    }
+                    return -1;
                 }
                 if(o1.getValue() instanceof Double){
-                    return (int)(o2.getValue().doubleValue() - o1.getValue().doubleValue());
+                    double f1 = o1.getValue().doubleValue();
+                    double f2 = o2.getValue().doubleValue();
+                    if(f1 < f2){
+                        return 1;
+                    }
+                    if(f1 == f2){
+                        return 0;
+                    }
+                    return -1;
                 }
                 return 0;
             }    
