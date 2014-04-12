@@ -76,18 +76,18 @@ public class GramNormalizer {
         for(String line : lines){
             String[] attr = line.split(" -> ");
             if(attr == null || attr.length != 2){
-                LOGGER.info("错误数据："+line);
+                LOGGER.error("错误数据："+line);
                 continue;
             }
             String key = attr[0];
             String value = attr[1];
             String[] words = key.split(":");
             if(words == null || words.length != n || value == null){
-                LOGGER.info("错误数据："+line);
+                LOGGER.error("错误数据："+line);
                 continue;
             }
             if(value.indexOf(".") != -1){
-                LOGGER.info("已经做过归一化处理，忽略...");
+                LOGGER.debug("已经做过归一化处理，忽略...");
                 //不用处理了，程序返回
                 return ;
             }
@@ -151,7 +151,7 @@ public class GramNormalizer {
             String line = iter.next();
             String[] attr = line.split(" -> ");
             if(attr == null || attr.length != 2){
-                LOGGER.info("错误数据："+line);
+                LOGGER.error("错误数据："+line);
                 error++;
                 iter.remove();
                 continue;
@@ -159,14 +159,14 @@ public class GramNormalizer {
             String key = attr[0];
             String[] words = key.split(":");
             if(words == null || words.length != n){
-                LOGGER.info("错误数据："+line);
+                LOGGER.error("错误数据："+line);
                 error++;
                 iter.remove();
                 continue;
             }
             for(int i=0; i<n; i++){
                 if(!Utils.isChineseCharAndLengthAtLeastTwo(words[i])){
-                    LOGGER.info("过滤模型："+line);
+                    LOGGER.debug("过滤模型："+line);
                     filte++;
                     iter.remove();
                     break;
