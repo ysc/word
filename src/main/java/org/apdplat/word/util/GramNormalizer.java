@@ -165,7 +165,7 @@ public class GramNormalizer {
                 continue;
             }
             for(int i=0; i<n; i++){
-                if(!Utils.isChineseCharAndLengthAtLeastTwo(words[i])){
+                if(!Utils.isChineseCharAndLengthAtLeastOne(words[i])){
                     LOGGER.debug("过滤模型："+line);
                     filte++;
                     iter.remove();
