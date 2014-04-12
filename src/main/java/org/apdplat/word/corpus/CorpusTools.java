@@ -178,7 +178,17 @@ public class CorpusTools {
                         continue;
                     }
                     for(int i=0; i<len-1; i++){
-                        String key = list.get(i)+":"+list.get(i+1);
+                        String first = list.get(i);
+                        if(!Utils.isChineseCharAndLengthAtLeastOne(first)){
+                            continue;
+                        }
+                        String second = list.get(i+1);
+                        if(!Utils.isChineseCharAndLengthAtLeastOne(second)){
+                            //跳过一个词
+                            i++;
+                            continue;
+                        }
+                        String key = first+":"+second;
                         Integer value = BIGRAM.get(key);
                         if(value == null){
                             value = 1;
@@ -192,7 +202,23 @@ public class CorpusTools {
                     }
                     //计算trigram模型
                     for(int i=0; i<len-2; i++){
-                        String key = list.get(i)+":"+list.get(i+1)+":"+list.get(i+2);
+                        String first = list.get(i);
+                        if(!Utils.isChineseCharAndLengthAtLeastOne(first)){
+                            continue;
+                        }
+                        String second = list.get(i+1);
+                        if(!Utils.isChineseCharAndLengthAtLeastOne(second)){
+                            //跳过一个词
+                            i++;
+                            continue;
+                        }
+                        String third = list.get(i+2);
+                        if(!Utils.isChineseCharAndLengthAtLeastOne(third)){
+                            //跳过二个词
+                            i += 2;
+                            continue;
+                        }
+                        String key = first+":"+second+":"+third;
                         Integer value = TRIGRAM.get(key);
                         if(value == null){
                             value = 1;
