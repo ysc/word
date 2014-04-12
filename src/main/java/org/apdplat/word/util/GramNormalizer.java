@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +42,10 @@ import org.slf4j.LoggerFactory;
  */
 public class GramNormalizer {
     private static final Logger LOGGER = LoggerFactory.getLogger(GramNormalizer.class);
+    private static final NumberFormat FORMAT = NumberFormat.getNumberInstance();
+    static{
+        FORMAT.setMaximumFractionDigits(2);
+    }
     public static void main(String[] args) throws IOException{
         uniformAndNormForBigramAndTrigram();
     }
@@ -114,7 +119,7 @@ public class GramNormalizer {
         List<String> list = new ArrayList<>(map.size());
         //把map转换为list
         for(String key : map.keySet()){
-            list.add(key+" -> "+map.get(key));
+            list.add(key+" -> "+FORMAT.format(map.get(key)));
         }
         map.clear();
         //排序
