@@ -1,5 +1,4 @@
-Chinese Word Segmentation Component（word）
-中文分词组件（word）
+Chinese Word Segmentation Component （中文分词组件 - word）
 
 
 
@@ -7,13 +6,19 @@ Chinese Word Segmentation Component（word）
 
 
 
+	1、对文本进行分词
     List<Word> words = WordSeg.seg("杨尚川是APDPlat应用级产品开发平台的作者");
     System.out.println(words);
     
     输出：
     [杨尚川, 是, APDPlat, 应用, 级, 产品, 开发, 平台, 的, 作者]
 
-
+	2、对文件进行分词
+	String input = "d:/text.txt";
+	String output = "d:/word.txt";
+	SegFile.segFile(input, output);
+	
+	
 	
 Lucene插件：
 
