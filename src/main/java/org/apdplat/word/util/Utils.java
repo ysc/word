@@ -20,6 +20,7 @@
 
 package org.apdplat.word.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,6 +58,23 @@ public class Utils {
             return true;
         }
         return false;
+    }
+    /**
+     * 删除目录
+     * @param dir 目录
+     * @return 是否成功
+     */
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            File[] children = dir.listFiles();
+            for (File child : children) {
+                boolean success = deleteDir(child);
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
     /**
      * 根据MAP的VALUE进行排序
