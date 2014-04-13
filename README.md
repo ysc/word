@@ -37,9 +37,14 @@ Lucene插件：
 Solr插件：
     
 	
-	将schema.xml文件中所有的<tokenizer class="solr.WhitespaceTokenizerFactory"/>和
+	将solr-4.7.1/example/solr/collection1/conf/schema.xml文件中所有的
+	<tokenizer class="solr.WhitespaceTokenizerFactory"/>和
 	<tokenizer class="solr.StandardTokenizerFactory"/>全部替换为
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"/>
+	
+	执行 mvn clean install 生成word中文分词组件target/word-1.0.jar
+	
+	创建目录solr-4.7.1/example/solr/lib，将target/word-1.0.jar文件复制到lib目录
 
 
 	
