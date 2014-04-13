@@ -34,6 +34,15 @@ Lucene插件：
 	
 
 
+Solr插件：
+    
+	
+	将schema.xml文件中所有的<tokenizer class="solr.WhitespaceTokenizerFactory"/>和
+	<tokenizer class="solr.StandardTokenizerFactory"/>全部替换为
+	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"/>
+
+
+	
 分词算法文章：
 
     
