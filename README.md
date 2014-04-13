@@ -1,18 +1,22 @@
-Chinese Word Segmentation Component
+Chinese Word Segmentation Component（word）
+中文分词组件（word）
+
 
 
 分词使用方法：
+
 
 
     List<Word> words = WordSeg.seg("杨尚川是APDPlat应用级产品开发平台的作者");
     System.out.println(words);
     
     输出：
-    [杨尚川, 是, APDPlat, 应用, 级, 产品开发, 平台, 的, 作者]
+    [杨尚川, 是, APDPlat, 应用, 级, 产品, 开发, 平台, 的, 作者]
 
 
 	
 Lucene插件：
+
 
 
     Analyzer analyzer = new ChineseWordAnalyzer();
@@ -35,6 +39,7 @@ Lucene插件：
 
 
 Solr插件：
+
     
 	
 	将solr-4.7.1/example/solr/collection1/conf/schema.xml文件中所有的
@@ -48,7 +53,22 @@ Solr插件：
 
 
 	
+词向量：
+
+
+
+	从大规模语料中统计一个词的上下文相关词，并用这些上下文相关词组成的向量来表达这个词。
+	通过计算词向量的相似性，即可得到词的相似性。
+	相似性的假设是建立在如果两个词的上下文相关词越相似，那么这两个词就越相似这个前提下的。
+	
+	通过运行项目根目录下的脚本demo-word-vector-corpus.bat来体验word项目自带语料库的效果
+	
+	如果有自己的文本内容，可以使用脚本demo-word-vector-file.bat来对文本分词、建立词向量、计算相似性
+
+
+	
 分词算法文章：
+
 
     
    [1、中文分词算法 之 基于词典的正向最大匹配算法](http://yangshangchuan.iteye.com/blog/2031813)
