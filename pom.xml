@@ -93,6 +93,7 @@
         <junit.version>4.8.2</junit.version>
         <slf4j-api.version>1.6.4</slf4j-api.version>
         <logback-classic.version>0.9.28</logback-classic.version>
+        <lucene.version>4.7.1</lucene.version>
   </properties>
 
   <dependencies>
@@ -119,6 +120,13 @@
                 <artifactId>commons-logging</artifactId>
             </exclusion>
         </exclusions>
+        <optional>true</optional>
+    </dependency>
+    <!-- LUCENE全文检索依赖 -->
+    <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${lucene.version}</version>
         <optional>true</optional>
     </dependency>
   </dependencies>
