@@ -129,5 +129,12 @@
         <version>${lucene.version}</version>
         <optional>true</optional>
     </dependency>
+    <!-- LUCENE查询解析器，用于单元测试 -->
+    <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>${lucene.version}</version>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
