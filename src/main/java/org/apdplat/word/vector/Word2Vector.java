@@ -83,9 +83,7 @@ public class Word2Vector {
             String line = null;
             while((line = reader.readLine()) != null){
                 textLength += line.length();
-                LOGGER.info("开始分析一行");
                 word2Vec(map, frq, line, window);
-                LOGGER.info("分析结束");
             }
             long cost = System.currentTimeMillis()-start;
             LOGGER.info("计算完毕，速度："+ textLength/cost+" 字符/毫秒，耗时："+cost/1000+" 秒，数据大小："+map.size()+"，词大小："+frq.size());
@@ -121,10 +119,12 @@ public class Word2Vector {
     }
     private static void word2Vec(Map<String, List<ContextWord>> map, Map<String, Integer> frq, String line, int distance){
         String[] words = line.split(" ");
-        LOGGER.info("行大小："+words.length);        
+        if(words.length > 10000){
+            LOGGER.info("行大小："+words.length);        
+        }
         for(int i=0; i<words.length; i++){
-            if(i % 100000 == 0){
-                LOGGER.info("已经处理: "+i/(float)words.length*100+" %");
+            if(i > 0 && i % 10000 == 0){
+                LOGGER.info("行处理进度: "+i/(float)words.length*100+" %");
             }
             String word = words[i];
             if(!Utils.isChineseCharAndLengthAtLeastTwo(word)){
