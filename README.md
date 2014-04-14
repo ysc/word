@@ -62,17 +62,21 @@ ElasticSearch插件：
 
     
 	
-	执行命令： mvn clean install dependency:copy-dependencies
+	1、执行命令： mvn clean install dependency:copy-dependencies
 	
-	创建目录elasticsearch-1.1.0/plugins/word
+	2、创建目录elasticsearch-1.1.0/plugins/word
 	
-	将中文分词库文件target/word-1.0.jar和依赖的日志库文件target/dependency/slf4j-api-1.6.4.jar、target/dependency/logback-core-0.9.28.jar、logback-classic-0.9.28.jar复制到刚创建的word目录
+	3、将中文分词库文件target/word-1.0.jar和依赖的日志库文件	
+		target/dependency/slf4j-api-1.6.4.jar
+		target/dependency/logback-core-0.9.28.jar
+		target/dependency/logback-classic-0.9.28.jar	
+		复制到刚创建的word目录
 
-	修改文件elasticsearch-1.1.0/config/elasticsearch.yml，新增如下配置：
-	
+	4、修改文件elasticsearch-1.1.0/config/elasticsearch.yml，新增如下配置：	
 		index.analysis.analyzer.default.type : "word"
 	
-	启动ElasticSearch测试效果，在Chrome浏览器中访问：http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
+	5、启动ElasticSearch测试效果，在Chrome浏览器中访问：	
+		http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
 
 	
 		
