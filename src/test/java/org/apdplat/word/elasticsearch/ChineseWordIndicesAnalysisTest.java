@@ -78,7 +78,7 @@ public class ChineseWordIndicesAnalysisTest {
         assertTrue(match);
         
         Tokenizer tokenizer = tokenizerFactory.create(new StringReader("他说的确实在理"));
-        String exp = "[他, 说, 的, 确实, 在理]";
+        String exp = "[说, 确实, 在理]";
         List<String> result = new ArrayList<>();
         while(tokenizer.incrementToken()){
             CharTermAttribute charTermAttribute = tokenizer.getAttribute(CharTermAttribute.class);
@@ -91,7 +91,7 @@ public class ChineseWordIndicesAnalysisTest {
         assertTrue(match);
         
         TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
-        exp = "[杨尚川, 是, APDPlat, 应用, 级, 产品, 开发, 平台, 的, 作者]";
+        exp = "[杨尚川, APDPlat, 应用, 级, 产品, 开发, 平台, 作者]";
         result = new ArrayList<>();
         while(tokenStream.incrementToken()){
             CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
