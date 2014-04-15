@@ -45,7 +45,7 @@ public class ChineseWordPluginIntegrationTest extends ElasticsearchIntegrationTe
         assertThat(response, notNullValue());
         assertThat(response.getTokens().size(), is(8));
         
-        String exp = "[杨尚川, APDPlat, 应用, 级, 产品, 开发, 平台, 作者]";
+        String exp = "[杨尚川, apdplat, 应用, 级, 产品, 开发, 平台, 作者]";
         List<String> result = new ArrayList<>();
         for(AnalyzeResponse.AnalyzeToken token : response.getTokens()){
             result.add(token.getTerm());

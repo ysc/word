@@ -79,7 +79,7 @@ public class ReverseMaximumMatchingTest {
         expResult.add("[长春, 市长, 春节, 致辞]");
         expResult.add("[好]");
         expResult.add("[杨尚川, 好]");
-        expResult.add("[杨尚川, 是, APDPlat, 应用, 级, 产品开发, 平台, 的, 作者]");
+        expResult.add("[杨尚川, 是, apdplat, 应用, 级, 产品开发, 平台, 的, 作者]");
         expResult.add("[他, 说, 的, 确实, 在理]");
         expResult.add("[提高, 人民, 生活, 水平]");
         expResult.add("[他俩, 儿, 谈恋爱, 是从, 头年, 元月, 开始, 的]");
