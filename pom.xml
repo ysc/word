@@ -172,5 +172,13 @@
         <version>${elasticsearch.version}</version>
         <optional>true</optional>
     </dependency>
+    <!-- elasticsearch测试依赖 -->
+    <dependency>
+        <groupId>org.elasticsearch</groupId>
+        <artifactId>elasticsearch</artifactId>
+        <version>${elasticsearch.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
