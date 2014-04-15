@@ -30,6 +30,7 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apdplat.word.segmentation.Segmentation;
+import org.apdplat.word.segmentation.StopWord;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.segmentation.WordSegmentation;
 import org.slf4j.Logger;
@@ -61,9 +62,7 @@ public class ChineseWordTokenizer extends Tokenizer {
         this.segmentation = segmentation;
         reader = new BufferedReader(input);
     }
-    
-    @Override
-    public final boolean incrementToken() throws IOException {
+    private Word getWord() throws IOException {
         Word word = words.poll();
         if(word == null){
             String line;
@@ -73,10 +72,26 @@ public class ChineseWordTokenizer extends Tokenizer {
             startOffset = 0;
             word = words.poll();
         }
+        return word;
+    }
+    @Override
+    public final boolean incrementToken() throws IOException {
+        Word word = getWord();
         if (word != null) {
+            int positionIncrement = 1;
+            //忽略停用词
+            while(StopWord.is(word.getText())){
+                positionIncrement++;
+                startOffset += word.getText().length();
+                LOGGER.info("忽略停用词："+word.getText());
+                word = getWord();
+                if(word == null){
+                    return false;
+                }
+            }
             charTermAttribute.setEmpty().append(word.getText());
             offsetAttribute.setOffset(startOffset, startOffset+word.getText().length());
-            positionIncrementAttribute.setPositionIncrement(1);
+            positionIncrementAttribute.setPositionIncrement(positionIncrement);
             startOffset += word.getText().length();
             return true;
         }
