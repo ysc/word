@@ -130,6 +130,13 @@
         </exclusions>
         <optional>true</optional>
     </dependency>
+    <!-- LUCENE测试依赖，放置于lucene-core前面 -->
+    <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-test-framework</artifactId>
+        <version>${lucene.version}</version>
+        <scope>test</scope>
+    </dependency>
     <!-- LUCENE全文检索依赖 -->
     <dependency>
         <groupId>org.apache.lucene</groupId>
