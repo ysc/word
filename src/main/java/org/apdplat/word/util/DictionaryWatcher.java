@@ -79,6 +79,8 @@ public class DictionaryWatcher {
                 }
 
             });
+            thread.setName("词典监控线程");
+            thread.setDaemon(true);
             thread.start();
         }
     }
