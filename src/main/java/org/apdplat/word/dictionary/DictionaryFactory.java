@@ -27,9 +27,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Map;
 import java.util.TreeMap;
 import org.apdplat.word.dictionary.impl.TrieV4;
+import org.apdplat.word.util.DictionaryWatcher;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,36 +63,41 @@ public final class DictionaryFactory {
         return DictionaryHolder.DIC;
     }
     private static final class DictionaryHolder{
-        private static final Dictionary DIC;
+        private static final Dictionary DIC = constructDictionary();
+        private static final DictionaryWatcher dictionaryWatcher = new DictionaryWatcher();
         static{
-            try {
-                LOGGER.info("开始初始化词典");
-                long start = System.currentTimeMillis();
+            initDic();
+        }
+        private static Dictionary constructDictionary(){  
+            try{
                 //选择词典实现，可以通过参数选择不同的实现
                 String dicClass = System.getProperty("dic.class");
                 if(dicClass == null){
                     dicClass = WordConfTools.get("dic.class", "org.apdplat.word.dictionary.impl.TrieV4");
                 }
                 LOGGER.info("dic.class="+dicClass);
-                DIC = (Dictionary)Class.forName(dicClass.trim()).newInstance();
-                //选择词典
-                String dicPath = System.getProperty("dic.path");
-                if(dicPath == null){
-                    dicPath = WordConfTools.get("dic.path", "classpath:dic.txt");
-                }
-                LOGGER.info("dic.path="+dicPath);
-                loadDic(dicPath.trim());
-                long cost = System.currentTimeMillis() - start;
-                LOGGER.info("完成初始化词典，耗时"+cost+" 毫秒");
-                
-                if(DIC instanceof TrieV4){
-                    TrieV4 trieV4 = (TrieV4)DIC;
-                    trieV4.showConflict();
-                }
+                return (Dictionary)Class.forName(dicClass.trim()).newInstance();
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
                 System.err.println("词典装载失败:"+ex.getMessage());
                 throw new RuntimeException(ex);
             }
+        }
+        private static void initDic(){
+            LOGGER.info("开始初始化词典");
+            long start = System.currentTimeMillis();
+            //选择词典
+            String dicPath = System.getProperty("dic.path");
+            if(dicPath == null){
+                dicPath = WordConfTools.get("dic.path", "classpath:dic.txt");
+            }
+            LOGGER.info("dic.path="+dicPath);
+            loadDic(dicPath.trim());
+            if(DIC instanceof TrieV4){
+                TrieV4 trieV4 = (TrieV4)DIC;
+                trieV4.showConflict();
+            }
+            long cost = System.currentTimeMillis() - start;
+            LOGGER.info("完成初始化词典，耗时"+cost+" 毫秒");
         }
         private static void loadDic(String trim) {
             //统计词长分布
@@ -93,28 +105,49 @@ public final class DictionaryFactory {
             String[] dics = trim.split("[,，]");
             for(String dic : dics){
                 try{
-                    load(dic, map);
+                    dic = dic.trim();
+                    Path path = Paths.get(dic.replace("classpath:", ""));
+                    boolean exist = Files.exists(path);
+                    boolean isDir = Files.isDirectory(path);
+                    if(exist && isDir){
+                        //处理目录
+                        loadAndWatchDir(path, map);
+                    }else{
+                        //处理文件
+                        load(dic, map);
+                    }
                 }catch(Exception e){
                     LOGGER.error("装载词典失败："+dic, e);
                 }
             }
-            //统计词数
-            int wordCount=0;
-            //统计平均词长
-            int totalLength=0;
-            for(int len : map.keySet()){
-                totalLength += len * map.get(len);
-                wordCount += map.get(len);
-            }
-            LOGGER.info("词数目："+wordCount+"，词典最大词长："+DIC.getMaxLength());
-            for(int len : map.keySet()){
-                if(len<10){
-                    LOGGER.info("词长  "+len+" 的词数为："+map.get(len));
-                }else{
-                    LOGGER.info("词长 "+len+" 的词数为："+map.get(len));
+            showStatistics(map);
+        }
+        private static void loadAndWatchDir(Path path, final Map<Integer, Integer> map) throws IOException {
+            dictionaryWatcher.startWatch(path, new DictionaryWatcher.WatcherCallback(){
+
+                private long lastExecute = System.currentTimeMillis();
+                @Override
+                public void execute(String path) {
+                    if(System.currentTimeMillis() - lastExecute > 1000){                  
+                        lastExecute = System.currentTimeMillis();
+                        synchronized(DictionaryHolder.class){
+                            LOGGER.info("清空词典数据");
+                            DIC.clear();
+                            LOGGER.info("重新加载词典数据");
+                            initDic();
+                        }
+                    }
                 }
-            }
-            LOGGER.info("词典平均词长："+(float)totalLength/wordCount);
+            
+            });
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                        throws IOException {
+                    load(file.toAbsolutePath().toString(), map);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
         }
         private static void load(String dic, Map<Integer,Integer> map) throws FileNotFoundException, UnsupportedEncodingException, IOException {
             LOGGER.info("加载词典："+dic);
@@ -144,6 +177,25 @@ public final class DictionaryFactory {
                     map.put(len, value);
                 }
             }
+        }
+        private static void showStatistics(Map<Integer, Integer> map) {            
+            //统计词数
+            int wordCount=0;
+            //统计平均词长
+            int totalLength=0;
+            for(int len : map.keySet()){
+                totalLength += len * map.get(len);
+                wordCount += map.get(len);
+            }
+            LOGGER.info("词数目："+wordCount+"，词典最大词长："+DIC.getMaxLength());
+            for(int len : map.keySet()){
+                if(len<10){
+                    LOGGER.info("词长  "+len+" 的词数为："+map.get(len));
+                }else{
+                    LOGGER.info("词长 "+len+" 的词数为："+map.get(len));
+                }
+            }
+            LOGGER.info("词典平均词长："+(float)totalLength/wordCount);
         }
     }
 }
