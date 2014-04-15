@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +38,22 @@ import org.slf4j.LoggerFactory;
  */
 public class Bigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bigram.class);
-    private static final Map<String, Float> BIGRAM = new HashMap<>();
+    private static final Map<String, Float> BIGRAM = new HashMap<>();    
+    /**
+     * 计算分词结果的二元模型分值
+     * @param words 分词结果
+     * @return 二元模型分值
+     */
+    public static float bigram(List<Word> words){
+        if(words.size() > 1){
+            float score=0;
+            for(int i=0; i<words.size()-1; i++){
+                score += getScore(words.get(i).getText(), words.get(i+1).getText());
+            }
+            return score;
+        }
+        return 0;
+    }
     /**
      * 获取两个词一前一后紧挨着同时出现在语料库中的分值
      * @param first 前一个词
