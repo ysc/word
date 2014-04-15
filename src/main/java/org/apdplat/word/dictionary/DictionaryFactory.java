@@ -22,20 +22,31 @@ package org.apdplat.word.dictionary;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.TreeMap;
 import org.apdplat.word.dictionary.impl.TrieV4;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * 词典工厂
- * 通过系统属性指定词典实现类（dic.class）和词典文件（dic.path）
- * 默认实现词典实现类（org.apdplat.word.dictionary.impl.TrieV3）
- * 和词典文件（当前目录下的dic.txt）
+ * 通过系统属性及配置文件指定词典实现类（dic.class）和词典文件（dic.path）
+ * 指定方式一，编程指定（高优先级）：
+ *      System.setProperty("dic.class", "org.apdplat.word.dictionary.impl.TrieV4");
+ *      System.setProperty("dic.path", "classpath:dic.txt");
+ * 指定方式二，Java虚拟机启动参数（中优先级）：
+ *      java -Ddic.class=org.apdplat.word.dictionary.impl.TrieV4 -Ddic.path=classpath:dic.txt
+ * 指定方式三，配置文件指定（低优先级）：
+ *      在类路径下的word.conf中指定配置信息
+ *      dic.class=org.apdplat.word.dictionary.impl.TrieV4
+ *      dic.path=classpath:dic.txt
+ * 如未指定，则默认使用词典实现类（org.apdplat.word.dictionary.impl.TrieV4）和词典文件（类路径下的dic.txt）
  * @author 杨尚川
  */
 public final class DictionaryFactory {
@@ -53,71 +64,85 @@ public final class DictionaryFactory {
                 //选择词典实现，可以通过参数选择不同的实现
                 String dicClass = System.getProperty("dic.class");
                 if(dicClass == null){
-                    dicClass = "org.apdplat.word.dictionary.impl.TrieV4";
+                    dicClass = WordConfTools.get("dic.class", "org.apdplat.word.dictionary.impl.TrieV4");
                 }
                 LOGGER.info("dic.class="+dicClass);
-                DIC = (Dictionary)Class.forName(dicClass).newInstance();
+                DIC = (Dictionary)Class.forName(dicClass.trim()).newInstance();
                 //选择词典
                 String dicPath = System.getProperty("dic.path");
-                InputStream in = null;
                 if(dicPath == null){
-                    in = DictionaryFactory.class.getClassLoader().getResourceAsStream("dic.txt");
-                    LOGGER.info("从类路径dic.txt加载默认词典");
-                }else{
-                    dicPath = dicPath.trim();
-                    LOGGER.info("加载词典："+dicPath);
-                    if(dicPath.startsWith("classpath:")){
-                        in = DictionaryFactory.class.getClassLoader().getResourceAsStream(dicPath.replace("classpath:", ""));
-                    }else{
-                        in = new FileInputStream(dicPath);
-                    }                    
+                    dicPath = WordConfTools.get("dic.path", "classpath:dic.txt");
                 }
-                //统计词数
-                int wordCount=0;
-                //统计平均词长
-                int totalLength=0;
-                //统计词长分布
-                Map<Integer,Integer> map = new TreeMap<>();
-                try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
-                    String line;
-                    while((line = reader.readLine()) != null){
-                        line = line.trim();
-                        if("".equals(line) || line.startsWith("#")){
-                            continue;
-                        }
-                        wordCount++;
-                        //加入词典
-                        DIC.add(line);
-                        //统计不同长度的词的数目
-                        int len = line.length();
-                        totalLength+=len;
-                        Integer value = map.get(len);
-                        if(value==null){
-                            value=1;
-                        }else{
-                            value++;
-                        }
-                        map.put(len, value);
-                    }
-                }
+                LOGGER.info("dic.path="+dicPath);
+                loadDic(dicPath.trim());
                 long cost = System.currentTimeMillis() - start;
-                LOGGER.info("完成初始化词典，耗时"+cost+" 毫秒，词数目："+wordCount);
-                LOGGER.info("词典最大词长："+DIC.getMaxLength());
-                for(int len : map.keySet()){
-                    if(len<10){
-                        LOGGER.info("词长  "+len+" 的词数为："+map.get(len));
-                    }else{
-                        LOGGER.info("词长 "+len+" 的词数为："+map.get(len));
-                    }
-                }
-                LOGGER.info("词典平均词长："+(float)totalLength/wordCount);
+                LOGGER.info("完成初始化词典，耗时"+cost+" 毫秒");
+                
                 if(DIC instanceof TrieV4){
                     TrieV4 trieV4 = (TrieV4)DIC;
                     trieV4.showConflict();
                 }
-            } catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
                 System.err.println("词典装载失败:"+ex.getMessage());
                 throw new RuntimeException(ex);
+            }
+        }
+        private static void loadDic(String trim) {
+            //统计词长分布
+            Map<Integer,Integer> map = new TreeMap<>();
+            String[] dics = trim.split("[,，]");
+            for(String dic : dics){
+                try{
+                    load(dic, map);
+                }catch(Exception e){
+                    LOGGER.error("装载词典失败："+dic, e);
+                }
+            }
+            //统计词数
+            int wordCount=0;
+            //统计平均词长
+            int totalLength=0;
+            for(int len : map.keySet()){
+                totalLength += len * map.get(len);
+                wordCount += map.get(len);
+            }
+            LOGGER.info("词数目："+wordCount+"，词典最大词长："+DIC.getMaxLength());
+            for(int len : map.keySet()){
+                if(len<10){
+                    LOGGER.info("词长  "+len+" 的词数为："+map.get(len));
+                }else{
+                    LOGGER.info("词长 "+len+" 的词数为："+map.get(len));
+                }
+            }
+            LOGGER.info("词典平均词长："+(float)totalLength/wordCount);
+        }
+        private static void load(String dic, Map<Integer,Integer> map) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+            LOGGER.info("加载词典："+dic);
+            InputStream in = null;
+            if(dic.startsWith("classpath:")){
+                in = DictionaryFactory.class.getClassLoader().getResourceAsStream(dic.replace("classpath:", ""));
+            }else{
+                in = new FileInputStream(dic);
+            }
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
+                String line;
+                while((line = reader.readLine()) != null){
+                    line = line.trim();
+                    if("".equals(line) || line.startsWith("#")){
+                        continue;
+                    }
+                    //加入词典
+                    DIC.add(line);
+                    //统计不同长度的词的数目
+                    int len = line.length();
+                    Integer value = map.get(len);
+                    if(value==null){
+                        value=1;
+                    }else{
+                        value++;
+                    }
+                    map.put(len, value);
+                }
             }
         }
     }
