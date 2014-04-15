@@ -37,7 +37,10 @@ public class TrieV2  implements Dictionary{
     private static final Logger LOGGER = LoggerFactory.getLogger(TrieV2.class);
     private final TrieNode ROOT_NODE = new TrieNode('/');
     private int maxLength;
-
+    @Override
+    public void clear() {
+        ROOT_NODE.clear();
+    }
     public List<String> prefix(String prefix){
         List<String> result = new ArrayList<>();
         //去掉首尾空白字符
@@ -170,6 +173,9 @@ public class TrieV2  implements Dictionary{
         public void addChild(TrieNode child) {
             children = Arrays.copyOf(children, children.length+1);
             this.children[children.length-1]=child;
+        }
+        public void clear(){
+            children = new TrieNode[0];
         }
     }
     

@@ -37,7 +37,10 @@ public class TrieV3 implements Dictionary{
     private static final Logger LOGGER = LoggerFactory.getLogger(TrieV3.class);
     private final TrieNode ROOT_NODE = new TrieNode('/');
     private int maxLength;
-
+    @Override
+    public void clear() {
+        ROOT_NODE.clear();
+    }
     public List<String> prefix(String prefix){
         List<String> result = new ArrayList<>();
         //去掉首尾空白字符
@@ -215,6 +218,9 @@ public class TrieV3 implements Dictionary{
         @Override
         public int compareTo(Object o) {
             return this.getCharacter()-(char)o;
+        }
+        public void clear(){
+            children = new TrieNode[0];
         }
     }
     

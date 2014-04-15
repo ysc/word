@@ -42,7 +42,12 @@ public class TrieV4 implements Dictionary{
     private static final int INDEX_LENGTH = 12000;
     private final TrieNode[] ROOT_NODES_INDEX = new TrieNode[INDEX_LENGTH];
     private int maxLength;
-
+    @Override
+    public void clear() {
+        for(int i=0; i<INDEX_LENGTH; i++){
+            ROOT_NODES_INDEX[i] = null;
+        }
+    }
     /**
      * 统计根节点冲突情况及预分配的数组空间利用情况
      */

@@ -32,6 +32,10 @@ public class HashSet implements Dictionary{
     private final Set<String> set = new java.util.HashSet<>();
     private int maxLength;
     @Override
+    public void clear() {
+        set.clear();
+    }
+    @Override
     public int getMaxLength() {
         return maxLength;
     }
