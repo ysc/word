@@ -22,16 +22,25 @@ package org.apdplat.word.segmentation;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * 停用词判定
+ * 通过系统属性及配置文件指定停用词词典（stopwords.path）
+ * 指定方式一，编程指定（高优先级）：
+ *      System.setProperty("stopwords.path", "classpath:stopwords.txt");
+ * 指定方式二，Java虚拟机启动参数（中优先级）：
+ *      java -Dstopwords.path=classpath:stopwords.txt
+ * 指定方式三，配置文件指定（低优先级）：
+ *      在类路径下的word.conf中指定配置信息
+ *      stopwords.path=classpath:stopwords.txt
+ * 如未指定，则默认使用停用词词典文件（类路径下的stopwords.txt）
  * @author 杨尚川
  */
 public class StopWord {
@@ -49,38 +58,49 @@ public class StopWord {
             LOGGER.info(w);
         }
     }
+    /**
+     * 加载停用词典
+     */
     public static void loadStopWords(){
-        try {
-            long start = System.currentTimeMillis();
-            String stopwordsPath = System.getProperty("stopwords.path");
-            InputStream in = null;
-            if(stopwordsPath == null){
-                in = StopWord.class.getClassLoader().getResourceAsStream("stopwords.txt");
-                LOGGER.info("从类路径stopwords.txt加载停用词");
-            }else{
-                stopwordsPath = stopwordsPath.trim();
-                LOGGER.info("加载停用词："+stopwordsPath);
-                if(stopwordsPath.startsWith("classpath:")){
-                    in = StopWord.class.getClassLoader().getResourceAsStream(stopwordsPath.replace("classpath:", ""));
+        LOGGER.info("开始初始化停用词");
+        long start = System.currentTimeMillis();
+        String stopwordsPath = System.getProperty("stopwords.path");
+        if(stopwordsPath == null){
+            stopwordsPath = WordConfTools.get("stopwords.path", "classpath:stopwords.txt");
+        }
+        LOGGER.info("stopwords.path="+stopwordsPath);
+        loadStopWords(stopwordsPath.trim());
+        long cost = System.currentTimeMillis() - start;
+        LOGGER.info("完成初始化停用词，耗时"+cost+" 毫秒，停用词数目："+stopwords.size());
+    }
+    /**
+     * 加载停用词典
+     * @param stopwordsPath 逗号分隔开的多个停用词典文件
+     */
+    private static void loadStopWords(String stopwordsPath) {
+        String[] paths = stopwordsPath.split("[,，]");
+        for(String path : paths){
+            try{
+                InputStream in = null;
+                LOGGER.info("加载停用词典："+path);
+                if(path.startsWith("classpath:")){
+                    in = StopWord.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
                 }else{
-                    in = new FileInputStream(stopwordsPath);
-                }                    
-            }
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
-                String line;
-                while((line = reader.readLine()) != null){
-                    line = line.trim();
-                    if("".equals(line) || line.startsWith("#")){
-                        continue;
+                    in = new FileInputStream(path);
+                }            
+                try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
+                    String line;
+                    while((line = reader.readLine()) != null){
+                        line = line.trim();
+                        if("".equals(line) || line.startsWith("#")){
+                            continue;
+                        }
+                        stopwords.add(line);
                     }
-                    stopwords.add(line);
                 }
+            }catch(Exception e){
+                LOGGER.error("装载停用词典失败："+path, e);
             }
-            long cost = System.currentTimeMillis() - start;
-            LOGGER.info("完成初始化停用词，耗时"+cost+" 毫秒，停用词数目："+stopwords.size());
-        } catch (IOException ex) {
-            System.err.println("停用词装载失败:"+ex.getMessage());
-            throw new RuntimeException(ex);
         }
     }
 }
