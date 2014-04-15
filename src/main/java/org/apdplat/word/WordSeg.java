@@ -21,64 +21,35 @@
 package org.apdplat.word;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import org.apdplat.word.corpus.Bigram;
-import org.apdplat.word.corpus.Trigram;
 import org.apdplat.word.segmentation.Segmentation;
-import org.apdplat.word.segmentation.SegmentationAlgorithm;
-import org.apdplat.word.segmentation.SegmentationFactory;
+import org.apdplat.word.segmentation.StopWord;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.segmentation.WordSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 中文分词基础入口
+ * 中文分词基础入口（启用停用词过滤）
  * @author 杨尚川
  */
 public class WordSeg {
     private static final Logger LOGGER = LoggerFactory.getLogger(WordSeg.class);    
-    private static final Segmentation MM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
-    private static final Segmentation RMM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
-    private static final Segmentation MIM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MinimumMatching);
-    private static final Segmentation RMIM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMinimumMatching);
+    private static final Segmentation segmentation = new WordSegmentation();
     
-    /**
-     * 使用二元模型从4种切分结果中选择一种最好的
-     * 默认使用基于词典的逆向最大匹配算法，如果分值都一样的话
-     * 实验表明，对于汉语来说，逆向最大匹配算法比(正向)最大匹配算法更有效
-     * @param text
-     * @return 
-     */
     public static List<Word> seg(String text){
-        //逆向最大匹配为默认选择，如果分值都一样的话
-        List<Word> words = RMM.seg(text);
-        float score = bigram(words);
-        List<Word> result = words;
-        float max = score;
-        //正向最大匹配
-        words = MM.seg(text);
-        score = bigram(words);
-        //只有正向最大匹配的分值大于逆向最大匹配，才会被选择
-        if(score > max){
-            result = words;
-            max = score;
+        List<Word> words = segmentation.seg(text);
+        Iterator<Word> iter = words.iterator();
+        while(iter.hasNext()){
+            Word word = iter.next();
+            if(StopWord.is(word.getText())){
+                //去除停用词
+                LOGGER.debug("去除停用词："+word.getText());
+                iter.remove();
+            }
         }
-        //逆向最小匹配
-        words = RMIM.seg(text);
-        score = bigram(words);
-        if(score > max){
-            result = words;
-            max = score;
-        }
-        //正向最小匹配
-        words = MIM.seg(text);
-        score = bigram(words);
-        if(score > max){
-            result = words;
-            max = score;
-        }
-        LOGGER.debug("最大分值："+max+", 消歧结果："+result);
-        return result;
+        return words;
     }
     public static void main(String[] args){
         long start = System.currentTimeMillis();
@@ -125,47 +96,13 @@ public class WordSeg {
         sentences.add("张掖市明乐县");
         sentences.add("中华人民共和国万岁万岁万万岁");
         sentences.add("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
+        int i=1;
         for(String sentence : sentences){
-            LOGGER.info("切分句子: "+sentence);
-            List<Word> words = MM.seg(sentence);
-            LOGGER.info("正向最大匹配: "+words);
-            LOGGER.info("二元分值："+bigram(words));
-            LOGGER.info("三元分值："+trigram(words));
-            words = MIM.seg(sentence);
-            LOGGER.info("正向最小匹配: "+words);
-            LOGGER.info("二元分值："+bigram(words));
-            LOGGER.info("三元分值："+trigram(words));
-            words = RMM.seg(sentence);
-            LOGGER.info("逆向最大匹配: "+words);
-            LOGGER.info("二元分值："+bigram(words));
-            LOGGER.info("三元分值："+trigram(words));
-            
-            words = RMIM.seg(sentence);
-            LOGGER.info("逆向最小匹配: "+words);
-            LOGGER.info("二元分值："+bigram(words));
-            LOGGER.info("三元分值："+trigram(words));
+            List<Word> words = seg(sentence);
+            LOGGER.info((i++)+"、切分句子: "+sentence);
+            LOGGER.info("    切分结果："+words);
         }
         long cost = System.currentTimeMillis() - start;
-        LOGGER.info("cost: "+cost);
-    }
-    private static float bigram(List<Word> words){
-        if(words.size() > 1){
-            float score=0;
-            for(int i=0; i<words.size()-1; i++){
-                score += Bigram.getScore(words.get(i).getText(), words.get(i+1).getText());
-            }
-            return score;
-        }
-        return 0;
-    }
-    private static float trigram(List<Word> words){
-        if(words.size() > 2){
-            float score=0;
-            for(int i=0; i<words.size()-2; i++){
-                score += Trigram.getScore(words.get(i).getText(), words.get(i+1).getText(), words.get(i+2).getText());
-            }
-            return score;
-        }
-        return 0;
+        LOGGER.info("耗时: "+cost+" 毫秒");
     }
 }
