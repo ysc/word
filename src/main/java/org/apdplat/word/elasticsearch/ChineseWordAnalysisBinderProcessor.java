@@ -33,6 +33,6 @@ public class ChineseWordAnalysisBinderProcessor extends AnalysisModule.AnalysisB
     }
     @Override
     public void processTokenizers(TokenizersBindings tokenizersBindings) {
-        tokenizersBindings.processTokenizer("word_tokenizer", ChineseWordTokenizerFactory.class);
+        tokenizersBindings.processTokenizer("word", ChineseWordTokenizerFactory.class);
     }
 }

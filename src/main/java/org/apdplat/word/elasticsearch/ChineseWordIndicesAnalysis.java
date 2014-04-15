@@ -43,10 +43,10 @@ public class ChineseWordIndicesAnalysis extends AbstractComponent {
                 .put("word", new PreBuiltAnalyzerProviderFactory("word", AnalyzerScope.INDICES, new ChineseWordAnalyzer()));
         // 注册分词器
         indicesAnalysisService.tokenizerFactories()
-                .put("word_tokenizer", new PreBuiltTokenizerFactoryFactory(new TokenizerFactory() {
+                .put("word", new PreBuiltTokenizerFactoryFactory(new TokenizerFactory() {
             @Override
             public String name() {
-                return "word_tokenizer";
+                return "word";
             }
             @Override
             public Tokenizer create(Reader reader) {
