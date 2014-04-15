@@ -27,6 +27,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.WordSegmentation;
 import org.slf4j.Logger;
@@ -60,13 +61,15 @@ public class ChineseWordAnalyzer extends Analyzer {
         while(tokenStream.incrementToken()){
             CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
             OffsetAttribute offsetAttribute = tokenStream.getAttribute(OffsetAttribute.class);
-            LOGGER.info(charTermAttribute.toString()+" "+offsetAttribute.startOffset());
+            PositionIncrementAttribute positionIncrementAttribute = tokenStream.getAttribute(PositionIncrementAttribute.class);
+            LOGGER.info(charTermAttribute.toString()+" ("+offsetAttribute.startOffset()+" - "+offsetAttribute.endOffset()+") "+positionIncrementAttribute.getPositionIncrement());
         }
         tokenStream = analyzer.tokenStream("text", "word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
         while(tokenStream.incrementToken()){
             CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
             OffsetAttribute offsetAttribute = tokenStream.getAttribute(OffsetAttribute.class);
-            LOGGER.info(charTermAttribute.toString()+" "+offsetAttribute.startOffset());
+            PositionIncrementAttribute positionIncrementAttribute = tokenStream.getAttribute(PositionIncrementAttribute.class);
+            LOGGER.info(charTermAttribute.toString()+" ("+offsetAttribute.startOffset()+" - "+offsetAttribute.endOffset()+") "+positionIncrementAttribute.getPositionIncrement());
         }
     }
 }
