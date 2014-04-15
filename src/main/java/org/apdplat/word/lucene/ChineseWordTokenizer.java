@@ -29,8 +29,9 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apdplat.word.WordSeg;
+import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.segmentation.WordSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,12 +46,19 @@ public class ChineseWordTokenizer extends Tokenizer {
     private final OffsetAttribute offsetAttribute = addAttribute(OffsetAttribute.class);
     private final PositionIncrementAttribute positionIncrementAttribute = addAttribute(PositionIncrementAttribute.class);
     
+    private Segmentation segmentation = null;
     private BufferedReader reader = null;
     private final Queue<Word> words = new LinkedTransferQueue<>();
     private int startOffset=0;
         
     public ChineseWordTokenizer(Reader input) {
         super(input);
+        segmentation = new WordSegmentation();
+        reader = new BufferedReader(input);
+    }   
+    public ChineseWordTokenizer(Reader input, Segmentation segmentation) {
+        super(input);
+        this.segmentation = segmentation;
         reader = new BufferedReader(input);
     }
     
@@ -60,7 +68,7 @@ public class ChineseWordTokenizer extends Tokenizer {
         if(word == null){
             String line;
             while( (line = reader.readLine()) != null ){
-                words.addAll(WordSeg.seg(line));
+                words.addAll(segmentation.seg(line));
             }
             startOffset = 0;
             word = words.poll();
