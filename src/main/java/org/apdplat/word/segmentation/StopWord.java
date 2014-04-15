@@ -22,10 +22,18 @@ package org.apdplat.word.segmentation;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
 import java.util.Set;
+import org.apdplat.word.util.DictionaryWatcher;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +54,7 @@ import org.slf4j.LoggerFactory;
 public class StopWord {
     private static final Logger LOGGER = LoggerFactory.getLogger(StopWord.class);
     private static final Set<String> stopwords = new HashSet<>();
+    private static final DictionaryWatcher dictionaryWatcher = new DictionaryWatcher();
     static{
         loadStopWords();
     }
@@ -77,30 +86,74 @@ public class StopWord {
      * 加载停用词典
      * @param stopwordsPath 逗号分隔开的多个停用词典文件
      */
-    private static void loadStopWords(String stopwordsPath) {
-        String[] paths = stopwordsPath.split("[,，]");
-        for(String path : paths){
-            try{
-                InputStream in = null;
-                LOGGER.info("加载停用词典："+path);
-                if(path.startsWith("classpath:")){
-                    in = StopWord.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
-                }else{
-                    in = new FileInputStream(path);
-                }            
-                try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
-                    String line;
-                    while((line = reader.readLine()) != null){
-                        line = line.trim();
-                        if("".equals(line) || line.startsWith("#")){
-                            continue;
-                        }
-                        stopwords.add(line);
+    private static void loadStopWords(String dicPaths) {
+        String[] dics = dicPaths.split("[,，]");
+        for(String dic : dics){
+            dic = dic.trim();
+            Path path = Paths.get(dic.replace("classpath:", ""));
+            boolean exist = Files.exists(path);
+            boolean isDir = Files.isDirectory(path);
+            if(exist && isDir){
+                //处理目录
+                loadAndWatchDir(path);
+            }else{
+                //处理文件
+                load(dic);
+            }
+        }
+    }
+    private static void loadAndWatchDir(Path path) {
+        dictionaryWatcher.startWatch(path, new DictionaryWatcher.WatcherCallback(){
+
+            private long lastExecute = System.currentTimeMillis();
+            @Override
+            public void execute(String path) {
+                if(System.currentTimeMillis() - lastExecute > 1000){                  
+                    lastExecute = System.currentTimeMillis();
+                    synchronized(StopWord.class){
+                        LOGGER.info("清空停用词典数据");
+                        stopwords.clear();
+                        LOGGER.info("重新加载停用词典数据");
+                        loadStopWords();
                     }
                 }
-            }catch(Exception e){
-                LOGGER.error("装载停用词典失败："+path, e);
             }
+
+        });
+        try {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                        throws IOException {
+                    load(file.toAbsolutePath().toString());
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException ex) {
+            LOGGER.error("装载停用词典失败："+path, ex);
+        }
+    }
+    private static void load(String path) {
+        try{
+            InputStream in = null;
+            LOGGER.info("加载停用词典："+path);
+            if(path.startsWith("classpath:")){
+                in = StopWord.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
+            }else{
+                in = new FileInputStream(path);
+            }            
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
+                String line;
+                while((line = reader.readLine()) != null){
+                    line = line.trim();
+                    if("".equals(line) || line.startsWith("#")){
+                        continue;
+                    }
+                    stopwords.add(line);
+                }
+            }
+        }catch(Exception e){
+            LOGGER.error("装载停用词典失败："+path, e);
         }
     }
 }
