@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,21 @@ import org.slf4j.LoggerFactory;
 public class Trigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Trigram.class);
     private static final Map<String, Float> TRIGRAM = new HashMap<>();
+    /**
+     * 计算分词结果的三元模型分值
+     * @param words 分词结果
+     * @return 三元模型分值
+     */
+    public static float trigram(List<Word> words){
+        if(words.size() > 2){
+            float score=0;
+            for(int i=0; i<words.size()-2; i++){
+                score += Trigram.getScore(words.get(i).getText(), words.get(i+1).getText(), words.get(i+2).getText());
+            }
+            return score;
+        }
+        return 0;
+    }
     /**
      * 获取三个词前后紧挨着同时出现在语料库中的分值
      * @param first 第一个词
