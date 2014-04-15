@@ -71,7 +71,7 @@ public class ReverseMaximumMatching implements Segmentation{
                 len--;
                 start++;
             }
-            result.push(new Word(text.substring(start, start+len)));
+            result.push(new Word(text.substring(start, start+len).toLowerCase()));
             //每一次成功切词后都要重置截取长度
             len=DIC.getMaxLength();            
             if(len>start){

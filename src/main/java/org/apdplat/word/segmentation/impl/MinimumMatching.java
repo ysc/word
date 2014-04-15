@@ -62,7 +62,7 @@ public class MinimumMatching implements Segmentation{
                 //如果查不到，则长度加一后继续
                 len++;
             }
-            result.add(new Word(text.substring(start, start+len)));
+            result.add(new Word(text.substring(start, start+len).toLowerCase()));
             //从待分词文本中向后移动索引，滑过已经分词的文本
             start+=len;
             //每一次成功切词后都要重置截取长度
