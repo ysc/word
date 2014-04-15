@@ -27,14 +27,18 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 		
 	指定方式有三种：
 		指定方式一，编程指定（高优先级）：
-			System.setProperty("dic.path", "classpath:dic.txt，classpath:custom.dic.txt，d:/person.dic.txt，d:/custom_dic");
+			System.setProperty("dic.path", "classpath:dic.txt，d:/custom_dic");
 		指定方式二，Java虚拟机启动参数（中优先级）：
-			java -Ddic.path=classpath:dic.txt，classpath:custom.dic.txt，d:/person.dic.txt，d:/custom_dic
+			java -Ddic.path=classpath:dic.txt，d:/custom_dic
 		指定方式三，配置文件指定（低优先级）：
 			在类路径下的word.conf中指定配置信息
-			dic.path=classpath:dic.txt，classpath:custom.dic.txt，d:/person.dic.txt，d:/custom_dic
+			dic.path=classpath:dic.txt，d:/custom_dic
  	
 	如未指定，则默认使用类路径下的dic.txt词典文件
+	
+	4、停用词词库
+	使用方式和自定义用户词库类似，配置项为：
+	stopwords.path=classpath:stopwords.txt，d:/custom_stopwords_dic
 	
 	
 	
