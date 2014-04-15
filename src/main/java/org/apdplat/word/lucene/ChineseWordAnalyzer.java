@@ -27,6 +27,8 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apdplat.word.segmentation.Segmentation;
+import org.apdplat.word.segmentation.WordSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +38,19 @@ import org.slf4j.LoggerFactory;
  */
 public class ChineseWordAnalyzer extends Analyzer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChineseWordAnalyzer.class);
-
+    private Segmentation segmentation = null;
+    
+    public ChineseWordAnalyzer(){
+        segmentation = new WordSegmentation();
+    }
+    
+    public ChineseWordAnalyzer(Segmentation segmentation) {
+        this.segmentation = segmentation;
+    }
+    
     @Override
     protected TokenStreamComponents createComponents(String string, Reader reader) {
-        Tokenizer tokenizer = new ChineseWordTokenizer(reader);
+        Tokenizer tokenizer = new ChineseWordTokenizer(reader, segmentation);
         return new TokenStreamComponents(tokenizer);
     }
     
