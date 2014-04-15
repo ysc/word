@@ -90,7 +90,7 @@
         <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
         <sonar-maven3-plugin.version>3.5</sonar-maven3-plugin.version>
         
-        <junit.version>4.8.2</junit.version>
+        <junit.version>4.11</junit.version>
         <slf4j-api.version>1.6.4</slf4j-api.version>
         <logback-classic.version>0.9.28</logback-classic.version>
         <lucene.version>4.7.1</lucene.version>
