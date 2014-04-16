@@ -22,6 +22,7 @@ package org.apdplat.word.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,9 +47,26 @@ public class WordConfTools {
     static{
         LOGGER.info("开始加载配置文件");
         long start = System.currentTimeMillis();
-        try(BufferedReader reader = new BufferedReader(
-                new InputStreamReader(
-                        WordConfTools.class.getClassLoader().getResourceAsStream("word.conf"),"utf-8"))){
+        loadConf("word.conf");
+        loadConf("word.local.conf");
+        long cost = System.currentTimeMillis() - start;
+        LOGGER.info("配置文件加载完毕，耗时"+cost+" 毫秒，配置项数目："+conf.size());
+        LOGGER.info("配置信息：");
+        for(String key : conf.keySet()){
+            LOGGER.info(key+"="+conf.get(key));
+        }
+    }
+    /**
+     * 加载配置文件
+     * @param confFile 类路径下的配置文件 
+     */
+    private static void loadConf(String confFile) {
+        InputStream in = WordConfTools.class.getClassLoader().getResourceAsStream(confFile);
+        if(in == null){
+            LOGGER.info("不存在配置文件："+confFile);
+            return;
+        }
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"))){
             String line;
             while((line = reader.readLine()) != null){
                 line = line.trim();                
@@ -63,12 +81,6 @@ public class WordConfTools {
         } catch (IOException ex) {
             System.err.println("配置文件加载失败:"+ex.getMessage());
             throw new RuntimeException(ex);
-        }
-        long cost = System.currentTimeMillis() - start;
-        LOGGER.info("配置文件加载完毕，耗时"+cost+" 毫秒，配置项数目："+conf.size());
-        LOGGER.info("配置信息：");
-        for(String key : conf.keySet()){
-            LOGGER.info(key+"="+conf.get(key));
         }
     }
     public static void main(String[] args){
