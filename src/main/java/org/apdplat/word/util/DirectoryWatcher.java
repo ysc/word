@@ -166,10 +166,6 @@ public class DirectoryWatcher {
                         LOGGER.info("停止监控目录："+directories.get(key));
                         directories.remove(key);
                     }
-                    if (directories.isEmpty()) {
-                        LOGGER.error("退出监控");
-                        break;
-                    }
                 }
             }
         } catch (InterruptedException ex) {
