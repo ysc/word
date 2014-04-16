@@ -40,10 +40,16 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 	使用方式和自定义用户词库类似，配置项为：
 	stopwords.path=classpath:stopwords.txt，d:/custom_stopwords_dic
 		
-	5、自定义词库更改自动检测
-	可以自动检测自定义用户词库和自定义停用词词库的变化，如可以检测上述的
-	d:/custom_dic和d:/custom_stopwords_dic目录中的变化
-	注意：只能检测指定目录的变化
+	5、自动检测词库变化
+	可以自动检测自定义用户词库和自定义停用词词库的变化
+	包含类路径下的文件和文件夹、非类路径下的绝对路径和相对路径
+	如：
+	classpath:dic.txt,classpath:custom_dic,
+	d:/dic_more.txt,d:/DIC,D:/DIC2
+	
+	classpath:stopwords.txt，classpath:custom_stopwords_dic，
+	d:/stopwords_more.txt，d:/STOPWORDS，d:/STOPWORDS2
+	
 	
 	
 Lucene插件：
