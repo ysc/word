@@ -30,10 +30,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
 import java.util.Set;
-import org.apdplat.word.util.DictionaryWatcher;
+import org.apdplat.word.util.DirectoryWatcher;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +56,26 @@ import org.slf4j.LoggerFactory;
 public class StopWord {
     private static final Logger LOGGER = LoggerFactory.getLogger(StopWord.class);
     private static final Set<String> stopwords = new HashSet<>();
-    private static final DictionaryWatcher dictionaryWatcher = new DictionaryWatcher();
+    private static final DirectoryWatcher dictionaryDirectoryWatcher = new DirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
+
+                private long lastExecute = System.currentTimeMillis();
+                @Override
+                public void execute(WatchEvent.Kind<?> kind, String path) {
+                    if(System.currentTimeMillis() - lastExecute > 1000){
+                        lastExecute = System.currentTimeMillis();
+                        LOGGER.info("事件："+kind.name()+" ,路径："+path);
+                        synchronized(StopWord.class){
+                            LOGGER.info("清空停用词典数据");
+                            stopwords.clear();
+                            LOGGER.info("重新加载停用词典数据");
+                            loadStopWords();
+                        }
+                    }
+                }
+            
+            }, StandardWatchEventKinds.ENTRY_CREATE,
+                    StandardWatchEventKinds.ENTRY_MODIFY,
+                    StandardWatchEventKinds.ENTRY_DELETE);
     static{
         loadStopWords();
     }
@@ -103,23 +124,8 @@ public class StopWord {
         }
     }
     private static void loadAndWatchDir(Path path) {
-        dictionaryWatcher.startWatch(path, new DictionaryWatcher.WatcherCallback(){
-
-            private long lastExecute = System.currentTimeMillis();
-            @Override
-            public void execute(String path) {
-                if(System.currentTimeMillis() - lastExecute > 1000){                  
-                    lastExecute = System.currentTimeMillis();
-                    synchronized(StopWord.class){
-                        LOGGER.info("清空停用词典数据");
-                        stopwords.clear();
-                        LOGGER.info("重新加载停用词典数据");
-                        loadStopWords();
-                    }
-                }
-            }
-
-        });
+        //自动检测词库变化
+        dictionaryDirectoryWatcher.watchDirectoryTree(path);
         try {
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
                 @Override

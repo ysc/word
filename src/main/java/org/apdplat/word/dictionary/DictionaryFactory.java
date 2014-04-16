@@ -32,11 +32,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Map;
 import java.util.TreeMap;
 import org.apdplat.word.dictionary.impl.TrieV4;
-import org.apdplat.word.util.DictionaryWatcher;
+import org.apdplat.word.util.DirectoryWatcher;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +66,27 @@ public final class DictionaryFactory {
     }
     private static final class DictionaryHolder{
         private static final Dictionary DIC = constructDictionary();
-        private static final DictionaryWatcher dictionaryWatcher = new DictionaryWatcher();
+        private static final DirectoryWatcher dictionaryDirectoryWatcher = new DirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
+
+                private long lastExecute = System.currentTimeMillis();
+                @Override
+                public void execute(WatchEvent.Kind<?> kind, String path) {
+                    if(System.currentTimeMillis() - lastExecute > 1000){
+                        lastExecute = System.currentTimeMillis();
+                        LOGGER.info("事件："+kind.name()+" ,路径："+path);
+                        synchronized(DictionaryHolder.class){
+                            LOGGER.info("清空词典数据");
+                            DIC.clear();
+                            LOGGER.info("重新加载词典数据");
+                            initDic();
+                        }
+                    }
+                }
+            
+            }, StandardWatchEventKinds.ENTRY_CREATE,
+                    StandardWatchEventKinds.ENTRY_MODIFY,
+                    StandardWatchEventKinds.ENTRY_DELETE);
+        
         static{
             initDic();
         }
@@ -123,23 +145,8 @@ public final class DictionaryFactory {
             showStatistics(map);
         }
         private static void loadAndWatchDir(Path path, final Map<Integer, Integer> map) throws IOException {
-            dictionaryWatcher.startWatch(path, new DictionaryWatcher.WatcherCallback(){
-
-                private long lastExecute = System.currentTimeMillis();
-                @Override
-                public void execute(String path) {
-                    if(System.currentTimeMillis() - lastExecute > 1000){                  
-                        lastExecute = System.currentTimeMillis();
-                        synchronized(DictionaryHolder.class){
-                            LOGGER.info("清空词典数据");
-                            DIC.clear();
-                            LOGGER.info("重新加载词典数据");
-                            initDic();
-                        }
-                    }
-                }
-            
-            });
+            //自动检测词库变化
+            dictionaryDirectoryWatcher.watchDirectoryTree(path);
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
