@@ -21,10 +21,12 @@
 package org.apdplat.word.segmentation;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +35,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import org.apdplat.word.util.DirectoryWatcher;
@@ -56,6 +59,7 @@ import org.slf4j.LoggerFactory;
 public class StopWord {
     private static final Logger LOGGER = LoggerFactory.getLogger(StopWord.class);
     private static final Set<String> stopwords = new HashSet<>();
+    private static final Set<String> fileWatchers = new HashSet<>();
     private static final DirectoryWatcher dictionaryDirectoryWatcher = new DirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
 
                 private long lastExecute = System.currentTimeMillis();
@@ -110,17 +114,58 @@ public class StopWord {
     private static void loadStopWords(String dicPaths) {
         String[] dics = dicPaths.split("[,，]");
         for(String dic : dics){
-            dic = dic.trim();
-            Path path = Paths.get(dic.replace("classpath:", ""));
-            boolean exist = Files.exists(path);
-            boolean isDir = Files.isDirectory(path);
-            if(exist && isDir){
+            try{
+                dic = dic.trim();
+                if(dic.startsWith("classpath:")){
+                    //处理类路径资源
+                    loadClasspathDic(dic.replace("classpath:", ""));
+                }else{
+                    //处理非类路径资源
+                    loadNoneClasspathDic(dic);
+                }
+            }catch(Exception e){
+                LOGGER.error("装载停用词典失败："+dic, e);
+            }
+        }
+    }
+    private static void loadClasspathDic(String dic) throws IOException{
+        Enumeration<URL> ps = Thread.currentThread().getContextClassLoader().getResources(dic);
+        while(ps.hasMoreElements()) {
+            URL url=ps.nextElement();
+            if(url.getFile().contains(".jar!")){
+                //加载jar资源
+                load("classpath:"+dic);
+                continue;
+            }
+            File file=new File(url.getFile());
+            boolean dir = file.isDirectory();
+            if(dir){
                 //处理目录
-                loadAndWatchDir(path);
+                loadAndWatchDir(file.toPath());
             }else{
                 //处理文件
-                load(dic);
-            }
+                load(file.getAbsolutePath());
+                //监控文件
+                watchFile(file);
+            }            
+        }
+    }
+    private static void loadNoneClasspathDic(String dic) throws IOException {
+        Path path = Paths.get(dic);
+        boolean exist = Files.exists(path);
+        if(!exist){
+            LOGGER.error("词典不存在："+dic);
+            return;
+        }
+        boolean isDir = Files.isDirectory(path);
+        if(isDir){
+            //处理目录
+            loadAndWatchDir(path);
+        }else{
+            //处理文件
+            load(dic);
+            //监控文件
+            watchFile(path.toFile());
         }
     }
     private static void loadAndWatchDir(Path path) {
@@ -161,5 +206,36 @@ public class StopWord {
         }catch(Exception e){
             LOGGER.error("装载停用词典失败："+path, e);
         }
+    }
+    private static void watchFile(final File file) {
+        LOGGER.info("监控文件："+file.toString());
+        if(fileWatchers.contains(file.toString())){
+            //之前已经注册过监控服务，此次忽略
+            return;
+        }
+        fileWatchers.add(file.toString());
+        DirectoryWatcher dictionaryFileWatcher = new DirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
+
+            private long lastExecute = System.currentTimeMillis();
+            @Override
+            public void execute(WatchEvent.Kind<?> kind, String path) {
+                if(System.currentTimeMillis() - lastExecute > 1000){
+                    lastExecute = System.currentTimeMillis();
+                    if(!path.equals(file.toString())){
+                        return;
+                    }
+                    LOGGER.info("事件："+kind.name()+" ,路径："+path);
+                    synchronized(StopWord.class){
+                        LOGGER.info("清空停用词典数据");
+                        stopwords.clear();
+                        LOGGER.info("重新加载停用词典数据");
+                        loadStopWords();
+                    }
+                }
+            }
+
+        }, StandardWatchEventKinds.ENTRY_MODIFY,
+                    StandardWatchEventKinds.ENTRY_DELETE);
+        dictionaryFileWatcher.watchDirectory(file.getParent());
     }
 }
