@@ -21,12 +21,14 @@
 package org.apdplat.word.dictionary;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +37,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import org.apdplat.word.dictionary.impl.TrieV4;
 import org.apdplat.word.util.DirectoryWatcher;
@@ -66,6 +71,7 @@ public final class DictionaryFactory {
     }
     private static final class DictionaryHolder{
         private static final Dictionary DIC = constructDictionary();
+        private static final Set<String> fileWatchers = new HashSet<>();
         private static final DirectoryWatcher dictionaryDirectoryWatcher = new DirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
 
                 private long lastExecute = System.currentTimeMillis();
@@ -128,21 +134,58 @@ public final class DictionaryFactory {
             for(String dic : dics){
                 try{
                     dic = dic.trim();
-                    Path path = Paths.get(dic.replace("classpath:", ""));
-                    boolean exist = Files.exists(path);
-                    boolean isDir = Files.isDirectory(path);
-                    if(exist && isDir){
-                        //处理目录
-                        loadAndWatchDir(path, map);
+                    if(dic.startsWith("classpath:")){
+                        //处理类路径资源
+                        loadClasspathDic(dic.replace("classpath:", ""), map);
                     }else{
-                        //处理文件
-                        load(dic, map);
+                        //处理非类路径资源
+                        loadNoneClasspathDic(dic, map);
                     }
                 }catch(Exception e){
                     LOGGER.error("装载词典失败："+dic, e);
                 }
             }
             showStatistics(map);
+        }
+        private static void loadClasspathDic(String dic, final Map<Integer, Integer> map) throws IOException{
+            Enumeration<URL> ps = Thread.currentThread().getContextClassLoader().getResources(dic);
+            while(ps.hasMoreElements()) {
+                URL url=ps.nextElement();
+                if(url.getFile().contains(".jar!")){
+                    //加载jar资源
+                    load("classpath:"+dic, map);
+                    continue;
+                }
+                File file=new File(url.getFile());
+                boolean dir = file.isDirectory();
+                if(dir){
+                    //处理目录
+                    loadAndWatchDir(file.toPath(), map);
+                }else{
+                    //处理文件
+                    load(file.getAbsolutePath(), map);
+                    //监控文件
+                    watchFile(file);
+                }            
+            }
+        }
+        private static void loadNoneClasspathDic(String dic, final Map<Integer, Integer> map) throws IOException {
+            Path path = Paths.get(dic);
+            boolean exist = Files.exists(path);
+            if(!exist){
+                LOGGER.error("词典不存在："+dic);
+                return;
+            }
+            boolean isDir = Files.isDirectory(path);
+            if(isDir){
+                //处理目录
+                loadAndWatchDir(path, map);
+            }else{
+                //处理文件
+                load(dic, map);
+                //监控文件
+                watchFile(path.toFile());
+            }
         }
         private static void loadAndWatchDir(Path path, final Map<Integer, Integer> map) throws IOException {
             //自动检测词库变化
@@ -203,6 +246,38 @@ public final class DictionaryFactory {
                 }
             }
             LOGGER.info("词典平均词长："+(float)totalLength/wordCount);
+        }
+
+        private static void watchFile(final File file) {
+            LOGGER.info("监控文件："+file.toString());
+            if(fileWatchers.contains(file.toString())){
+                //之前已经注册过监控服务，此次忽略
+                return;
+            }
+            fileWatchers.add(file.toString());
+            DirectoryWatcher dictionaryFileWatcher = new DirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
+
+                private long lastExecute = System.currentTimeMillis();
+                @Override
+                public void execute(WatchEvent.Kind<?> kind, String path) {
+                    if(System.currentTimeMillis() - lastExecute > 1000){
+                        lastExecute = System.currentTimeMillis();
+                        if(!path.equals(file.toString())){
+                            return;
+                        }
+                        LOGGER.info("事件："+kind.name()+" ,路径："+path);
+                        synchronized(DictionaryHolder.class){
+                            LOGGER.info("清空词典数据");
+                            DIC.clear();
+                            LOGGER.info("重新加载词典数据");
+                            initDic();
+                        }
+                    }
+                }
+            
+            }, StandardWatchEventKinds.ENTRY_MODIFY,
+                    StandardWatchEventKinds.ENTRY_DELETE);
+            dictionaryFileWatcher.watchDirectory(file.getParent());
         }
     }
 }
