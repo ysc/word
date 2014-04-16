@@ -18,9 +18,15 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 	String output = "d:/word.txt";
 	SegFile.segFile(input, output);
 	
+	3、自定义配置文件
+	默认配置文件为类路径下的word.conf，打包在word-x.x.jar中
+	自定义配置文件为类路径下的word.local.conf，需要用户自己提供
+	如果自定义配置和默认配置相同，自定义配置会覆盖默认配置
+	配置文件编码为UTF-8
+		
 	3、自定义用户词库
 	自定义用户词库为一个或多个文件夹或文件，可以使用绝对路径或相对路径
-	用户词库由多个词典文件组成
+	用户词库由多个词典文件组成，文件编码为UTF-8
 	词典文件的格式为文本文件，一行代表一个词
 	可以通过系统属性或配置文件的方式来指定路径，多个路径之间用逗号分隔开
 	类路径下的词典文件，需要在相对路径前加入前缀classpath:
