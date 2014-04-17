@@ -51,20 +51,25 @@ public class ExtractText {
 
     public static void main(String[] args){
         String output = "target/word.txt";
+        String separator = " ";
         if(args.length == 1){
             output = args[0];
         }
-        extractFromCorpus(output);
+        if(args.length == 2){
+            output = args[0];
+            separator = args[1];
+        }
+        extractFromCorpus(output, separator);
     }
     /**
      * 从语料库中抽取内容
      */
-    private static void extractFromCorpus(String output){
+    private static void extractFromCorpus(String output, String separator){
         String zipFile = "src/main/resources/corpus/corpora.zip";        
         LOGGER.info("开始从语料库中抽取文本");
         long start = System.currentTimeMillis();        
         try{
-            analyzeCorpus(zipFile, output);
+            analyzeCorpus(zipFile, output, separator);
         } catch (IOException ex) {
             LOGGER.info("抽取失败："+ex.getMessage());
         }
@@ -77,7 +82,7 @@ public class ExtractText {
      * @param zipFile 压缩的语料库
      * @throws IOException 
      */
-    private static void analyzeCorpus(String zipFile, String output) throws IOException{
+    private static void analyzeCorpus(String zipFile, String output, final String separator) throws IOException{
         try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipFile), ExtractText.class.getClassLoader());
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"));) {
             for(Path path : fs.getRootDirectories()){                
@@ -90,7 +95,7 @@ public class ExtractText {
                         // 拷贝到本地文件系统
                         Path temp = Paths.get("target/corpus-"+System.currentTimeMillis()+".txt");
                         Files.copy(file, temp, StandardCopyOption.REPLACE_EXISTING);
-                        extractText(temp, writer);
+                        extractText(temp, writer, separator);
                         return FileVisitResult.CONTINUE;
                     }
                     
@@ -103,7 +108,7 @@ public class ExtractText {
      * @param file 语料库
      * @param writer 输出文件
      */
-    private static void extractText(Path file, BufferedWriter writer){
+    private static void extractText(Path file, BufferedWriter writer, String separator){
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file.toFile()),"utf-8"));){
             String line;
             while( (line = reader.readLine()) != null ){
@@ -125,7 +130,7 @@ public class ExtractText {
                         }
                         //去掉[和]
                         String item = attr[0].replace("[", "").replace("]", "");
-                        writer.write(item+" ");
+                        writer.write(item+separator);
                         //词数目
                         WORD_COUNT.incrementAndGet();
                         //字符数目
