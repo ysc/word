@@ -46,7 +46,7 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 		指定方式二，Java虚拟机启动参数（中优先级）：
 			java -Ddic.path=classpath:dic.txt，d:/custom_dic
 		指定方式三，配置文件指定（低优先级）：
-			在类路径下的word.conf中指定配置信息
+			使用类路径下的文件word.local.conf来指定配置信息
 			dic.path=classpath:dic.txt，d:/custom_dic
  	
 	如未指定，则默认使用类路径下的dic.txt词典文件
