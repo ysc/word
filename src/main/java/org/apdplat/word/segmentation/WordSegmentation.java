@@ -21,6 +21,7 @@
 package org.apdplat.word.segmentation;
 
 import java.util.List;
+import java.util.Map;
 import org.apdplat.word.corpus.Bigram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,34 +43,42 @@ public class WordSegmentation implements Segmentation{
     @Override
     public List<Word> seg(String text){
         //逆向最大匹配为默认选择，如果分值都一样的话
-        List<Word> words = RMM.seg(text);
-        float score = Bigram.bigram(words);
-        LOGGER.debug("逆向最大匹配："+words.toString()+" : 二元模型分值="+score);
-        List<Word> result = words;
-        float max = score;
+        List<Word> wordsRMM = RMM.seg(text);
         //正向最大匹配
-        words = MM.seg(text);
-        score = Bigram.bigram(words);
-        LOGGER.debug("正向最大匹配："+words.toString()+" : 二元模型分值="+score);
+        List<Word> wordsMM = MM.seg(text);
+         //逆向最小匹配
+        List<Word> wordsRMIM = RMIM.seg(text);
+        //正向最小匹配
+        List<Word> wordsMIM = MIM.seg(text);
+        
+        Map<List<Word>, Float> words = Bigram.bigram(wordsRMM, wordsMM, wordsRMIM, wordsMIM);
+      
+        float score = words.get(wordsRMM);
+        LOGGER.debug("逆向最大匹配："+wordsRMM.toString()+" : 二元模型分值="+score);
+        //最终结果
+        List<Word> result = wordsRMM;
+        //最大分值
+        float max = score;
+        
+        score = words.get(wordsMM);
+        LOGGER.debug("正向最大匹配："+wordsMM.toString()+" : 二元模型分值="+score);
         //只有正向最大匹配的分值大于逆向最大匹配，才会被选择
         if(score > max){
-            result = words;
+            result = wordsMM;
             max = score;
         }
-        //逆向最小匹配
-        words = RMIM.seg(text);
-        score = Bigram.bigram(words);
-        LOGGER.debug("逆向最小匹配："+words.toString()+" : 二元模型分值="+score);
+       
+        score = words.get(wordsRMIM);
+        LOGGER.debug("逆向最小匹配："+wordsRMIM.toString()+" : 二元模型分值="+score);
         if(score > max){
-            result = words;
+            result = wordsRMIM;
             max = score;
         }
-        //正向最小匹配
-        words = MIM.seg(text);
-        score = Bigram.bigram(words);
-        LOGGER.debug("正向最小匹配："+words.toString()+" : 二元模型分值="+score);
+        
+        score = words.get(wordsMIM);
+        LOGGER.debug("正向最小匹配："+wordsMIM.toString()+" : 二元模型分值="+score);
         if(score > max){
-            result = words;
+            result = wordsMIM;
             max = score;
         }
         LOGGER.debug("最大分值："+max+", 消歧结果："+result);
