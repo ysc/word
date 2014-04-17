@@ -16,7 +16,7 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 	2、对文件进行分词
 	String input = "d:/text.txt";
 	String output = "d:/word.txt";
-	SegFile.segFile(input, output);
+	WordSeg.seg(new File(input), new File(output));
 	
 	3、自定义配置文件
 	默认配置文件为类路径下的word.conf，打包在word-x.x.jar中
@@ -24,7 +24,7 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 	如果自定义配置和默认配置相同，自定义配置会覆盖默认配置
 	配置文件编码为UTF-8
 		
-	3、自定义用户词库
+	4、自定义用户词库
 	自定义用户词库为一个或多个文件夹或文件，可以使用绝对路径或相对路径
 	用户词库由多个词典文件组成，文件编码为UTF-8
 	词典文件的格式为文本文件，一行代表一个词
@@ -42,19 +42,19 @@ Chinese Word Segmentation Component （中文分词组件 - word）
  	
 	如未指定，则默认使用类路径下的dic.txt词典文件
 	
-	4、自定义停用词词库
+	5、自定义停用词词库
 	使用方式和自定义用户词库类似，配置项为：
 	stopwords.path=classpath:stopwords.txt，d:/custom_stopwords_dic
 		
-	5、自动检测词库变化
+	6、自动检测词库变化
 	可以自动检测自定义用户词库和自定义停用词词库的变化
 	包含类路径下的文件和文件夹、非类路径下的绝对路径和相对路径
 	如：
-	classpath:dic.txt,classpath:custom_dic,
-	d:/dic_more.txt,d:/DIC,D:/DIC2
+	classpath:dic.txt，classpath:custom_dic_dir,
+	d:/dic_more.txt，d:/DIC_DIR，D:/DIC2_DIR，my_dic_dir，my_dic_file.txt
 	
-	classpath:stopwords.txt，classpath:custom_stopwords_dic，
-	d:/stopwords_more.txt，d:/STOPWORDS，d:/STOPWORDS2
+	classpath:stopwords.txt，classpath:custom_stopwords_dic_dir，
+	d:/stopwords_more.txt，d:/STOPWORDS_DIR，d:/STOPWORDS2_DIR，stopwords_dir，remove.txt
 	
 	
 	
