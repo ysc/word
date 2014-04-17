@@ -117,7 +117,7 @@ public class ExtractText {
                 //忽略空行
                 if(!"".equals(line)){
                     //词和词之间以空格隔开
-                    String[] words = line.split("  ");
+                    String[] words = line.split("\\s+");
                     if(words == null){
                         //忽略不符合规范的行
                         continue;
