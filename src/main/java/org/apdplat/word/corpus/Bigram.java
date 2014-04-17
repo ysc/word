@@ -65,6 +65,9 @@ public class Bigram {
         if(value == null){
             value = 0f;
         }
+        if(value > 0){
+            LOGGER.debug("二元模型 "+first+":"+second+" 获得分值："+value);
+        }
         return value;
     }
     static{

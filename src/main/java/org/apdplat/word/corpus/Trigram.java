@@ -66,6 +66,9 @@ public class Trigram {
         if(value == null){
             value = 0f;
         }
+        if(value > 0){
+            LOGGER.debug("三元模型 "+first+":"+second+" 获得分值："+value);
+        }
         return value;
     }
     static{
