@@ -40,6 +40,52 @@ public class Bigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bigram.class);
     private static final Map<String, Float> BIGRAM = new HashMap<>();    
     /**
+     * 含有语境的二元模型分值算法
+     * 计算多种分词结果的分值
+     * 利用获得的二元模型分值重新计算分词结果的分值
+     * 补偿细粒度切分获得分值而粗粒度切分未获得分值的情况
+     * @param sentences 多种分词结果
+     * @return 分词结果及其对应的分值
+     */
+    public static Map<List<Word>, Float> bigram(List<Word>... sentences){
+        Map<List<Word>, Float> map = new HashMap<>();
+        Map<String, Float> bigramScores = new HashMap<>();
+        //1、计算多种分词结果的分值
+        for(List<Word> sentence : sentences){
+            float score=0;
+            //计算其中一种分词结果的分值
+            if(sentence.size() > 1){
+                for(int i=0; i<sentence.size()-1; i++){
+                    String first = sentence.get(i).getText();
+                    String second = sentence.get(i+1).getText();
+                    float bigramScore = getScore(first, second);
+                    if(bigramScore > 0){
+                        bigramScores.put(first+second, bigramScore);
+                        score += bigramScore;
+                    }
+                }
+            }
+            map.put(sentence, score);
+        }
+        //2、利用获得的二元模型分值重新计算分词结果的分值
+        //补偿细粒度切分获得分值而粗粒度切分未获得分值的情况
+        //计算多种分词结果的分值
+        for(List<Word> sentence : map.keySet()){
+            //计算其中一种分词结果的分值
+            for(Word word : sentence){
+                Float bigramScore = bigramScores.get(word.getText());
+                if(bigramScore !=null && bigramScore > 0){
+                    LOGGER.debug(word.getText()+" 获得分值："+bigramScore);
+                    float score = map.get(sentence);
+                    score += bigramScore;
+                    map.put(sentence, score);
+                }
+            }
+        }
+        
+        return map;
+    }
+    /**
      * 计算分词结果的二元模型分值
      * @param words 分词结果
      * @return 二元模型分值
