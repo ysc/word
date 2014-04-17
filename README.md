@@ -6,25 +6,34 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 
 
 
-	1、对文本进行分词
+	1、快速体验
+	运行项目根目录下的脚本demo-word.bat可以快速体验分词效果
+	用法: command [text] [input] [output]
+	命令command的可选值为：demo、text、file
+	demo
+	text 杨尚川是APDPlat应用级产品开发平台的作者
+	file d:/text.txt d:/word.txt
+	exit
+	
+	2、对文本进行分词
     List<Word> words = WordSeg.seg("杨尚川是APDPlat应用级产品开发平台的作者");
     System.out.println(words);
     
     输出：
     [杨尚川, 是, APDPlat, 应用, 级, 产品, 开发, 平台, 的, 作者]
 
-	2、对文件进行分词
+	3、对文件进行分词
 	String input = "d:/text.txt";
 	String output = "d:/word.txt";
 	WordSeg.seg(new File(input), new File(output));
 	
-	3、自定义配置文件
+	4、自定义配置文件
 	默认配置文件为类路径下的word.conf，打包在word-x.x.jar中
 	自定义配置文件为类路径下的word.local.conf，需要用户自己提供
 	如果自定义配置和默认配置相同，自定义配置会覆盖默认配置
 	配置文件编码为UTF-8
 		
-	4、自定义用户词库
+	5、自定义用户词库
 	自定义用户词库为一个或多个文件夹或文件，可以使用绝对路径或相对路径
 	用户词库由多个词典文件组成，文件编码为UTF-8
 	词典文件的格式为文本文件，一行代表一个词
@@ -42,11 +51,11 @@ Chinese Word Segmentation Component （中文分词组件 - word）
  	
 	如未指定，则默认使用类路径下的dic.txt词典文件
 	
-	5、自定义停用词词库
+	6、自定义停用词词库
 	使用方式和自定义用户词库类似，配置项为：
 	stopwords.path=classpath:stopwords.txt，d:/custom_stopwords_dic
 		
-	6、自动检测词库变化
+	7、自动检测词库变化
 	可以自动检测自定义用户词库和自定义停用词词库的变化
 	包含类路径下的文件和文件夹、非类路径下的绝对路径和相对路径
 	如：
