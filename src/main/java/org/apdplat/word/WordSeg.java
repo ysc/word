@@ -20,6 +20,13 @@
 
 package org.apdplat.word;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +57,43 @@ public class WordSeg {
             }
         }
         return words;
+    }
+    /**
+     * 对文件进行分词
+     * @param input 输入文件
+     * @param output 输出文件
+     * @throws Exception 
+     */
+    public static void seg(File input, File output) throws Exception{
+        float max=(float)Runtime.getRuntime().maxMemory()/1000000;
+        float total=(float)Runtime.getRuntime().totalMemory()/1000000;
+        float free=(float)Runtime.getRuntime().freeMemory()/1000000;
+        String pre="执行之前剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input),"utf-8"));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"))){
+            int textLength=0;
+            long start = System.currentTimeMillis();
+            String line = null;
+            while((line = reader.readLine()) != null){
+                textLength += line.length();
+                List<Word> words = seg(line);
+                for(Word word : words){
+                    writer.write(word.getText()+" ");
+                }
+                writer.write("\n");
+            }
+            long cost = System.currentTimeMillis() - start;
+            float rate = textLength/cost;
+            LOGGER.info("字符数目："+textLength);
+            LOGGER.info("分词耗时："+cost+" 毫秒");
+            LOGGER.info("分词速度："+rate+" 字符/毫秒");
+        }
+        max=(float)Runtime.getRuntime().maxMemory()/1000000;
+        total=(float)Runtime.getRuntime().totalMemory()/1000000;
+        free=(float)Runtime.getRuntime().freeMemory()/1000000;
+        String post="执行之后剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
+        LOGGER.info(pre);
+        LOGGER.info(post);
     }
     public static void main(String[] args){
         long start = System.currentTimeMillis();
