@@ -122,15 +122,36 @@ public class ExtractText {
                         //忽略不符合规范的行
                         continue;
                     }
+                    StringBuilder phrase = new StringBuilder();
+                    int phraseCount=0;
+                    boolean find=false;
                     for(String word : words){
                         String[] attr = word.split("/");
                         if(attr == null || attr.length < 1){
                             //忽略不符合规范的词
                             continue;
                         }
+                        if(attr[0].trim().startsWith("[")){
+                            find = true;
+                        }                        
                         //去掉[和]
-                        String item = attr[0].replace("[", "").replace("]", "");
+                        String item = attr[0].replace("[", "").replace("]", "").trim();
                         writer.write(item+separator);
+                        if(find){
+                            phrase.append(item);
+                            phraseCount++;
+                        }
+                        //短语标注错误
+                        if(phraseCount > 10){
+                            find = false;
+                            phraseCount = 0;
+                            phrase.setLength(0);
+                        }
+                        if(find && attr.length > 1 && attr[1].trim().endsWith("]")){
+                            find = false;
+                            writer.write(phrase.toString()+separator);
+                            phrase.setLength(0);
+                        }
                         //词数目
                         WORD_COUNT.incrementAndGet();
                         //字符数目
@@ -141,7 +162,7 @@ public class ExtractText {
                 }
             }
         }catch(Exception e){
-            LOGGER.info("从语料库 "+file+" 中抽取文本失败："+e.getMessage());
+            LOGGER.info("从语料库 "+file+" 中抽取文本失败：", e);
         }        
     }
 }
