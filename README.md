@@ -20,7 +20,7 @@ Chinese Word Segmentation Component （中文分词组件 - word）
     System.out.println(words);
     
     输出：
-    [杨尚川, 是, APDPlat, 应用, 级, 产品, 开发, 平台, 的, 作者]
+    [杨尚川, apdplat, 应用, 级, 产品开发, 平台, 作者]
 
 	3、对文件进行分词
 	String input = "d:/text.txt";
