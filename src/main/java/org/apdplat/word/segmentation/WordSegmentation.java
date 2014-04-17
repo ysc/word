@@ -44,11 +44,13 @@ public class WordSegmentation implements Segmentation{
         //逆向最大匹配为默认选择，如果分值都一样的话
         List<Word> words = RMM.seg(text);
         float score = Bigram.bigram(words);
+        LOGGER.debug("逆向最大匹配："+words.toString()+" : 二元模型分值="+score);
         List<Word> result = words;
         float max = score;
         //正向最大匹配
         words = MM.seg(text);
         score = Bigram.bigram(words);
+        LOGGER.debug("正向最大匹配："+words.toString()+" : 二元模型分值="+score);
         //只有正向最大匹配的分值大于逆向最大匹配，才会被选择
         if(score > max){
             result = words;
@@ -57,6 +59,7 @@ public class WordSegmentation implements Segmentation{
         //逆向最小匹配
         words = RMIM.seg(text);
         score = Bigram.bigram(words);
+        LOGGER.debug("逆向最小匹配："+words.toString()+" : 二元模型分值="+score);
         if(score > max){
             result = words;
             max = score;
@@ -64,6 +67,7 @@ public class WordSegmentation implements Segmentation{
         //正向最小匹配
         words = MIM.seg(text);
         score = Bigram.bigram(words);
+        LOGGER.debug("正向最小匹配："+words.toString()+" : 二元模型分值="+score);
         if(score > max){
             result = words;
             max = score;
