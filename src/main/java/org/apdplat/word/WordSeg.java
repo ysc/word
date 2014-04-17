@@ -25,8 +25,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +47,11 @@ import org.slf4j.LoggerFactory;
 public class WordSeg {
     private static final Logger LOGGER = LoggerFactory.getLogger(WordSeg.class);    
     private static final Segmentation segmentation = new WordSegmentation();
-    
+    /**
+     * 对文本进行分词并移除停用词
+     * @param text 文本
+     * @return 分词结果
+     */
     public static List<Word> seg(String text){
         List<Word> words = segmentation.seg(text);
         Iterator<Word> iter = words.iterator();
@@ -65,13 +72,18 @@ public class WordSeg {
      * @throws Exception 
      */
     public static void seg(File input, File output) throws Exception{
+        LOGGER.info("开始对文件进行分词："+input.toString());
         float max=(float)Runtime.getRuntime().maxMemory()/1000000;
         float total=(float)Runtime.getRuntime().totalMemory()/1000000;
         float free=(float)Runtime.getRuntime().freeMemory()/1000000;
         String pre="执行之前剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input),"utf-8"));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"))){
+            long size = Files.size(input.toPath());
+            LOGGER.info("size:"+size);
+            LOGGER.info("文件大小："+(float)size/1024/1024+" MB");
             int textLength=0;
+            int progress=0;
             long start = System.currentTimeMillis();
             String line = null;
             while((line = reader.readLine()) != null){
@@ -81,6 +93,11 @@ public class WordSeg {
                     writer.write(word.getText()+" ");
                 }
                 writer.write("\n");
+                progress += line.length();
+                if( progress > 500000){
+                    progress = 0;
+                    LOGGER.info("分词进度："+(int)((float)textLength*2/size*100)+"%");
+                }
             }
             long cost = System.currentTimeMillis() - start;
             float rate = textLength/cost;
@@ -94,8 +111,9 @@ public class WordSeg {
         String post="执行之后剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
         LOGGER.info(pre);
         LOGGER.info(post);
+        LOGGER.info("将文件 "+input.toString()+" 的分词结果保存到文件 "+output);
     }
-    public static void main(String[] args){
+    private static void demo(){
         long start = System.currentTimeMillis();
         List<String> sentences = new ArrayList<>();
         sentences.add("杨尚川是APDPlat应用级产品开发平台的作者");
@@ -148,5 +166,71 @@ public class WordSeg {
         }
         long cost = System.currentTimeMillis() - start;
         LOGGER.info("耗时: "+cost+" 毫秒");
+    }
+    public static void processCommand(String... args) throws Exception{
+        if(args == null || args.length < 1){
+            LOGGER.info("命令不正确");
+            return;
+        }
+        switch(args[0]){
+            case "demo":
+                demo();
+                break;
+            case "text":
+                if(args.length != 2){
+                    showUsage();
+                }else{
+                    List<Word> words = seg(args[1]);
+                    LOGGER.info("切分句子："+args[1]);
+                    LOGGER.info("切分结果："+words.toString());
+                }
+                break;
+            case "file":
+                if(args.length != 3){
+                    showUsage();
+                }else{
+                    seg(new File(args[1]), new File(args[2]));
+                }
+                break;
+            default:
+                LOGGER.info("不支持的命令："+args[0]);
+        }
+    }
+    private static void run(String encoding) throws UnsupportedEncodingException, IOException, Exception {
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, encoding))){
+            String line = null;
+            while((line = reader.readLine()) != null){
+                if("exit".equals(line)){
+                    System.exit(0);
+                    LOGGER.info("退出");
+                    return;
+                }
+                if(line.trim().equals("")){
+                    continue;
+                }
+                processCommand(line.split(" "));
+                showUsage();
+            }
+        }
+    }
+    private static void showUsage(){
+        LOGGER.info("");
+        LOGGER.info("********************************************");
+        LOGGER.info("用法: command [text] [input] [output]");
+        LOGGER.info("命令command的可选值为：demo、text、file");
+        LOGGER.info("demo");
+        LOGGER.info("text 杨尚川是APDPlat应用级产品开发平台的作者");
+        LOGGER.info("file d:/text.txt d:/word.txt");
+        LOGGER.info("exit");
+        LOGGER.info("********************************************");
+        LOGGER.info("输入命令后回车确认：");
+    }
+    public static void main(String[] args) throws Exception{
+        String encoding = "utf-8";
+        if(args.length == 1){
+            encoding = args[0];
+        }
+        showUsage();
+        run(encoding);
     }
 }
