@@ -118,6 +118,8 @@ public final class DictionaryFactory {
             if(dicPath == null){
                 dicPath = WordConfTools.get("dic.path", "classpath:dic.txt");
             }
+            LOGGER.info("将标点符号加入词典：classpath:punctuation.txt");
+            dicPath += ",classpath:punctuation.txt";
             LOGGER.info("dic.path="+dicPath);
             loadDic(dicPath.trim());
             if(DIC instanceof TrieV4){
