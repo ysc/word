@@ -1,0 +1,2 @@
+这里为什么会有这么多实现类，请看我的日志：
+http://yangshangchuan.iteye.com/blog/2031813
