@@ -156,14 +156,20 @@ public class CorpusTools {
                         continue;
                     }
                     List<String> list = new ArrayList<>();
+                    StringBuilder phrase = new StringBuilder();
+                    int phraseCount=0;
+                    boolean find=false;
                     for(String word : words){
                         String[] attr = word.split("/");
                         if(attr == null || attr.length < 1){
                             //忽略不符合规范的词
                             continue;
                         }
+                        if(attr[0].trim().startsWith("[")){
+                            find = true;
+                        }                        
                         //去掉[和]
-                        String item = attr[0].replace("[", "").replace("]", "");
+                        String item = attr[0].replace("[", "").replace("]", "").trim();
                         list.add(item);
                         //不重复词
                         WORDS.add(item);
@@ -171,6 +177,25 @@ public class CorpusTools {
                         WORD_COUNT.incrementAndGet();
                         //字符数目
                         CHAR_COUNT.addAndGet(item.length());
+                        if(find){
+                            phrase.append(item);
+                            phraseCount++;
+                        }
+                        //短语标注错误
+                        if(phraseCount > 10){
+                            find = false;
+                            phraseCount = 0;
+                            phrase.setLength(0);
+                        }
+                        if(find && attr.length > 1 && attr[1].trim().endsWith("]")){
+                            find = false;
+                            list.add(phrase.toString());
+                            //不重复词
+                            WORDS.add(phrase.toString());
+                            //词数目
+                            WORD_COUNT.incrementAndGet();
+                            phrase.setLength(0);
+                        }
                     }
                     //计算bigram模型
                     int len = list.size();
