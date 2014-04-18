@@ -36,6 +36,7 @@
                         <exclude>**/corpus/corpora.zip</exclude>
                        <exclude>**/corpus</exclude>                        
                         <exclude>**/logback.xml</exclude>
+                        <exclude>**/trigram.txt</exclude>
                     </excludes>
                 </configuration>
             </plugin>
