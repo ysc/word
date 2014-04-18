@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apdplat.word.recognition.RecognitionTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ public class DictionaryMerge {
         Set<String> set = new HashSet<>();
         for(String line : lines){
             line = line.trim();
-            if(!Utils.isChineseCharAndLengthAtLeastTwo(line)){
+            if(!Utils.isChineseCharAndLengthAtLeastTwo(line) || RecognitionTool.isChineseNumber(line, 0, line.length())){
                 LOGGER.info("过滤："+line);
                 continue;
             }
