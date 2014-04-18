@@ -81,10 +81,10 @@ public class MaximumMatchingTest {
         expResult.add("[杨尚川, 好]");
         expResult.add("[杨尚川, 是, apdplat, 应用, 级, 产品开发, 平台, 的, 作者]");
         expResult.add("[他, 说, 的确, 实在, 理]");
-        expResult.add("[提高, 人民, 生活, 水平]");
+        expResult.add("[提高, 人民生活水平]");
         expResult.add("[他俩, 儿, 谈恋爱, 是从, 头年, 元月, 开始, 的]");
         expResult.add("[王府, 饭店, 的, 设施, 和服, 务, 是, 一流, 的]");
-        expResult.add("[和服, 务, 于, 三日, 后, 裁制, 完毕, ，, 并, 呈送, 将军, 府, 中]");
+        expResult.add("[和服, 务, 于, 三日, 后, 裁制, 完毕, ，, 并, 呈送, 将军府, 中]");
         expResult.add("[研究生, 命, 的, 起源]");
         expResult.add("[他, 明天, 起身, 去, 北京]");
         expResult.add("[在, 这些, 企业, 中国, 有, 企业, 有, 十个]");
@@ -96,7 +96,7 @@ public class MaximumMatchingTest {
         expResult.add("[咬死, 猎人, 的, 狗]");
         expResult.add("[地面, 积, 了, 厚厚的, 雪]");
         expResult.add("[这, 几块, 地面, 积, 还, 真不, 小]");
-        expResult.add("[大学生, 活象, 白纸]");
+        expResult.add("[大学生活, 象, 白纸]");
         expResult.add("[结合, 成分, 子式]");
         expResult.add("[有意, 见, 分歧]");
         expResult.add("[发展中国家, 兔, 的, 计划]");
@@ -110,7 +110,7 @@ public class MaximumMatchingTest {
         expResult.add("[使节, 约, 粮食, 进一步, 形成, 风气]");
         expResult.add("[反映, 了, 一个人, 的, 精神面貌]");
         expResult.add("[美国加州大学, 的, 科学家, 发现]");
-        expResult.add("[我, 好不, 挺, 好]");
+        expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
         expResult.add("[下雨天, 留客, 天天, 留, 我, 不留]");
         expResult.add("[叔叔, 亲, 了, 我, 妈妈, 也, 亲, 了, 我]");

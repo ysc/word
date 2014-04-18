@@ -91,7 +91,7 @@ public class ChineseWordIndicesAnalysisTest {
         assertTrue(match);
         
         TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
-        exp = "[杨尚川, apdplat, 应用, 级, 产品开发, 平台, 作者]";
+        exp = "[杨尚川, apdplat, 应用, 级, 产品, 开发, 平台, 作者]";
         result = new ArrayList<>();
         while(tokenStream.incrementToken()){
             CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);

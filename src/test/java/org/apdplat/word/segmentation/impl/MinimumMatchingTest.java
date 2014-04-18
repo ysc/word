@@ -110,7 +110,7 @@ public class MinimumMatchingTest {
         expResult.add("[使节, 约, 粮食, 进一步, 形成, 风气]");
         expResult.add("[反映, 了, 一个, 人, 的, 精神, 面貌]");
         expResult.add("[美国, 加州, 大学, 的, 科学, 家, 发现]");
-        expResult.add("[我, 好不, 挺, 好]");
+        expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
         expResult.add("[下雨, 天, 留客, 天天, 留, 我, 不留]");
         expResult.add("[叔叔, 亲, 了, 我, 妈妈, 也, 亲, 了, 我]");
