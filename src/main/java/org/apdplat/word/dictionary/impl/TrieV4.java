@@ -178,6 +178,7 @@ public class TrieV4 implements Dictionary{
         if(item == null || item.length() < length){
             return false;
         }
+        LOGGER.debug("开始查词典："+item.substring(start, start+length));
         //从根节点开始查找
         //获取根节点
         TrieNode node = getRootNode(item.charAt(start));
@@ -198,6 +199,7 @@ public class TrieV4 implements Dictionary{
             }
         }
         if(node.isTerminal()){
+            LOGGER.debug("在词典中查到词："+item.substring(start, start+length));
             return true;
         }
         return false;

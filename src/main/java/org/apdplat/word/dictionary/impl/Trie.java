@@ -81,6 +81,7 @@ public class Trie  implements Dictionary{
         if(item == null || item.length() < length){
             return false;
         }
+        LOGGER.debug("开始查词典："+item.substring(start, start+length));
         //从根节点开始查找
         TrieNode node = ROOT_NODE;
         for(int i=0;i<length;i++){
@@ -95,6 +96,7 @@ public class Trie  implements Dictionary{
             }
         }
         if(node.isTerminal()){
+            LOGGER.debug("在词典中查到词："+item.substring(start, start+length));
             return true;
         }
         return false;

@@ -23,12 +23,15 @@ package org.apdplat.word.dictionary.impl;
 import java.util.List;
 import java.util.Set;
 import org.apdplat.word.dictionary.Dictionary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author 杨尚川
  */
 public class HashSet implements Dictionary{
+    private static final Logger LOGGER = LoggerFactory.getLogger(HashSet.class);
     private final Set<String> set = new java.util.HashSet<>();
     private int maxLength;
     @Override
@@ -41,11 +44,16 @@ public class HashSet implements Dictionary{
     }
     @Override
     public boolean contains(String item, int start, int length) {
-        return set.contains(item.substring(start, start+length));
+        return contains(item.substring(start, start+length));
     }
     @Override
     public boolean contains(String item) {
-        return set.contains(item);
+        LOGGER.debug("开始查词典："+item);
+        boolean result = set.contains(item);
+        if(result){
+            LOGGER.debug("在词典中查到词："+item);
+        }
+        return result;
     }
     @Override
     public void addAll(List<String> items) {
