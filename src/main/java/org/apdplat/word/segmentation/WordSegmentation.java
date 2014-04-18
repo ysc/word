@@ -59,6 +59,18 @@ public class WordSegmentation implements Segmentation{
         }
         
         Map<List<Word>, Float> words = Bigram.bigram(wordsRMM, wordsMM, wordsRMIM, wordsMIM);
+        
+        //最少分词原则：对字符串分词后得到的词数越少越易于对该字符串的理解
+        //实现方式：对bigram的分值进行二次处理，除以分出的词的个数
+        //这样做可以对正逆向最小匹配切出的细粒度错误词做一些过滤
+        //因为细粒度词多了会在bigram打分阶段获得更多的分值
+        for(List<Word> key : words.keySet()){
+            Float value = words.get(key);
+            if(value != null){
+                value = value/key.size();
+                words.put(key, value);
+            }
+        }
       
         float score = words.get(wordsRMM);
         LOGGER.debug("逆向最大匹配："+wordsRMM.toString()+" : 二元模型分值="+score);
