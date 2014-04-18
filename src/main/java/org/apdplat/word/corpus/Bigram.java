@@ -50,17 +50,27 @@ public class Bigram {
     public static Map<List<Word>, Float> bigram(List<Word>... sentences){
         Map<List<Word>, Float> map = new HashMap<>();
         Map<String, Float> bigramScores = new HashMap<>();
+        //两个连续的bigram补偿粗粒度分值
+        //如：美国, 加州, 大学，如果美国, 加州和加州, 大学有分值
+        //则美国加州大学也会获得分值
+        Map<String, Float> twoBigramScores = new HashMap<>();
         //1、计算多种分词结果的分值
         for(List<Word> sentence : sentences){
             float score=0;
             //计算其中一种分词结果的分值
             if(sentence.size() > 1){
+                String last="";
                 for(int i=0; i<sentence.size()-1; i++){
                     String first = sentence.get(i).getText();
                     String second = sentence.get(i+1).getText();
                     float bigramScore = getScore(first, second);
                     if(bigramScore > 0){
-                        bigramScores.put(first+second, bigramScore);
+                        if(last.endsWith(first)){
+                            twoBigramScores.put(last+second, bigramScores.get(last)+bigramScore);
+                            last="";
+                        }
+                        last = first+second;
+                        bigramScores.put(last, bigramScore);
                         score += bigramScore;
                     }
                 }
@@ -74,11 +84,15 @@ public class Bigram {
             //计算其中一种分词结果的分值
             for(Word word : sentence){
                 Float bigramScore = bigramScores.get(word.getText());
-                if(bigramScore !=null && bigramScore > 0){
-                    LOGGER.debug(word.getText()+" 获得分值："+bigramScore);
-                    float score = map.get(sentence);
-                    score += bigramScore;
-                    map.put(sentence, score);
+                Float twoBigramScore = twoBigramScores.get(word.getText());
+                Float[] array = {bigramScore, twoBigramScore};
+                for(Float score : array){
+                    if(score !=null && score > 0){
+                        LOGGER.debug(word.getText()+" 获得分值："+score);
+                        float value = map.get(sentence);
+                        value += score;
+                        map.put(sentence, value);
+                    }                    
                 }
             }
         }
