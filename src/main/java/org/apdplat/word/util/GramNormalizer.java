@@ -44,7 +44,7 @@ public class GramNormalizer {
     private static final Logger LOGGER = LoggerFactory.getLogger(GramNormalizer.class);
     private static final NumberFormat FORMAT = NumberFormat.getNumberInstance();
     static{
-        FORMAT.setMaximumFractionDigits(2);
+        FORMAT.setMaximumFractionDigits(4);
     }
     public static void main(String[] args) throws IOException{
         uniformAndNormForBigramAndTrigram();
@@ -76,8 +76,8 @@ public class GramNormalizer {
     public static void uniform(String src, String dst, int n) throws IOException{
         List<String> lines = Files.readAllLines(Paths.get(src), Charset.forName("utf-8"));
         Map<String, Float> map = new HashMap<>();
-        Map<String, Float> counts = new HashMap<>();
-        //统计n-1前缀完全相同的总数
+        float maxCount=0;
+        //找到最大出现次数
         for(String line : lines){
             String[] attr = line.split(" -> ");
             if(attr == null || attr.length != 2){
@@ -96,26 +96,20 @@ public class GramNormalizer {
                 //不用处理了，程序返回
                 return ;
             }
-            Float frequence = Float.parseFloat(value);
-            map.put(key, frequence);
-            String base = getBase(words);
-            Float count = counts.get(base);
-            if(count == null){
-                count = frequence;
-            }else{
-                count += frequence;
+            float count = Float.parseFloat(value);
+            if(count > maxCount){
+                maxCount = count;
             }
-            counts.put(base, count);
+            map.put(key, count);
         }
-        //对n-1前缀相同的情况重新计算分值
+        LOGGER.info(n+"元模型出现最大次数："+maxCount);
+        //归一化
+        maxCount = (float)Math.sqrt(maxCount);
         for(String key : map.keySet()){
-            String base = getBase(key.split(":"));
-            Float count = counts.get(base);
-            Float value = map.get(key);
-            Float score = value/count;
+            Float count = map.get(key);
+            Float score = (float)Math.sqrt(count)/maxCount;
             map.put(key, score);
         }
-        counts.clear();
         List<String> list = new ArrayList<>(map.size());
         //把map转换为list
         for(String key : map.keySet()){
@@ -126,18 +120,6 @@ public class GramNormalizer {
         Collections.sort(list);
         LOGGER.info("总的模型数："+list.size());
         Files.write(Paths.get(dst), list, Charset.forName("utf-8"));
-    }
-    /**
-     * 获取N元模型的N-1前缀
-     * @param words N元模型
-     * @return N-1前缀
-     */
-    private static String getBase(String[] words) {
-        StringBuilder base = new StringBuilder();
-        for(int i=0; i<words.length-1; i++){
-            base.append(words[i]);
-        }
-        return base.toString();
     }
     /**
      * 去除N元模型中包含非中文字符的记录
