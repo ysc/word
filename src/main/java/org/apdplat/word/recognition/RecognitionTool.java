@@ -20,12 +20,15 @@
 
 package org.apdplat.word.recognition;
 
+import org.slf4j.LoggerFactory;
+
 /**
  * 分词特殊情况识别工具
  * 如英文单词、数字、时间等
  * @author 杨尚川
  */
 public class RecognitionTool {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(RecognitionTool.class);
     //'〇'不常用，放到最后
     private static final char[] chineseNumbers = {'一','二','三','四','五','六','七','八','九','十','百','千','万','亿','零','壹','贰','叁','肆','伍','陆','柒','捌','玖','拾','佰','仟','〇'};
     /**
@@ -84,6 +87,7 @@ public class RecognitionTool {
                 return false;
             }
         }
+        LOGGER.debug("识别出英文单词："+text.substring(start, start+len));
         return true;
     }
     /**
@@ -119,6 +123,7 @@ public class RecognitionTool {
                 return false;
             }
         }
+        LOGGER.debug("识别出数字："+text.substring(start, start+len));
         return true;
     }
     /**
@@ -162,6 +167,7 @@ public class RecognitionTool {
                 }
             }
         }
+        LOGGER.debug("识别出中文数字："+text.substring(start, start+len));
         return true;
     }
 }
