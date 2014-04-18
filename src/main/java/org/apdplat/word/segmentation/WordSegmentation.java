@@ -51,6 +51,13 @@ public class WordSegmentation implements Segmentation{
         //正向最小匹配
         List<Word> wordsMIM = MIM.seg(text);
         
+        if(wordsRMM.toString().equals(wordsMM.toString())&&
+                wordsRMM.toString().equals(wordsRMIM.toString())&&
+                wordsRMM.toString().equals(wordsMIM.toString())){
+            //如果分词结果都一样，则直接返回结果，不用计算二元模型分值
+            return wordsMIM;
+        }
+        
         Map<List<Word>, Float> words = Bigram.bigram(wordsRMM, wordsMM, wordsRMIM, wordsMIM);
       
         float score = words.get(wordsRMM);
