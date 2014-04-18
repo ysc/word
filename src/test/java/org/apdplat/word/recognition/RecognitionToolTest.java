@@ -20,16 +20,29 @@
 
 package org.apdplat.word.recognition;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 /**
  *
  * @author 杨尚川
  */
 public class RecognitionToolTest {
+    private static final List<String> LIST = new ArrayList<>();
+    @BeforeClass
+    public static void initData() throws IOException{
+        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/chinese-number.txt"), Charset.forName("utf-8"));
+        for(String line : lines){
+            LIST.add(line);
+        }
+    }
     @Test
     public void testIsEnglish() {
         List<String> text = new ArrayList<>();
@@ -106,7 +119,10 @@ public class RecognitionToolTest {
         assertEquals(28, single.length);
         for(String s : single){
             text.add(s);
-        }        
+        }     
+        for(String item : LIST){
+            text.add(item);
+        }
         List<Boolean> expect = new ArrayList<>();
         expect.add(true);
         expect.add(false);
@@ -117,6 +133,9 @@ public class RecognitionToolTest {
         for(int i=0; i<single.length; i++){
             expect.add(true);
         }        
+        for(int i=0; i<LIST.size(); i++){
+            expect.add(true);
+        }
         for(int i=0; i<text.size(); i++){
             String str = text.get(i);
             boolean result = RecognitionTool.isChineseNumber(str, 0, str.length());
