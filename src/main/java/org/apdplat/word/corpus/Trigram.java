@@ -91,7 +91,7 @@ public class Trigram {
                     line = line.trim();
                     //忽略空行
                     if(!"".equals(line)){
-                        String[] attr = line.split(" ");
+                        String[] attr = line.split("\\s+");
                         GRAM_TRIE.put(attr[0], Integer.parseInt(attr[1]));
                     }
                 }
