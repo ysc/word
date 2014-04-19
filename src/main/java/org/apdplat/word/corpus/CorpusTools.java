@@ -279,7 +279,7 @@ public class CorpusTools {
         }
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/bigram.txt"),"utf-8"))){
             for(Entry<String, Integer> item : BIGRAM.entrySet()){
-                writer.write(item.getKey()+" -> "+item.getValue()+"\n");
+                writer.write(item.getKey()+" "+item.getValue()+"\n");
             }
         }catch(Exception e){
             LOGGER.info("保存bigram模型失败："+e.getMessage());
@@ -301,7 +301,7 @@ public class CorpusTools {
         }
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/trigram.txt"),"utf-8"))){
             for(Entry<String, Integer> item : TRIGRAM.entrySet()){
-                writer.write(item.getKey()+" -> "+item.getValue()+"\n");
+                writer.write(item.getKey()+" "+item.getValue()+"\n");
             }
         }catch(Exception e){
             LOGGER.info("保存trigram模型失败："+e.getMessage());
