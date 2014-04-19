@@ -28,6 +28,7 @@ import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.Punctuation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,13 @@ public class ReverseMaximumMatching implements Segmentation{
                 if(len==1){
                     break;
                 }
+                //判断最后一个字符是否是标点符号，如果是则结束查词典，加快分词速度
+               if(Punctuation.is(text.charAt(start+len-1)) || Punctuation.is(text.charAt(start+len-2))){
+                    //重置截取长度为一
+                    start+=len-1;
+                    len=1;
+                    break;
+                }
                 //如果查不到，则长度减一
                 //索引向后移动一个字，然后继续
                 len--;
@@ -92,7 +100,7 @@ public class ReverseMaximumMatching implements Segmentation{
         return list;        
     }    
     public static void main(String[] args){
-        String text = "杨尚川是APDPlat应用级产品开发平台的作者";
+        String text = "'软件工程四大圣经'：《设计模式》、《反模式》、《重构》、《解析极限编程》。其中《设计模式》和《重构》号称'软工双雄'。";
         if(args !=null && args.length == 1){
             text = args[0];
         }
