@@ -27,6 +27,7 @@ import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.Punctuation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,12 @@ public class MinimumMatching implements Segmentation{
                     len=1;
                     break;
                 }
+                //判断下一个字符是否是标点符号，如果是则结束查词典，加快分词速度
+                if(Punctuation.is(text.charAt(start+len))){
+                    //重置截取长度为一
+                    len=1;
+                    break;
+                }
                 //如果查不到，则长度加一后继续
                 len++;
             }
@@ -71,7 +78,7 @@ public class MinimumMatching implements Segmentation{
         return result;
     }
     public static void main(String[] args){
-        String text = "杨尚川是APDPlat应用级产品开发平台的作者";
+        String text = "《红楼梦》的作者是曹雪芹。课文里有一篇鲁迅的《从百草园到三味书屋》。他的文章在《人民日报》上发表了。桌上放着一本《中国语文》。《〈中国工人〉发刊词》发表于1940年2月7日。杨尚川是APDPlat应用级产品开发平台的作者";
         if(args !=null && args.length == 1){
             text = args[0];
         }
