@@ -62,7 +62,7 @@ public class MaximumMatching implements Segmentation{
                 if(len==1){
                     break;
                 }
-                //判断当前字符和下一个字符是否是标点符号，如果是则结束查词典，加快分词速度
+                //判断当前字符和下一个字符是否是标点符号，如果有一个字符是则结束查词典，加快分词速度
                if(Punctuation.is(text.charAt(start)) || Punctuation.is(text.charAt(start+1))){
                     //重置截取长度为一
                     len=1;
