@@ -37,13 +37,13 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apdplat.word.util.DictionaryMerge;
 import org.apdplat.word.util.Utils;
@@ -58,8 +58,8 @@ import org.slf4j.LoggerFactory;
  */
 public class CorpusTools {
     private static final Logger LOGGER = LoggerFactory.getLogger(CorpusTools.class);
-    private static final Map<String, Integer> BIGRAM = new HashMap<>();
-    private static final Map<String, Integer> TRIGRAM = new HashMap<>();
+    private static final Map<String, Integer> BIGRAM = new TreeMap<>();
+    private static final Map<String, Integer> TRIGRAM = new TreeMap<>();
     private static final AtomicInteger WORD_COUNT = new AtomicInteger();   
     private static final AtomicInteger CHAR_COUNT = new AtomicInteger();    
     private static final AtomicInteger LINES_COUNT = new AtomicInteger();    
@@ -269,10 +269,8 @@ public class CorpusTools {
                 iter.remove();
             }
         }
-        //排序后保存到bigram.txt文件
-        List<Entry<String, Integer>> items = Utils.getSortedMapByValue(BIGRAM);
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/bigram.txt"),"utf-8"))){
-            for(Entry<String, Integer> item : items){
+            for(Entry<String, Integer> item : BIGRAM.entrySet()){
                 writer.write(item.getKey()+" -> "+item.getValue()+"\n");
             }
         }catch(Exception e){
@@ -293,10 +291,8 @@ public class CorpusTools {
                 iter.remove();
             }
         }
-        //排序后保存到trigram.txt文件
-        List<Entry<String, Integer>> items = Utils.getSortedMapByValue(TRIGRAM);
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/trigram.txt"),"utf-8"))){
-            for(Entry<String, Integer> item : items){
+            for(Entry<String, Integer> item : TRIGRAM.entrySet()){
                 writer.write(item.getKey()+" -> "+item.getValue()+"\n");
             }
         }catch(Exception e){
