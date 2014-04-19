@@ -38,7 +38,7 @@ public class PunctuationTest {
     private static final List<Character> LIST = new ArrayList<>();
     @BeforeClass
     public static void initData() throws IOException{
-        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/punctuation.txt"), Charset.forName("utf-8"));
+        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/punctuation-test.txt"), Charset.forName("utf-8"));
         for(String line : lines){
             LIST.add(line.trim().charAt(0));
         }
