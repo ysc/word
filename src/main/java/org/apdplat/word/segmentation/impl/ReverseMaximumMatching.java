@@ -67,7 +67,7 @@ public class ReverseMaximumMatching implements Segmentation{
                 if(len==1){
                     break;
                 }
-                //判断最后一个字符是否是标点符号，如果是则结束查词典，加快分词速度
+                //判断最后2个字符是否是标点符号，如果有一个字符是则结束查词典，加快分词速度
                if(Punctuation.is(text.charAt(start+len-1)) || Punctuation.is(text.charAt(start+len-2))){
                     //重置截取长度为一
                     start+=len-1;
