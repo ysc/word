@@ -1,6 +1,6 @@
 @echo off
 call mvn clean install dependency:copy-dependencies
-set JAVA_OPTS=-Xms1200m -Xmx1200m
+set JAVA_OPTS=-Xms12000m -Xmx12000m
 set CLASS_PATH=target/classes;target/dependency/slf4j-api-1.6.4.jar;target/dependency/logback-classic-0.9.28.jar;target/dependency/logback-core-0.9.28.jar
 set EXECUTOR=java %JAVA_OPTS% -cp %CLASS_PATH%
 rem 1、从语料库中提取词，词之间以空格分隔，内容保存到文件target/word.txt
