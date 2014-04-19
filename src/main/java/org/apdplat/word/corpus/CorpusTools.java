@@ -210,6 +210,10 @@ public class CorpusTools {
                             i++;
                             continue;
                         }
+                        //忽略长度均为1的模型
+                        if(first.length() < 2 && second.length() < 2){
+                            continue;
+                        }
                         String key = first+":"+second;
                         Integer value = BIGRAM.get(key);
                         if(value == null){
@@ -238,6 +242,10 @@ public class CorpusTools {
                         if(!Utils.isChineseCharAndLengthAtLeastOne(third)){
                             //跳过二个词
                             i += 2;
+                            continue;
+                        }
+                        //忽略长度均为1的模型
+                        if(first.length() < 2 && second.length() < 2 && third.length() < 2){
                             continue;
                         }
                         String key = first+":"+second+":"+third;
