@@ -46,7 +46,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apdplat.word.util.DictionaryMerge;
-import org.apdplat.word.util.GramNormalizer;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,8 +90,6 @@ public class CorpusTools {
         WORDS.clear();
         //将新提取的词和原来的词典合并
         mergeWordsWithOldDic();
-        //二元和三元模型规范化
-        GramNormalizer.uniformAndNormForBigramAndTrigram();
     }    
     /**
      * 分析语料库
