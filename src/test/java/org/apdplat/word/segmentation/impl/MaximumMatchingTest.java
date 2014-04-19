@@ -79,7 +79,7 @@ public class MaximumMatchingTest {
         expResult.add("[长春市, 长春, 节, 致辞]");
         expResult.add("[杨]");
         expResult.add("[杨尚川, 好]");
-        expResult.add("[杨尚川, 是, apdplat, 应用, 级, 产品开发, 平台, 的, 作者]");
+        expResult.add("[杨尚川, 是, apdplat, 应用级, 产品开发, 平台, 的, 作者]");
         expResult.add("[他, 说, 的确, 实在, 理]");
         expResult.add("[提高, 人民生活水平]");
         expResult.add("[他俩, 儿, 谈恋爱, 是从, 头年, 元月, 开始, 的]");
@@ -95,25 +95,25 @@ public class MaximumMatchingTest {
         expResult.add("[乒乓球拍, 卖完, 了]");
         expResult.add("[咬死, 猎人, 的, 狗]");
         expResult.add("[地面, 积, 了, 厚厚的, 雪]");
-        expResult.add("[这, 几块, 地面, 积, 还, 真不, 小]");
+        expResult.add("[这, 几块, 地面, 积, 还真, 不小]");
         expResult.add("[大学生活, 象, 白纸]");
         expResult.add("[结合, 成分, 子式]");
-        expResult.add("[有意, 见, 分歧]");
+        expResult.add("[有意见, 分歧]");
         expResult.add("[发展中国家, 兔, 的, 计划]");
         expResult.add("[明天, 他, 将来, 北京]");
         expResult.add("[税收制度, 将来, 会, 更, 完善]");
         expResult.add("[依靠群众, 才能, 做好, 工作]");
-        expResult.add("[现在, 是, 施展才能, 的, 好, 机会]");
-        expResult.add("[把手, 举起, 来]");
-        expResult.add("[茶杯, 的, 把手, 断, 了]");
-        expResult.add("[以, 新的, 姿态, 出现, 在世, 界, 东方]");
+        expResult.add("[现在, 是, 施展才能, 的, 好机会]");
+        expResult.add("[把手, 举起来]");
+        expResult.add("[茶杯, 的, 把手, 断了]");
+        expResult.add("[以, 新的, 姿态, 出现在, 世界, 东方]");
         expResult.add("[使节, 约, 粮食, 进一步, 形成, 风气]");
         expResult.add("[反映, 了, 一个人, 的, 精神面貌]");
         expResult.add("[美国加州大学, 的, 科学家, 发现]");
         expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
-        expResult.add("[下雨天, 留客, 天天, 留, 我, 不留]");
-        expResult.add("[叔叔, 亲, 了, 我, 妈妈, 也, 亲, 了, 我]");
+        expResult.add("[下雨天, 留客, 天天, 留我, 不留]");
+        expResult.add("[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]");
         
         for(int i=0; i<text.size(); i++){
             List<Word> result = segmentation.seg(text.get(i));

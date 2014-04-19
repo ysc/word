@@ -59,7 +59,7 @@ public class ChineseWordAnalyzerTest {
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
-            String expResult = "[杨尚川, apdplat, 应用, 级, 产品, 开发, 平台, 作者]";
+            String expResult = "[杨尚川, apdplat, 应用级, 产品开发, 平台, 作者]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
             fail("分词出错"+e.getMessage());
@@ -75,7 +75,7 @@ public class ChineseWordAnalyzerTest {
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
-            String expResult = "[叔叔, 亲, 妈妈, 亲]";
+            String expResult = "[叔叔, 亲了, 妈妈, 亲了]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
             fail("分词出错"+e.getMessage());

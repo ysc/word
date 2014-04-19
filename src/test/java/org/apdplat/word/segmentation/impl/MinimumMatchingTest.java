@@ -84,18 +84,18 @@ public class MinimumMatchingTest {
         expResult.add("[提高, 人民, 生活, 水平]");
         expResult.add("[他俩, 儿, 谈恋爱, 是从, 头年, 元月, 开始, 的]");
         expResult.add("[王府, 饭店, 的, 设施, 和服, 务, 是, 一, 流, 的]");
-        expResult.add("[和服, 务, 于, 三, 日后, 裁制, 完毕, ，, 并, 呈送, 将军, 府, 中]");
+        expResult.add("[和服, 务, 于, 三, 日后, 裁制, 完毕, ，, 并, 呈送, 将军, 府中]");
         expResult.add("[研究, 生命, 的, 起源]");
         expResult.add("[他, 明天, 起身, 去, 北京]");
         expResult.add("[在, 这些, 企业, 中国, 有, 企业, 有, 十, 个]");
         expResult.add("[他, 站起, 身, 来]");
         expResult.add("[他们, 是, 来, 查, 金泰, 撞人, 那件, 事, 的]");
         expResult.add("[行侠仗义, 的, 查, 金泰, 远近, 闻名]");
-        expResult.add("[他, 从, 马上, 摔下, 来, 了, ,, 你, 马上, 下来, 一, 下]");
+        expResult.add("[他, 从, 马上, 摔下, 来了, ,, 你, 马上, 下来, 一, 下]");
         expResult.add("[乒乓, 球拍, 卖完, 了]");
         expResult.add("[咬死, 猎人, 的, 狗]");
         expResult.add("[地面, 积, 了, 厚厚, 的, 雪]");
-        expResult.add("[这, 几块, 地面, 积, 还, 真不, 小]");
+        expResult.add("[这, 几块, 地面, 积, 还真, 不小]");
         expResult.add("[大学, 生活, 象, 白纸]");
         expResult.add("[结合, 成分, 子式]");
         expResult.add("[有意, 见, 分歧]");
@@ -103,17 +103,17 @@ public class MinimumMatchingTest {
         expResult.add("[明天, 他, 将来, 北京]");
         expResult.add("[税收, 制度, 将来, 会, 更, 完善]");
         expResult.add("[依靠, 群众, 才能, 做好, 工作]");
-        expResult.add("[现在, 是, 施展, 才能, 的, 好, 机会]");
+        expResult.add("[现在, 是, 施展, 才能, 的, 好机会]");
         expResult.add("[把手, 举起, 来]");
-        expResult.add("[茶杯, 的, 把手, 断, 了]");
+        expResult.add("[茶杯, 的, 把手, 断了]");
         expResult.add("[以, 新的, 姿态, 出现, 在世, 界, 东方]");
-        expResult.add("[使节, 约, 粮食, 进一步, 形成, 风气]");
+        expResult.add("[使节, 约, 粮食, 进一, 步, 形成, 风气]");
         expResult.add("[反映, 了, 一, 个人, 的, 精神, 面貌]");
         expResult.add("[美国, 加州, 大学, 的, 科学, 家, 发现]");
         expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
-        expResult.add("[下雨, 天, 留客, 天天, 留, 我, 不留]");
-        expResult.add("[叔叔, 亲, 了, 我, 妈妈, 也, 亲, 了, 我]");
+        expResult.add("[下雨, 天, 留客, 天天, 留我, 不留]");
+        expResult.add("[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]");
         expResult.add("[白马, 非, 马]");
         
         for(int i=0; i<text.size(); i++){

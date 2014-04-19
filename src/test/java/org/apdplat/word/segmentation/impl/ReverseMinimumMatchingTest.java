@@ -79,23 +79,23 @@ public class ReverseMinimumMatchingTest {
         expResult.add("[长春, 市长, 春节, 致辞]");
         expResult.add("[杨]");
         expResult.add("[杨尚川, 好]");
-        expResult.add("[杨尚川, 是, apdplat, 应用, 级, 产品, 开发, 平台, 的, 作者]");
+        expResult.add("[杨尚川, 是, apdplat, 应用级, 产品, 开发, 平台, 的, 作者]");
         expResult.add("[他, 说, 的, 确实, 在理]");
         expResult.add("[提高, 人民, 生活, 水平]");
         expResult.add("[他俩, 儿, 谈, 恋爱, 是从, 头年, 元月, 开始, 的]");
         expResult.add("[王府, 饭店, 的, 设施, 和, 服务, 是, 一流, 的]");
-        expResult.add("[和, 服务于, 三, 日后, 裁制, 完毕, ，, 并, 呈送, 将军府, 中]");
+        expResult.add("[和, 服务于, 三, 日后, 裁制, 完毕, ，, 并, 呈送, 将军, 府中]");
         expResult.add("[研究, 生命, 的, 起源]");
         expResult.add("[他, 明天, 起身, 去, 北京]");
         expResult.add("[在, 这些, 企业, 中, 国有, 企业, 有, 十个]");
         expResult.add("[他, 站, 起身, 来]");
-        expResult.add("[他们, 是, 来, 查, 金泰, 撞人, 那件事, 的]");
+        expResult.add("[他们, 是, 来, 查, 金泰, 撞人, 那, 件事, 的]");
         expResult.add("[行, 侠, 仗义, 的, 查, 金泰, 远近, 闻名]");
-        expResult.add("[他, 从, 马上, 摔, 下来, 了, ,, 你, 马上, 下来, 一下]");
+        expResult.add("[他, 从, 马上, 摔下, 来了, ,, 你, 马上, 下来, 一下]");
         expResult.add("[乒乓球, 拍卖, 完了]");
         expResult.add("[咬死, 猎人, 的, 狗]");
         expResult.add("[地, 面积, 了, 厚厚的, 雪]");
-        expResult.add("[这, 几块, 地, 面积, 还, 真, 不小]");
+        expResult.add("[这, 几块, 地, 面积, 还真, 不小]");
         expResult.add("[大, 学生, 活象, 白纸]");
         expResult.add("[结合, 成分, 子式]");
         expResult.add("[有, 意见, 分歧]");
@@ -105,15 +105,15 @@ public class ReverseMinimumMatchingTest {
         expResult.add("[依靠, 群众, 才能, 做好, 工作]");
         expResult.add("[现在, 是, 施展, 才能, 的, 好, 机会]");
         expResult.add("[把手, 举, 起来]");
-        expResult.add("[茶杯, 的, 把手, 断, 了]");
+        expResult.add("[茶杯, 的, 把手, 断了]");
         expResult.add("[以, 新的, 姿态, 出, 现在, 世界, 东方]");
         expResult.add("[使, 节约, 粮食, 进, 一步, 形成, 风气]");
         expResult.add("[反映, 了, 一, 个人, 的, 精神, 面貌]");
         expResult.add("[美国, 加州, 大学, 的, 科, 学家, 发现]");
         expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
-        expResult.add("[下, 雨天, 留客, 天天, 留, 我, 不留]");
-        expResult.add("[叔叔, 亲, 了, 我, 妈妈, 也, 亲, 了, 我]");
+        expResult.add("[下, 雨天, 留客, 天天, 留我, 不留]");
+        expResult.add("[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]");
         
         for(int i=0; i<text.size(); i++){
             List<Word> result = segmentation.seg(text.get(i));
