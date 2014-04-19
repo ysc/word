@@ -37,12 +37,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apdplat.word.util.DictionaryMerge;
@@ -63,7 +61,7 @@ public class CorpusTools {
     private static final AtomicInteger WORD_COUNT = new AtomicInteger();   
     private static final AtomicInteger CHAR_COUNT = new AtomicInteger();    
     private static final AtomicInteger LINES_COUNT = new AtomicInteger();    
-    private static final Set<String> WORDS = new HashSet<>();
+    private static final Map<String, Integer> WORDS = new TreeMap<>();
     
     public static void main(String[] args){
         process();
@@ -101,7 +99,7 @@ public class CorpusTools {
         try{
             analyzeCorpus(zipFile);
         } catch (IOException ex) {
-            LOGGER.info("分析语料库失败："+ex.getMessage());
+            LOGGER.info("分析语料库失败：", ex);
         }
         long cost = System.currentTimeMillis() - start;
         LOGGER.info("完成分析语料库，耗时："+cost+"毫秒");
@@ -169,7 +167,7 @@ public class CorpusTools {
                         String item = attr[0].replace("[", "").replace("]", "").trim();
                         list.add(item);
                         //不重复词
-                        WORDS.add(item);
+                        addWord(item);
                         //词数目
                         WORD_COUNT.incrementAndGet();
                         //字符数目
@@ -188,7 +186,7 @@ public class CorpusTools {
                             find = false;
                             list.add(phrase.toString());
                             //不重复词
-                            WORDS.add(phrase.toString());
+                            addWord(phrase.toString());
                             //词数目
                             WORD_COUNT.incrementAndGet();
                             phrase.setLength(0);
@@ -260,8 +258,17 @@ public class CorpusTools {
                 }
             }
         }catch(Exception e){
-            LOGGER.info("分析语料库 "+file+" 失败："+e.getMessage());
+            LOGGER.info("分析语料库 "+file+" 失败：", e);
         }        
+    }
+    private static void addWord(String word){
+        Integer value = WORDS.get(word);
+        if(value == null){
+            value = 1;
+        }else{
+            value++;
+        }
+        WORDS.put(word, value);
     }
     /**
      * 分析处理并存储二元模型
@@ -282,7 +289,7 @@ public class CorpusTools {
                 writer.write(item.getKey()+" "+item.getValue()+"\n");
             }
         }catch(Exception e){
-            LOGGER.info("保存bigram模型失败："+e.getMessage());
+            LOGGER.info("保存bigram模型失败：", e);
         }
     }
     /**
@@ -304,7 +311,7 @@ public class CorpusTools {
                 writer.write(item.getKey()+" "+item.getValue()+"\n");
             }
         }catch(Exception e){
-            LOGGER.info("保存trigram模型失败："+e.getMessage());
+            LOGGER.info("保存trigram模型失败：", e);
         }
     }
     /**
@@ -312,15 +319,20 @@ public class CorpusTools {
      * 过滤单字词或包含非中文字符的词
      */
     private static void processWords() {
-        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/dic.txt"),"utf-8"))){
-            for(String word : WORDS){
+        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/dic.txt"),"utf-8"));
+                BufferedWriter writerFreq = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/dic_with_freq.txt"),"utf-8"))){
+            for(String word : WORDS.keySet()){
                 //过滤单字词或包含非中文字符的词
                 if(Utils.isChineseCharAndLengthAtLeastTwo(word)){
                     writer.write(word+"\n");
                 }
             }
+            List<Entry<String, Integer>> entrys = Utils.getSortedMapByValue(WORDS);
+            for(Entry<String, Integer> entry : entrys){
+                writerFreq.write(entry.getKey()+" "+ entry.getValue()+"\n");                
+            }
         }catch(Exception e){
-            LOGGER.info("保存target/dic.txt失败："+e.getMessage());
+            LOGGER.info("保存词典文件失败：", e);
         }
     }
     /**
@@ -334,7 +346,7 @@ public class CorpusTools {
         try {
             DictionaryMerge.merge(sources, target);
         } catch (IOException ex) {
-            LOGGER.info("和现有词典合并失败："+ex.getMessage());
+            LOGGER.info("和现有词典合并失败：", ex);
         }
     }
 }
