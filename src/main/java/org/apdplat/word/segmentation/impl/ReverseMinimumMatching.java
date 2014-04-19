@@ -28,6 +28,7 @@ import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.Punctuation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,14 @@ public class ReverseMinimumMatching implements Segmentation{
         while(start>=0){
             //用长为len的字符串查词典
             while(!DIC.contains(text, start, len) && !RecognitionTool.recog(text, start, len)){
+                //判断下一个字符是否是标点符号，如果是则结束查词典，加快分词速度
+                if(start > 1 && Punctuation.is(text.charAt(start-1))){
+                    //重置截取长度为一
+                    //向后移动start索引
+                    start+=len-1;
+                    len=1;
+                    break;
+                }
                 //如果查不到，则长度加一后继续
                 //索引向前移动一个字，然后继续
                 len++;
@@ -81,7 +90,7 @@ public class ReverseMinimumMatching implements Segmentation{
         return list;        
     }
     public static void main(String[] args){
-        String text = "杨尚川是APDPlat应用级产品开发平台的作者";
+        String text = "他不管三七二十一就骂她是二百五，我就无语了，真是个二货。他还问我：“杨老师，‘二货’是什么意思？”";
         if(args !=null && args.length == 1){
             text = args[0];
         }
