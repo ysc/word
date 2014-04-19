@@ -27,6 +27,7 @@ import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.Punctuation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,12 @@ public class MaximumMatching implements Segmentation{
                 if(len==1){
                     break;
                 }
+                //判断当前字符和下一个字符是否是标点符号，如果是则结束查词典，加快分词速度
+               if(Punctuation.is(text.charAt(start)) || Punctuation.is(text.charAt(start+1))){
+                    //重置截取长度为一
+                    len=1;
+                    break;
+                }
                 //如果查不到，则长度减一后继续
                 len--;
             }
@@ -73,7 +80,7 @@ public class MaximumMatching implements Segmentation{
         return result;
     }
     public static void main(String[] args){
-        String text = "ysc是杨尚川的英文名，杨尚川在2009年获得了系统架构设计师的职称";
+        String text = "他十分惊讶地说：“啊，原来是您，杨尚川！能见到您真是太好了，我有个Nutch问题想向您请教呢！”";
         if(args !=null && args.length == 1){
             text = args[0];
         }
