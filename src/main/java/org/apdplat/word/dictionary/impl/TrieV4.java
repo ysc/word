@@ -339,7 +339,9 @@ public class TrieV4 implements Dictionary{
     }
     public void show(){
         for(TrieNode node : ROOT_NODES_INDEX){
-            show(node, "");
+            if(node != null){
+                show(node, "");
+            }
         }
     }
     private void show(TrieNode node, String indent){
