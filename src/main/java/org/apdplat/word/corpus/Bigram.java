@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Bigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bigram.class);
-    private static final Map<String, Float> BIGRAM = new HashMap<>();    
+    private static final GramTrie GRAM_TRIE = new GramTrie();
     /**
      * 含有语境的二元模型分值算法
      * 计算多种分词结果的分值
@@ -121,11 +121,9 @@ public class Bigram {
      * @return 同时出现的分值
      */
     public static float getScore(String first, String second) {
-        Float value = BIGRAM.get(first+":"+second);
-        if(value == null){
-            value = 0f;
-        }
+        float value = GRAM_TRIE.get(first+":"+second);
         if(value > 0){
+            value = (float)Math.sqrt(value);
             LOGGER.debug("二元模型 "+first+":"+second+" 获得分值："+value);
         }
         return value;
@@ -155,7 +153,7 @@ public class Bigram {
                     //忽略空行
                     if(!"".equals(line)){
                         String[] attr = line.split(" -> ");
-                        BIGRAM.put(attr[0], Float.parseFloat(attr[1]));
+                        GRAM_TRIE.put(attr[0], Integer.parseInt(attr[1]));
                     }
                 }
             }
