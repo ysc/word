@@ -25,9 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Trigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Trigram.class);
-    private static final Map<String, Float> TRIGRAM = new HashMap<>();
+    private static final GramTrie GRAM_TRIE = new GramTrie();
     /**
      * 计算分词结果的三元模型分值
      * @param words 分词结果
@@ -62,12 +60,10 @@ public class Trigram {
      * @return 同时出现的分值
      */
     public static float getScore(String first, String second, String third) {
-        Float value = TRIGRAM.get(first+":"+second+":"+third);
-        if(value == null){
-            value = 0f;
-        }
+        float value = GRAM_TRIE.get(first+":"+second+":"+third);
         if(value > 0){
-            LOGGER.debug("三元模型 "+first+":"+second+" 获得分值："+value);
+            value = (float)Math.sqrt(value);
+            LOGGER.debug("三元模型 "+first+":"+second+":"+third+" 获得分值："+value);
         }
         return value;
     }
@@ -96,7 +92,7 @@ public class Trigram {
                     //忽略空行
                     if(!"".equals(line)){
                         String[] attr = line.split(" -> ");
-                        TRIGRAM.put(attr[0], Float.parseFloat(attr[1]));
+                        GRAM_TRIE.put(attr[0], Integer.parseInt(attr[1]));
                     }
                 }
             }
