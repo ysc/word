@@ -63,7 +63,7 @@ public class DictionaryMerge {
         Set<String> set = new HashSet<>();
         for(String line : lines){
             line = line.trim();
-            if(line.length() > 6 || !Utils.isChineseCharAndLengthAtLeastTwo(line) || RecognitionTool.isChineseNumber(line, 0, line.length())){
+            if(line.length() > 16 || !Utils.isChineseCharAndLengthAtLeastTwo(line) || RecognitionTool.isChineseNumber(line, 0, line.length())){
                 LOGGER.info("过滤："+line);
                 continue;
             }
