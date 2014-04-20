@@ -83,8 +83,34 @@ public class StopWord {
     static{
         loadStopWords();
     }
-    public static boolean is(String word){
-        return stopwords.contains(word);
+    /**
+     * 如果词的长度为一且不是中文字符，则认定为停用词
+     * @param word
+     * @return 
+     */
+    private static boolean singleCharAndNotChineseChar(String word){
+        if(word.length() == 1){
+            char _char = word.charAt(0);
+            if(_char < 19968){
+                return true;
+            }
+            if(_char > 40869){
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * 判断一个词是否是停用词
+     * @param word
+     * @return 
+     */
+    public static boolean is(String word){      
+        if(word == null){
+            return false;
+        }
+        word = word.trim();
+        return singleCharAndNotChineseChar(word) || stopwords.contains(word);
     }
     public static void main(String[] args){
         LOGGER.info("停用词：");
@@ -200,7 +226,9 @@ public class StopWord {
                     if("".equals(line) || line.startsWith("#")){
                         continue;
                     }
-                    stopwords.add(line);
+                    if(!singleCharAndNotChineseChar(line)){
+                        stopwords.add(line);
+                    }
                 }
             }
         }catch(Exception e){
