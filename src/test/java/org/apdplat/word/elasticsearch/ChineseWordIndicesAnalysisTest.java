@@ -78,7 +78,7 @@ public class ChineseWordIndicesAnalysisTest {
         assertTrue(match);
         
         Tokenizer tokenizer = tokenizerFactory.create(new StringReader("他说的确实在理"));
-        String exp = "[说, 确实, 在理]";
+        String exp = "[确实, 在理]";
         List<String> result = new ArrayList<>();
         while(tokenizer.incrementToken()){
             CharTermAttribute charTermAttribute = tokenizer.getAttribute(CharTermAttribute.class);

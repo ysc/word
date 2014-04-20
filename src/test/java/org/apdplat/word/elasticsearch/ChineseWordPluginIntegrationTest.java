@@ -59,9 +59,9 @@ public class ChineseWordPluginIntegrationTest extends ElasticsearchIntegrationTe
                 .execute().get();
 
         assertThat(response, notNullValue());
-        assertThat(response.getTokens().size(), is(3));
+        assertThat(response.getTokens().size(), is(2));
         
-        String exp = "[说, 确实, 在理]";
+        String exp = "[确实, 在理]";
         List<String> result = new ArrayList<>();
         for(AnalyzeResponse.AnalyzeToken token : response.getTokens()){
             result.add(token.getTerm());
