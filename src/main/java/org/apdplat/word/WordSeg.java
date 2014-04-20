@@ -172,11 +172,11 @@ public class WordSeg {
             LOGGER.info("命令不正确");
             return;
         }
-        switch(args[0]){
-            case "demo":
+        switch(args[0].trim().charAt(0)){
+            case 'd':
                 demo();
                 break;
-            case "text":
+            case 't':
                 if(args.length != 2){
                     showUsage();
                 }else{
@@ -185,7 +185,7 @@ public class WordSeg {
                     LOGGER.info("切分结果："+words.toString());
                 }
                 break;
-            case "file":
+            case 'f':
                 if(args.length != 3){
                     showUsage();
                 }else{
@@ -193,7 +193,10 @@ public class WordSeg {
                 }
                 break;
             default:
-                LOGGER.info("不支持的命令："+args[0]);
+                List<Word> words = seg(args[0]);
+                LOGGER.info("切分句子："+args[0]);
+                LOGGER.info("切分结果："+words.toString());
+                break;
         }
     }
     private static void run(String encoding) throws UnsupportedEncodingException, IOException, Exception {
@@ -218,6 +221,7 @@ public class WordSeg {
         LOGGER.info("********************************************");
         LOGGER.info("用法: command [text] [input] [output]");
         LOGGER.info("命令command的可选值为：demo、text、file");
+        LOGGER.info("命令可使用缩写d t f，如不指定命令，则默认为text命令，对输入的文本分词");
         LOGGER.info("demo");
         LOGGER.info("text 杨尚川是APDPlat应用级产品开发平台的作者");
         LOGGER.info("file d:/text.txt d:/word.txt");
