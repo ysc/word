@@ -16,16 +16,19 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 	exit
 	
 	2、对文本进行分词
-    List<Word> words = WordSeg.seg("杨尚川是APDPlat应用级产品开发平台的作者");
-    System.out.println(words);
+	移除停用词：List<Word> words = WordSeg.seg("杨尚川是APDPlat应用级产品开发平台的作者");
+	保留停用词：List<Word> words = WordSeg.segWithStopWords("杨尚川是APDPlat应用级产品开发平台的作者");
+				System.out.println(words);
     
     输出：
-    [杨尚川, apdplat, 应用, 级, 产品开发, 平台, 作者]
+	移除停用词：[杨尚川, apdplat, 应用级, 产品开发, 平台, 作者]
+	保留停用词：[杨尚川, 是, apdplat, 应用级, 产品开发, 平台, 的, 作者]
 
 	3、对文件进行分词
 	String input = "d:/text.txt";
 	String output = "d:/word.txt";
-	WordSeg.seg(new File(input), new File(output));
+	移除停用词：WordSeg.seg(new File(input), new File(output));
+	保留停用词：WordSeg.segWithStopWords(new File(input), new File(output));
 	
 	4、自定义配置文件
 	默认配置文件为类路径下的word.conf，打包在word-x.x.jar中
