@@ -72,14 +72,34 @@ public class WordSeg {
             }
         }
         return words;
+    }    
+    /**
+     * 对文件进行分词，保留停用词
+     * @param input 输入文件
+     * @param output 输出文件
+     * @throws Exception 
+     */
+    public static void segWithStopWords(File input, File output) throws Exception{
+        seg(input, output, false);
     }
     /**
-     * 对文件进行分词
+     * 对文件进行分词，移除停用词
      * @param input 输入文件
      * @param output 输出文件
      * @throws Exception 
      */
     public static void seg(File input, File output) throws Exception{
+        seg(input, output, true);
+    }
+    /**
+     * 
+     * 对文件进行分词
+     * @param input 输入文件
+     * @param output 输出文件
+     * @param removeStopWords 是否移除停用词
+     * @throws Exception 
+     */
+    private static void seg(File input, File output, boolean removeStopWords) throws Exception{
         LOGGER.info("开始对文件进行分词："+input.toString());
         float max=(float)Runtime.getRuntime().maxMemory()/1000000;
         float total=(float)Runtime.getRuntime().totalMemory()/1000000;
@@ -96,7 +116,15 @@ public class WordSeg {
             String line = null;
             while((line = reader.readLine()) != null){
                 textLength += line.length();
-                List<Word> words = seg(line);
+                List<Word> words = null;
+                if(removeStopWords){
+                    words = seg(line);
+                }else{
+                    words = segWithStopWords(line);
+                }
+                if(words == null){
+                    continue;
+                }
                 for(Word word : words){
                     writer.write(word.getText()+" ");
                 }
