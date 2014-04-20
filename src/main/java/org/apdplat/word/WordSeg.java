@@ -48,6 +48,14 @@ public class WordSeg {
     private static final Logger LOGGER = LoggerFactory.getLogger(WordSeg.class);    
     private static final Segmentation segmentation = new WordSegmentation();
     /**
+     * 对文本进行分词但不移除停用词
+     * @param text 文本
+     * @return 分词结果
+     */
+    public static List<Word> segWithStopWords(String text){
+        return segmentation.seg(text);
+    }
+    /**
      * 对文本进行分词并移除停用词
      * @param text 文本
      * @return 分词结果
