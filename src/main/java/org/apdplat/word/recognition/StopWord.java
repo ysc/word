@@ -60,7 +60,7 @@ public class StopWord {
     private static final Logger LOGGER = LoggerFactory.getLogger(StopWord.class);
     private static final Set<String> stopwords = new HashSet<>();
     private static final Set<String> fileWatchers = new HashSet<>();
-    private static final DirectoryWatcher dictionaryDirectoryWatcher = new DirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
+    private static final DirectoryWatcher dictionaryDirectoryWatcher = DirectoryWatcher.getDirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
 
                 private long lastExecute = System.currentTimeMillis();
                 @Override
@@ -242,7 +242,7 @@ public class StopWord {
             return;
         }
         fileWatchers.add(file.toString());
-        DirectoryWatcher dictionaryFileWatcher = new DirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
+        DirectoryWatcher dictionaryFileWatcher = DirectoryWatcher.getDirectoryWatcher(new DirectoryWatcher.WatcherCallback(){
 
             private long lastExecute = System.currentTimeMillis();
             @Override
