@@ -128,6 +128,13 @@ public class RecognitionTool {
         if(len < 2){
             return false;
         }
+        //避免量词和不完整小数结合
+        //.的值是46,/的值是47
+        //判断前一个字符是否是.或/
+        int index = start-1;
+        if(index > -1 && (text.charAt(index) == 46 || text.charAt(index) == 47)){
+            return false;
+        }
         char lastChar = text.charAt(start+len-1);
         if(Quantifier.is(lastChar)
                 && (isNumber(text, start, len-1) || isChineseNumber(text, start, len-1)) ){
