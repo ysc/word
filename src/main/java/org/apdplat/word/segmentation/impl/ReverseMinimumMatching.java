@@ -25,10 +25,12 @@ import java.util.List;
 import java.util.Stack;
 import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
+import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.Punctuation;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +88,9 @@ public class ReverseMinimumMatching implements Segmentation{
         List<Word> list = new ArrayList<>(len);
         for(int i=0;i<len;i++){
             list.add(result.pop());
+        }
+        if("true".equals(WordConfTools.get("person.name.recognize", "true"))){
+            list = PersonName.recognize(list);
         }
         return list;        
     }

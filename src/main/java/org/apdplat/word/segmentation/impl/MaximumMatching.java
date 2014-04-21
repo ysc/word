@@ -24,10 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
+import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.Punctuation;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +78,9 @@ public class MaximumMatching implements Segmentation{
             start+=len;
             //每一次成功切词后都要重置截取长度
             len=DIC.getMaxLength();
+        }
+        if("true".equals(WordConfTools.get("person.name.recognize", "true"))){
+            result = PersonName.recognize(result);
         }
         return result;
     }
