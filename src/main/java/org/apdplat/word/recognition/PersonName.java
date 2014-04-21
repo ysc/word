@@ -73,6 +73,26 @@ public class PersonName {
             LOGGER.error("加载百家姓出错：", e);
         }
     }
+    /**
+     * 如果文本为人名，则返回姓
+     * @param text 文本
+     * @return 姓或空文本
+     */
+    public static String getSurname(String text){
+        int len = text.length();
+        if( (len > 1 && len <4) && surname1.contains(text.substring(0, 1)) ){
+            return text.substring(0, 1);
+        }
+        if( (len > 2 && len <5) && surname2.contains(text.substring(0, 2)) ){
+            return text.substring(0, 2);
+        }
+        return "";
+    }
+    /**
+     * 人名判定
+     * @param text 文本
+     * @return 是或否
+     */
     public static boolean is(String text){
         int len = text.length();
         //单姓为二字或三字
