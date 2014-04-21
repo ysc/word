@@ -62,8 +62,13 @@ public class DictionaryMerge {
         }
         Set<String> set = new HashSet<>();
         for(String line : lines){
-            line = line.trim();
-            if(line.length() > 16 || !Utils.isChineseCharAndLengthAtLeastTwo(line) || RecognitionTool.isChineseNumber(line, 0, line.length())){
+            line = line.trim();            
+            if(line.length() > 16 
+                    || !Utils.isChineseCharAndLengthAtLeastTwo(line) 
+                    || (RecognitionTool.isChineseNumber(line, 0, line.length()-1) && line.charAt(line.length()-1) == '年')
+                    || (RecognitionTool.isChineseNumber(line, 0, line.length()-1) && line.charAt(line.length()-1) == '月')
+                    || (RecognitionTool.isChineseNumber(line, 0, line.length()-1) && line.charAt(line.length()-1) == '日')
+                    || RecognitionTool.isChineseNumber(line, 0, line.length())){
                 LOGGER.info("过滤："+line);
                 continue;
             }
