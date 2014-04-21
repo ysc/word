@@ -84,10 +84,10 @@ public class MinimumMatchingTest {
         expResult.add("[提高, 人民, 生活, 水平]");
         expResult.add("[他俩, 儿, 谈恋爱, 是从, 头年, 元月, 开始, 的]");
         expResult.add("[王府, 饭店, 的, 设施, 和服, 务, 是, 一, 流, 的]");
-        expResult.add("[和服, 务, 于, 三, 日后, 裁制, 完毕, ，, 并, 呈送, 将军, 府中]");
+        expResult.add("[和服, 务, 于三, 日后, 裁制, 完毕, ，, 并, 呈送, 将军, 府中]");
         expResult.add("[研究, 生命, 的, 起源]");
         expResult.add("[他, 明天, 起身, 去, 北京]");
-        expResult.add("[在, 这些, 企业, 中国, 有, 企业, 有, 十, 个]");
+        expResult.add("[在, 这些, 企业, 中国, 有, 企业, 有十个]");
         expResult.add("[他, 站起, 身, 来]");
         expResult.add("[他们, 是, 来, 查, 金泰, 撞人, 那件, 事, 的]");
         expResult.add("[行侠仗义, 的, 查, 金泰, 远近, 闻名]");
