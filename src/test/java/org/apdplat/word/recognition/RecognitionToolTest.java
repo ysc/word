@@ -39,7 +39,7 @@ public class RecognitionToolTest {
     private static final List<String> QUANTIFIER = new ArrayList<>();
     @BeforeClass
     public static void initData() throws IOException{
-        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/chinese-number.txt"), Charset.forName("utf-8"));
+        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/chinese-number-test.txt"), Charset.forName("utf-8"));
         for(String line : lines){
             LIST.add(line);
         }
