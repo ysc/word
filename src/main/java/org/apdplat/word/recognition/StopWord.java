@@ -18,7 +18,7 @@
  * 
  */
 
-package org.apdplat.word.segmentation;
+package org.apdplat.word.recognition;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -36,7 +36,7 @@ import java.util.List;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
-import org.apdplat.word.segmentation.StopWord;
+import org.apdplat.word.recognition.StopWord;
 import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
