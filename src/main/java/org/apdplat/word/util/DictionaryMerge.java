@@ -43,9 +43,8 @@ public class DictionaryMerge {
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryMerge.class);
     public static void main(String[] args) throws IOException{
         List<String> sources = new ArrayList<>();
-        sources.add("dic1.txt");
-        sources.add("dic2.txt");
-        String target = "dic.txt";
+        sources.add("src/main/resources/dic.txt");
+        String target = "src/main/resources/dic.txt";
         merge(sources, target);
     }
     /**
@@ -62,13 +61,10 @@ public class DictionaryMerge {
         }
         Set<String> set = new HashSet<>();
         for(String line : lines){
-            line = line.trim();            
-            if(line.length() > 16 
+            line = line.trim();
+            if(line.length() > 7 
                     || !Utils.isChineseCharAndLengthAtLeastTwo(line) 
-                    || (RecognitionTool.isChineseNumber(line, 0, line.length()-1) && line.charAt(line.length()-1) == '年')
-                    || (RecognitionTool.isChineseNumber(line, 0, line.length()-1) && line.charAt(line.length()-1) == '月')
-                    || (RecognitionTool.isChineseNumber(line, 0, line.length()-1) && line.charAt(line.length()-1) == '日')
-                    || RecognitionTool.isChineseNumber(line, 0, line.length())){
+                    || RecognitionTool.recog(line)){
                 LOGGER.info("过滤："+line);
                 continue;
             }
