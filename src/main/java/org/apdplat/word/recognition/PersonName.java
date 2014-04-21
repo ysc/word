@@ -25,8 +25,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,14 +82,24 @@ public class PersonName {
      * @return 姓或空文本
      */
     public static String getSurname(String text){
-        int len = text.length();
-        if( (len > 1 && len <4) && surname1.contains(text.substring(0, 1)) ){
-            return text.substring(0, 1);
-        }
-        if( (len > 2 && len <5) && surname2.contains(text.substring(0, 2)) ){
-            return text.substring(0, 2);
+        if(is(text)){
+            //优先识别复姓
+            if(isSurname(text.substring(0, 2))){
+                return text.substring(0, 2);
+            }
+            if(isSurname(text.substring(0, 1))){
+                return text.substring(0, 1);
+            }
         }
         return "";
+    }
+    /**
+     * 判断文本是不是百家姓
+     * @param text 文本
+     * @return 是否
+     */
+    public static boolean isSurname(String text){
+        return surname1.contains(text) || surname2.contains(text);
     }
     /**
      * 人名判定
@@ -97,8 +110,73 @@ public class PersonName {
         int len = text.length();
         //单姓为二字或三字
         //复姓为三字或四字
-        return ( (len > 1 && len <4) && surname1.contains(text.substring(0, 1)) )
-                || ( (len > 2 && len <5) && surname2.contains(text.substring(0, 2)) );
+        if(len < 2){
+            //长度小于2肯定不是姓名
+            return false;
+        }
+        if(len == 2){
+            //如果长度为2，则第一个字符必须是姓
+            return surname1.contains(text.substring(0, 1));
+        }
+        if(len == 3){
+            //如果长度为3
+            //要么是单姓
+            //要么是复姓
+            return surname1.contains(text.substring(0, 1)) || surname2.contains(text.substring(0, 2));
+        }
+        if(len == 4){
+            //如果长度为4，只能是复姓
+            return surname2.contains(text.substring(0, 2));
+        }
+        return false;
+    }
+    /**
+     * 对分词结果进行处理，识别人名
+     * @param words 待识别分词结果
+     * @return 识别后的分词结果
+     */
+    public static List<Word> recognize(List<Word> words){
+        int len = words.size();
+        if(len < 2){
+            return words;
+        }
+        List<Word> result = new ArrayList<>();
+        for(int i=0; i<len-1; i++){
+            String second = words.get(i+1).getText();
+            if(second.length() > 1){
+                result.add(new Word(words.get(i).getText()));
+                result.add(new Word(words.get(i+1).getText()));
+                i++;
+                if(i == len-2){
+                    result.add(new Word(words.get(i+1).getText()));
+                }
+                continue;
+            }
+            String first = words.get(i).getText();
+            if(isSurname(first)){
+                String third = "";
+                if(i+2 < len && words.get(i+2).getText().length()==1){
+                    third = words.get(i+2).getText();                    
+                }
+                String text = first+second+third;
+                if(is(text)){
+                    LOGGER.debug("识别到人名："+text);
+                    result.add(new Word(text));
+                    i++;
+                    if(!"".equals(third)){
+                        i++;
+                    }
+                }else{
+                    result.add(new Word(first));
+                }
+            }else{
+                result.add(new Word(first));
+            }
+            if(i == len-2){
+                result.add(new Word(words.get(i+1).getText()));
+            }
+        }
+        return result;
     }
     public static void main(String[] args){
         int i=1;
@@ -112,5 +190,53 @@ public class PersonName {
         LOGGER.info("欧阳飞燕："+is("欧阳飞燕"));
         LOGGER.info("令狐冲："+is("令狐冲"));
         LOGGER.info("杨尚川爱读书："+is("杨尚川爱读书"));
+        List<Word> test = new ArrayList<>();
+        test.add(new Word("快"));
+        test.add(new Word("来"));
+        test.add(new Word("看"));
+        test.add(new Word("杨"));
+        test.add(new Word("尚"));
+        test.add(new Word("川"));
+        test.add(new Word("表演"));
+        test.add(new Word("魔术"));
+        test.add(new Word("了"));
+        LOGGER.info(recognize(test).toString());
+        
+        test = new ArrayList<>();
+        test.add(new Word("李"));
+        test.add(new Word("世"));
+        test.add(new Word("明"));
+        test.add(new Word("的"));
+        test.add(new Word("昭仪"));
+        test.add(new Word("欧阳"));
+        test.add(new Word("飞"));
+        test.add(new Word("燕"));
+        test.add(new Word("其实"));
+        test.add(new Word("很"));
+        test.add(new Word("厉害"));
+        test.add(new Word("呀"));
+        test.add(new Word("！"));
+        test.add(new Word("比"));
+        test.add(new Word("公孙"));
+        test.add(new Word("黄"));
+        test.add(new Word("后"));
+        test.add(new Word("牛"));
+        LOGGER.info(recognize(test).toString());
+                
+        test = new ArrayList<>();
+        test.add(new Word("发展"));
+        test.add(new Word("中国"));
+        test.add(new Word("家兔"));
+        test.add(new Word("的"));
+        test.add(new Word("计划"));
+        LOGGER.info(recognize(test).toString());
+        
+        test = new ArrayList<>();
+        test.add(new Word("杨尚川"));
+        test.add(new Word("好"));
+        LOGGER.info(recognize(test).toString());
+        
+        LOGGER.info(getSurname("欧阳锋"));
+        LOGGER.info(getSurname("李阳锋"));
     }
 }
