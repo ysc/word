@@ -48,6 +48,7 @@ public class RecognitionTool {
      */
     public static boolean recog(final String text, final int start, final int len){
         return isEnglish(text, start, len) 
+                || isDate(text, start, len)
                 || isNumber(text, start, len)
                 || isChineseNumber(text, start, len);
     }
@@ -89,6 +90,23 @@ public class RecognitionTool {
         }
         LOGGER.debug("识别出英文单词："+text.substring(start, start+len));
         return true;
+    }
+    /**
+     * 日期识别
+     * @param text 识别文本
+     * @param start 待识别文本开始索引
+     * @param len 识别长度
+     * @return 是否识别
+     */
+    public static boolean isDate(final String text, final int start, final int len){
+        char lastChar = text.charAt(start+len-1);
+        if(len > 1 
+                && (lastChar == '年' || lastChar == '月' || lastChar == '日')
+                && (isNumber(text, start, len-1) || isChineseNumber(text, start, len-1)) ){
+            LOGGER.debug("识别日期："+text.substring(start, start+len));
+            return true;
+        }
+        return false;
     }
     /**
      * 数字识别
