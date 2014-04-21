@@ -48,9 +48,35 @@ public class RecognitionTool {
      */
     public static boolean recog(final String text, final int start, final int len){
         return isEnglish(text, start, len) 
+                || isFraction(text, start, len)
                 || isQuantifier(text, start, len)
                 || isNumber(text, start, len)
                 || isChineseNumber(text, start, len);
+    }
+    /**
+     * 小数和分数识别
+     * @param text 识别文本
+     * @param start 待识别文本开始索引
+     * @param len 识别长度
+     * @return 是否识别
+     */
+    public static boolean isFraction(final String text, final int start, final int len){
+        if(len < 3){
+            return false;
+        }
+        int index = -1;
+        for(int i=start; i<start+len; i++){
+            char _char = text.charAt(i);
+            if(_char=='/' || _char=='.'){
+                index = i;
+                break;
+            }
+        }
+        if(index == -1 || index == start || index == start+len-1){
+            return false;
+        }
+        int beforeLen = index-start;
+        return isNumber(text, start, beforeLen) && isNumber(text, index+1, len-(beforeLen+1));
     }
     /**
      * 英文单词识别
