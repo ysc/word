@@ -57,6 +57,9 @@ public class PersonName {
                 String line;
                 while((line = reader.readLine()) != null){
                     line = line.trim();
+                    if(line.equals("") || line.startsWith("#")){
+                        continue;
+                    }
                     if(line.length()==1){
                         surname1.add(line);
                     }else if(line.length()==2){
@@ -71,8 +74,11 @@ public class PersonName {
         }
     }
     public static boolean is(String text){
-        return (surname1.contains(text.substring(0, 1)) && text.length()<=3)
-                || (surname2.contains(text.substring(0, 2))  && text.length()<=4);
+        int len = text.length();
+        //单姓为二字或三字
+        //复姓为三字或四字
+        return ( (len > 1 && len <4) && surname1.contains(text.substring(0, 1)) )
+                || ( (len > 2 && len <5) && surname2.contains(text.substring(0, 2)) );
     }
     public static void main(String[] args){
         int i=1;
@@ -83,6 +89,8 @@ public class PersonName {
             LOGGER.info((i++)+" : "+str);
         }
         LOGGER.info("杨尚川："+is("杨尚川"));
+        LOGGER.info("欧阳飞燕："+is("欧阳飞燕"));
+        LOGGER.info("令狐冲："+is("令狐冲"));
         LOGGER.info("杨尚川爱读书："+is("杨尚川爱读书"));
     }
 }
