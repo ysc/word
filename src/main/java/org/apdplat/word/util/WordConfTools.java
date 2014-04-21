@@ -75,7 +75,7 @@ public class WordConfTools {
                 }
                 String[] attr = line.split("=");
                 if(attr != null && attr.length == 2){
-                    conf.put(attr[0], attr[1]);
+                    conf.put(attr[0].trim(), attr[1].trim());
                 }
             }
         } catch (IOException ex) {
