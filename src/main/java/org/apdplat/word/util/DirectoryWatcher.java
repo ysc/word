@@ -47,15 +47,39 @@ import org.slf4j.LoggerFactory;
 public class DirectoryWatcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryWatcher.class);
     
-    private final WatchService watchService;
+    private WatchService watchService = null;
     private final Map<WatchKey, Path> directories = new HashMap<>();
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    private static ExecutorService EXECUTOR_SERVICE = null;
     private WatchEvent.Kind<?>[] events;
     
-    public DirectoryWatcher(final WatcherCallback watcherCallback, WatchEvent.Kind<?>... events){
+    public static DirectoryWatcher getDirectoryWatcher(final WatcherCallback watcherCallback, WatchEvent.Kind<?>... events){
+        if("true".equals(WordConfTools.get("auto.detect", "true"))){
+            return new DirectoryWatcher(watcherCallback, events);
+        }
+        LOGGER.warn("注意：未启用自动检测功能！如需启用，请在word.local.conf文件中指定配置项auto.detect=true");
+        return new DirectoryWatcher(){
+            @Override
+            public void close() {}
+            @Override
+            public void watchDirectoryTree(Path path) {}
+            @Override
+            public void watchDirectoryTree(String path) {}
+            @Override
+            public void watchDirectory(Path path) {}
+            @Override
+            public void watchDirectory(String path) {}
+        };
+    }
+    private DirectoryWatcher(){}
+    private DirectoryWatcher(final WatcherCallback watcherCallback, WatchEvent.Kind<?>... events){
         try {
             if(events.length == 0){
                 throw new RuntimeException("必须至少指定一个监控的事件，如：StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE");
+            }
+            synchronized(DirectoryWatcher.class){
+                if(EXECUTOR_SERVICE == null){
+                    EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+                }
             }
             this.events = new WatchEvent.Kind<?>[events.length];
             int i=0;
