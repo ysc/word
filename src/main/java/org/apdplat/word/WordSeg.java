@@ -197,7 +197,7 @@ public class WordSeg {
         sentences.add("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
         int i=1;
         for(String sentence : sentences){
-            List<Word> words = seg(sentence);
+            List<Word> words = segWithStopWords(sentence);
             LOGGER.info((i++)+"、切分句子: "+sentence);
             LOGGER.info("    切分结果："+words);
         }
@@ -217,7 +217,7 @@ public class WordSeg {
                 if(args.length != 2){
                     showUsage();
                 }else{
-                    List<Word> words = seg(args[1]);
+                    List<Word> words = segWithStopWords(args[1]);
                     LOGGER.info("切分句子："+args[1]);
                     LOGGER.info("切分结果："+words.toString());
                 }
@@ -226,11 +226,11 @@ public class WordSeg {
                 if(args.length != 3){
                     showUsage();
                 }else{
-                    seg(new File(args[1]), new File(args[2]));
+                    segWithStopWords(new File(args[1]), new File(args[2]));
                 }
                 break;
             default:
-                List<Word> words = seg(args[0]);
+                List<Word> words = segWithStopWords(args[0]);
                 LOGGER.info("切分句子："+args[0]);
                 LOGGER.info("切分结果："+words.toString());
                 break;
