@@ -88,13 +88,10 @@ public class StopWord {
      * @param word
      * @return 
      */
-    private static boolean isStopChar(String word){
+    private static boolean singleCharAndNotChineseChar(String word){
         if(word.length() == 1){
             char _char = word.charAt(0);
-            if(_char < 48){
-                return true;
-            }
-            if(_char > 57 && _char < 19968){
+            if(_char < 19968){
                 return true;
             }
             if(_char > 40869){
@@ -113,7 +110,7 @@ public class StopWord {
             return false;
         }
         word = word.trim();
-        return isStopChar(word) || stopwords.contains(word);
+        return singleCharAndNotChineseChar(word) || stopwords.contains(word);
     }
     public static void main(String[] args){
         LOGGER.info("停用词：");
@@ -229,7 +226,7 @@ public class StopWord {
                     if("".equals(line) || line.startsWith("#")){
                         continue;
                     }
-                    if(!isStopChar(line)){
+                    if(!singleCharAndNotChineseChar(line)){
                         stopwords.add(line);
                     }
                 }
