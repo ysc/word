@@ -29,7 +29,8 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apdplat.word.segmentation.Segmentation;
-import org.apdplat.word.segmentation.WordSegmentation;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
+import org.apdplat.word.segmentation.SegmentationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class ChineseWordAnalyzer extends Analyzer {
     private Segmentation segmentation = null;
     
     public ChineseWordAnalyzer(){
-        segmentation = new WordSegmentation();
+        segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
     }
     
     public ChineseWordAnalyzer(Segmentation segmentation) {

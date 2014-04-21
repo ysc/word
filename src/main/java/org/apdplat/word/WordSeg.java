@@ -34,9 +34,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apdplat.word.segmentation.Segmentation;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
+import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.StopWord;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.segmentation.WordSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WordSeg {
     private static final Logger LOGGER = LoggerFactory.getLogger(WordSeg.class);    
-    private static final Segmentation segmentation = new WordSegmentation();
+    private static final Segmentation segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
     /**
      * 对文本进行分词但不移除停用词
      * @param text 文本

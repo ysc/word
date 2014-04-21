@@ -30,9 +30,10 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apdplat.word.segmentation.Segmentation;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
+import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.StopWord;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.segmentation.WordSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class ChineseWordTokenizer extends Tokenizer {
         
     public ChineseWordTokenizer(Reader input) {
         super(input);
-        segmentation = new WordSegmentation();
+        segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
         reader = new BufferedReader(input);
     }   
     public ChineseWordTokenizer(Reader input, Segmentation segmentation) {
