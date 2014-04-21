@@ -48,7 +48,7 @@ public class RecognitionTool {
      */
     public static boolean recog(final String text, final int start, final int len){
         return isEnglish(text, start, len) 
-                || isDate(text, start, len)
+                || isQuantifier(text, start, len)
                 || isNumber(text, start, len)
                 || isChineseNumber(text, start, len);
     }
@@ -92,18 +92,20 @@ public class RecognitionTool {
         return true;
     }
     /**
-     * 日期识别
+     * 数量词识别，如日期、时间、长度、容量、重量、面积等等
      * @param text 识别文本
      * @param start 待识别文本开始索引
      * @param len 识别长度
      * @return 是否识别
      */
-    public static boolean isDate(final String text, final int start, final int len){
+    public static boolean isQuantifier(final String text, final int start, final int len){
+        if(len < 2){
+            return false;
+        }
         char lastChar = text.charAt(start+len-1);
-        if(len > 1 
-                && (lastChar == '年' || lastChar == '月' || lastChar == '日')
+        if(Quantifier.is(lastChar)
                 && (isNumber(text, start, len-1) || isChineseNumber(text, start, len-1)) ){
-            LOGGER.debug("识别日期："+text.substring(start, start+len));
+            LOGGER.debug("识别数量词："+text.substring(start, start+len));
             return true;
         }
         return false;
