@@ -36,11 +36,16 @@ import org.junit.BeforeClass;
  */
 public class RecognitionToolTest {
     private static final List<String> LIST = new ArrayList<>();
+    private static final List<String> QUANTIFIER = new ArrayList<>();
     @BeforeClass
     public static void initData() throws IOException{
         List<String> lines = Files.readAllLines(Paths.get("src/test/resources/chinese-number.txt"), Charset.forName("utf-8"));
         for(String line : lines){
             LIST.add(line);
+        }
+        List<String> lines2 = Files.readAllLines(Paths.get("src/test/resources/quantifier-test.txt"), Charset.forName("utf-8"));
+        for(String line : lines2){
+            QUANTIFIER.add(line);
         }
     }
     @Test
@@ -140,6 +145,13 @@ public class RecognitionToolTest {
             String str = text.get(i);
             boolean result = RecognitionTool.isChineseNumber(str, 0, str.length());
             assertEquals(str, expect.get(i), result);
+        }
+    }    
+    @Test
+    public void testIsQuantifier() {
+        for(String str : QUANTIFIER){
+            boolean result = RecognitionTool.isQuantifier(str, 0, str.length());
+            assertEquals(str, true, result);
         }
     }
 }
