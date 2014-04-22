@@ -44,6 +44,7 @@ public class DictionaryMerge {
     public static void main(String[] args) throws IOException{
         List<String> sources = new ArrayList<>();
         sources.add("src/main/resources/dic.txt");
+        sources.add("target/dic.txt");
         String target = "src/main/resources/dic.txt";
         merge(sources, target);
     }
