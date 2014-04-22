@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,6 +76,17 @@ public class PersonName {
         }catch(IOException e){
             LOGGER.error("加载百家姓出错：", e);
         }
+    }
+    /**
+     * 获取所有的姓
+     * @return 有序列表
+     */
+    public static List<String> getSurnames(){
+        List<String> result = new ArrayList<>();
+        result.addAll(surname1);
+        result.addAll(surname2);
+        Collections.sort(result);
+        return result;
     }
     /**
      * 如果文本为人名，则返回姓
