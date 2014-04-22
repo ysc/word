@@ -100,7 +100,7 @@ public class MinimumMatchingTest {
         expResult.add("[结合, 成分, 子式]");
         expResult.add("[有意, 见, 分歧]");
         expResult.add("[发展, 中国, 家兔, 的, 计划]");
-        expResult.add("[明天, 他将, 来, 北京]");
+        expResult.add("[明天, 他, 将来, 北京]");
         expResult.add("[税收, 制度, 将来, 会, 更, 完善]");
         expResult.add("[依靠, 群众, 才能, 做好, 工作]");
         expResult.add("[现在, 是, 施展, 才能, 的, 好机会]");
@@ -112,7 +112,7 @@ public class MinimumMatchingTest {
         expResult.add("[美国, 加州, 大学, 的, 科学, 家, 发现]");
         expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
-        expResult.add("[下雨, 天, 留客, 天天, 留我, 不留]");
+        expResult.add("[下雨, 天, 留客, 天天, 留, 我, 不留]");
         expResult.add("[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]");
         expResult.add("[白马, 非, 马]");
         

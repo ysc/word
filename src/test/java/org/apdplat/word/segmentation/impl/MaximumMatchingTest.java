@@ -100,7 +100,7 @@ public class MaximumMatchingTest {
         expResult.add("[结合, 成分, 子式]");
         expResult.add("[有意见, 分歧]");
         expResult.add("[发展中国家, 兔, 的, 计划]");
-        expResult.add("[明天, 他将, 来, 北京]");
+        expResult.add("[明天, 他, 将来, 北京]");
         expResult.add("[税收制度, 将来, 会, 更, 完善]");
         expResult.add("[依靠群众, 才能, 做好, 工作]");
         expResult.add("[现在, 是, 施展才能, 的, 好机会]");
@@ -112,7 +112,7 @@ public class MaximumMatchingTest {
         expResult.add("[美国加州大学, 的, 科学家, 发现]");
         expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
-        expResult.add("[下雨天, 留客, 天天, 留我, 不留]");
+        expResult.add("[下雨天, 留客, 天天, 留, 我, 不留]");
         expResult.add("[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]");
         
         for(int i=0; i<text.size(); i++){

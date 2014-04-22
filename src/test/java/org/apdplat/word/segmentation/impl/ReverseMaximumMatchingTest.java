@@ -112,7 +112,7 @@ public class ReverseMaximumMatchingTest {
         expResult.add("[美国加州大学, 的, 科学家, 发现]");
         expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
-        expResult.add("[下雨天, 留客, 天天, 留我, 不留]");
+        expResult.add("[下雨天, 留客, 天天, 留, 我, 不留]");
         expResult.add("[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]");
         
         for(int i=0; i<text.size(); i++){
