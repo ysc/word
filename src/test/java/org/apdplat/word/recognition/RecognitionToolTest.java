@@ -88,9 +88,9 @@ public class RecognitionToolTest {
         text.add("23h");
         text.add("88996661");
         text.add("1997");        
-        String singleStr = "0 1 2 3 4 5 6 7 8 9";
-        String[] single = singleStr.split(" ");
-        assertEquals(10, single.length);
+        String singleStr = "0 1 2 3 4 5 6 7 8 9 ０ １ ２ ３ ４ ５ ６ ７ ８ ９";
+        String[] single = singleStr.split("\\s+");
+        assertEquals(20, single.length);
         for(String s : single){
             text.add(s);
         }        
