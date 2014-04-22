@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -108,6 +109,38 @@ public class RecognitionToolTest {
             String str = text.get(i);
             boolean result = RecognitionTool.isNumber(str, 0, str.length());
             assertEquals(str, expect.get(i), result);
+        }
+    }    
+    @Test
+    public void testIsEnglishAndNumberMix() {
+        List<String> text = new ArrayList<>();
+        String singleStr = "ａ　ｂ　ｃ　ｄ　ｅ　ｆ　ｇ　ｈ　ｉ　ｊ　ｋ　ｌ　ｍ　ｎ　ｏ　ｐ　ｑ　ｒ　ｓ　ｔ　ｕ　ｖ　ｗ　ｘ　ｙ　ｚ　Ａ　Ｂ　Ｃ　Ｄ　Ｅ　Ｆ　Ｇ　Ｈ　Ｉ　Ｊ　Ｋ　Ｌ　Ｍ　Ｎ　Ｏ　Ｐ　Ｑ　Ｒ　Ｓ　Ｔ　Ｕ　Ｖ　Ｗ　Ｘ　Ｙ　Ｚ　a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z";
+        String[] single = singleStr.split("[　 ]+");
+        assertEquals(104, single.length);
+        for(String s : single){
+            text.add(s);
+        }        
+        singleStr = "0 1 2 3 4 5 6 7 8 9　０　１　２　３　４　５　６　７　８　９";
+        single = singleStr.split("[　 ]+");
+        assertEquals(20, single.length);
+        for(String s : single){
+            text.add(s);
+        }
+        List<String> list = new ArrayList<>();
+        Random r = new Random(System.nanoTime());
+        for(String s : text){
+            StringBuilder str = new StringBuilder();
+            str.append(s);
+            int len = r.nextInt(20);
+            for(int i=0; i<len; i++){
+                str.append(text.get(r.nextInt(text.size())));
+            }
+            list.add(str.toString());
+        }
+        text.addAll(list);
+        for(String s : text){
+            boolean result = RecognitionTool.isEnglishAndNumberMix(s, 0, s.length());
+            assertEquals(s, true, result);
         }
     }
     @Test
