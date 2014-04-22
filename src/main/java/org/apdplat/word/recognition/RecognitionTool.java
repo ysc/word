@@ -153,10 +153,7 @@ public class RecognitionTool {
     public static boolean isNumber(final String text, final int start, final int len){
         for(int i=start; i<start+len; i++){
             char c = text.charAt(i);
-            if(c > '9'){
-                return false;
-            }
-            if(c < '0'){
+            if(!isNumber(c)){
                 return false;
             }
         }
@@ -165,18 +162,31 @@ public class RecognitionTool {
         if(start>0){
             //判断前一个字符，如果为数字字符则识别失败
             char c = text.charAt(start-1);
-            if(c >= '0' && c <= '9'){
+            if(isNumber(c)){
                 return false;
             }
         }
         if(start+len < text.length()){
             //判断后一个字符，如果为数字字符则识别失败
             char c = text.charAt(start+len);
-            if(c >= '0' && c <= '9'){
+            if(isNumber(c)){
                 return false;
             }
         }
         LOGGER.debug("识别出数字："+text.substring(start, start+len));
+        return true;
+    }
+    public static boolean isNumber(char c){
+        //大部分字符在这个范围
+        if(c > '9' && c < '０'){
+            return false;
+        }
+        if(c < '0'){
+            return false;
+        }
+        if(c > '９'){
+            return false;
+        }
         return true;
     }
     /**
