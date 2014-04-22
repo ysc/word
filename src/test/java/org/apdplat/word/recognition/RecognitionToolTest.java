@@ -57,9 +57,9 @@ public class RecognitionToolTest {
         text.add("2word3");
         text.add("word");
         text.add("love");        
-        String singleStr = "a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z";
-        String[] single = singleStr.split(" ");
-        assertEquals(52, single.length);
+        String singleStr = "ａ　ｂ　ｃ　ｄ　ｅ　ｆ　ｇ　ｈ　ｉ　ｊ　ｋ　ｌ　ｍ　ｎ　ｏ　ｐ　ｑ　ｒ　ｓ　ｔ　ｕ　ｖ　ｗ　ｘ　ｙ　ｚ　Ａ　Ｂ　Ｃ　Ｄ　Ｅ　Ｆ　Ｇ　Ｈ　Ｉ　Ｊ　Ｋ　Ｌ　Ｍ　Ｎ　Ｏ　Ｐ　Ｑ　Ｒ　Ｓ　Ｔ　Ｕ　Ｖ　Ｗ　Ｘ　Ｙ　Ｚ　a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z";
+        String[] single = singleStr.split("[　 ]+");
+        assertEquals(104, single.length);
         for(String s : single){
             text.add(s);
         }        
@@ -88,8 +88,8 @@ public class RecognitionToolTest {
         text.add("23h");
         text.add("88996661");
         text.add("1997");        
-        String singleStr = "0 1 2 3 4 5 6 7 8 9 ０ １ ２ ３ ４ ５ ６ ７ ８ ９";
-        String[] single = singleStr.split("\\s+");
+        String singleStr = "0 1 2 3 4 5 6 7 8 9　０　１　２　３　４　５　６　７　８　９";
+        String[] single = singleStr.split("[　 ]+");
         assertEquals(20, single.length);
         for(String s : single){
             text.add(s);
