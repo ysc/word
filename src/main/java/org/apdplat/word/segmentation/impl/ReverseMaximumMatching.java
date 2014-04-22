@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 public class ReverseMaximumMatching implements Segmentation{
     private static final Logger LOGGER = LoggerFactory.getLogger(ReverseMaximumMatching.class);
     private static final Dictionary DIC = DictionaryFactory.getDictionary();
+    private static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
     @Override
     public List<Word> seg(String text) {
         Stack<Word> result = new Stack<>();
@@ -99,7 +100,7 @@ public class ReverseMaximumMatching implements Segmentation{
         for(int i=0;i<len;i++){
             list.add(result.pop());
         }
-        if("true".equals(WordConfTools.get("person.name.recognize", "true"))){
+        if(PERSON_NAME_RECOGNIZE){
             list = PersonName.recognize(list);
         }
         return list;        

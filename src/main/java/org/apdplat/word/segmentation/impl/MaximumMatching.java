@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 public class MaximumMatching implements Segmentation{
     private static final Logger LOGGER = LoggerFactory.getLogger(MaximumMatching.class);
     private static final Dictionary DIC = DictionaryFactory.getDictionary();
+    private static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
     @Override
     public List<Word> seg(String text) {
         List<Word> result = new ArrayList<>();
@@ -79,7 +80,7 @@ public class MaximumMatching implements Segmentation{
             //每一次成功切词后都要重置截取长度
             len=DIC.getMaxLength();
         }
-        if("true".equals(WordConfTools.get("person.name.recognize", "true"))){
+        if(PERSON_NAME_RECOGNIZE){
             result = PersonName.recognize(result);
         }
         return result;
