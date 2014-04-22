@@ -322,8 +322,8 @@ public class CorpusTools {
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/dic.txt"),"utf-8"));
                 BufferedWriter writerFreq = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/dic_with_freq.txt"),"utf-8"))){
             for(String word : WORDS.keySet()){
-                //过滤单字词或包含非中文字符的词
-                if(Utils.isChineseCharAndLengthAtLeastTwo(word)){
+                //过滤单字词
+                if(word.length() > 1){
                     writer.write(word+"\n");
                 }
             }
