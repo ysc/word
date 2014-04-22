@@ -88,13 +88,7 @@ public class RecognitionTool {
     public static boolean isEnglish(final String text, final int start, final int len){
         for(int i=start; i<start+len; i++){
             char c = text.charAt(i);
-            if(c > 'z'){
-                return false;
-            }
-            if(c < 'A'){
-                return false;
-            }
-            if(c > 'Z' && c < 'a'){
+            if(!isEnglish(c)){
                 return false;
             }
         }
@@ -103,18 +97,42 @@ public class RecognitionTool {
         if(start>0){
             //判断前一个字符，如果为英文字符则识别失败
             char c = text.charAt(start-1);
-            if( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ){
+            if(isEnglish(c)){
                 return false;
             }
         }
         if(start+len < text.length()){
             //判断后一个字符，如果为英文字符则识别失败
             char c = text.charAt(start+len);
-            if( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ){
+            if(isEnglish(c)){
                 return false;
             }
         }
         LOGGER.debug("识别出英文单词："+text.substring(start, start+len));
+        return true;
+    }
+    /**
+     * 英文字符识别，包括大小写，包括全角和半角
+     * @param c 字符
+     * @return 是否是英文字符
+     */
+    public static boolean isEnglish(char c){
+        //大部分字符在这个范围
+        if(c > 'z' && c < 'Ａ'){
+            return false;
+        }
+        if(c < 'A'){
+            return false;
+        }
+        if(c > 'Z' && c < 'a'){
+            return false;
+        }
+        if(c > 'Ｚ' && c < 'ａ'){
+            return false;
+        }
+        if(c > 'ｚ'){
+            return false;
+        }
         return true;
     }
     /**
@@ -176,6 +194,11 @@ public class RecognitionTool {
         LOGGER.debug("识别出数字："+text.substring(start, start+len));
         return true;
     }
+    /**
+     * 阿拉伯数字识别，包括全角和半角
+     * @param c 字符
+     * @return 是否是阿拉伯数字
+     */
     public static boolean isNumber(char c){
         //大部分字符在这个范围
         if(c > '9' && c < '０'){
