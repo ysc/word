@@ -42,14 +42,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 中文分词基础入口（启用停用词过滤）
+ * 中文分词基础入口
+ * 默认使用双向最大匹配算法
+ * 利用二元模型来消除歧义
  * @author 杨尚川
  */
-public class WordSeg {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WordSeg.class);    
+public class WordSegmenter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WordSegmenter.class);    
     private static final Segmentation segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
     /**
-     * 对文本进行分词但不移除停用词
+     * 对文本进行分词，保留停用词
      * @param text 文本
      * @return 分词结果
      */
@@ -57,7 +59,7 @@ public class WordSeg {
         return segmentation.seg(text);
     }
     /**
-     * 对文本进行分词并移除停用词
+     * 对文本进行分词，移除停用词
      * @param text 文本
      * @return 分词结果
      */
