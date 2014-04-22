@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -270,10 +271,15 @@ public class WordSegmenter {
     }
     public static void main(String[] args) throws Exception{
         String encoding = "utf-8";
-        if(args.length == 1){
-            encoding = args[0];
+        if(args.length == 0){
+            showUsage();
+            run(encoding);
         }
-        showUsage();
-        run(encoding);
+        if(Charset.isSupported(args[0])){
+            showUsage();
+            run(args[0]);
+        }else{
+            processCommand(args);
+        }
     }
 }
