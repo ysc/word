@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import org.apdplat.word.dictionary.impl.TrieV4;
+import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.util.DirectoryWatcher;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
@@ -121,6 +122,14 @@ public final class DictionaryFactory {
             LOGGER.info("将标点符号加入词典");            
             dicPath += ","+WordConfTools.get("punctuation.path", "classpath:punctuation.txt");
             LOGGER.info("dic.path="+dicPath);
+            int count=0;
+            for(String surname : PersonName.getSurnames()){
+                if(surname.length() == 2){
+                    count++;
+                    DIC.add(surname);
+                }
+            }
+            LOGGER.info("将 "+count+" 个复姓加入词典");
             loadDic(dicPath.trim());
             if(DIC instanceof TrieV4){
                 TrieV4 trieV4 = (TrieV4)DIC;
