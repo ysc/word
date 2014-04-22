@@ -217,11 +217,15 @@ public class WordSegmenter {
                 demo();
                 break;
             case 't':
-                if(args.length != 2){
+                if(args.length < 2){
                     showUsage();
                 }else{
-                    List<Word> words = segWithStopWords(args[1]);
-                    LOGGER.info("切分句子："+args[1]);
+                    StringBuilder str = new StringBuilder();
+                    for(int i=1; i<args.length; i++){
+                        str.append(args[i]).append(" ");
+                    }
+                    List<Word> words = segWithStopWords(str.toString());
+                    LOGGER.info("切分句子："+str.toString());
                     LOGGER.info("切分结果："+words.toString());
                 }
                 break;
@@ -233,8 +237,12 @@ public class WordSegmenter {
                 }
                 break;
             default:
-                List<Word> words = segWithStopWords(args[0]);
-                LOGGER.info("切分句子："+args[0]);
+                StringBuilder str = new StringBuilder();
+                for(String a : args){
+                    str.append(a).append(" ");
+                }
+                List<Word> words = segWithStopWords(str.toString());
+                LOGGER.info("切分句子："+str.toString());
                 LOGGER.info("切分结果："+words.toString());
                 break;
         }
