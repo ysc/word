@@ -47,10 +47,9 @@ public class RecognitionTool {
      * @return 是否识别
      */
     public static boolean recog(final String text, final int start, final int len){
-        return isEnglish(text, start, len) 
+        return isEnglishAndNumberMix(text, start, len) 
                 || isFraction(text, start, len)
                 || isQuantifier(text, start, len)
-                || isNumber(text, start, len)
                 || isChineseNumber(text, start, len);
     }
     /**
@@ -78,6 +77,39 @@ public class RecognitionTool {
         int beforeLen = index-start;
         return isNumber(text, start, beforeLen) && isNumber(text, index+1, len-(beforeLen+1));
     }
+    /**
+     * 英文字母和数字混合识别，能识别纯数字、纯英文单词以及混合的情况
+     * @param text 识别文本
+     * @param start 待识别文本开始索引
+     * @param len 识别长度
+     * @return 是否识别
+     */
+    public static boolean isEnglishAndNumberMix(final String text, final int start, final int len){
+        for(int i=start; i<start+len; i++){
+            char c = text.charAt(i);
+            if(!(isEnglish(c) || isNumber(c))){
+                return false;
+            }
+        }
+        //指定的字符串已经识别为英文字母和数字混合串
+        //下面要判断英文字母和数字混合串是否完整
+        if(start>0){
+            //判断前一个字符，如果为英文字符或数字则识别失败
+            char c = text.charAt(start-1);
+            if(isEnglish(c) || isNumber(c)){
+                return false;
+            }
+        }
+        if(start+len < text.length()){
+            //判断后一个字符，如果为英文字符或数字则识别失败
+            char c = text.charAt(start+len);
+            if(isEnglish(c) || isNumber(c)){
+                return false;
+            }
+        }
+        LOGGER.debug("识别出英文字母和数字混合串："+text.substring(start, start+len));
+        return true;
+    }    
     /**
      * 英文单词识别
      * @param text 识别文本
