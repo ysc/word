@@ -66,7 +66,7 @@ public class RecognitionTool {
         int index = -1;
         for(int i=start; i<start+len; i++){
             char c = text.charAt(i);
-            if(c=='.' || c=='/' || c=='／' || c=='．'){
+            if(c=='.' || c=='/' || c=='／' || c=='．' || c=='·'){
                 index = i;
                 break;
             }
