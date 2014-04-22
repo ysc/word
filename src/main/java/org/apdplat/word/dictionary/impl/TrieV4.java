@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
  */
 public class TrieV4 implements Dictionary{
     private static final Logger LOGGER = LoggerFactory.getLogger(TrieV4.class);
-    //词表的首字母数量在一个可控范围内，默认值为12000
-    private static final int INDEX_LENGTH = 12000;
+    //词表的首字母数量在一个可控范围内，默认值为24000
+    private static final int INDEX_LENGTH = 24000;
     private final TrieNode[] ROOT_NODES_INDEX = new TrieNode[INDEX_LENGTH];
     private int maxLength;
     @Override
