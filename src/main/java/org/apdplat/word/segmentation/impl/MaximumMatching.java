@@ -42,6 +42,7 @@ public class MaximumMatching implements Segmentation{
     private static final Logger LOGGER = LoggerFactory.getLogger(MaximumMatching.class);
     private static final Dictionary DIC = DictionaryFactory.getDictionary();
     private static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
+    private static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
     @Override
     public List<Word> seg(String text) {
         List<Word> result = new ArrayList<>();
@@ -74,7 +75,7 @@ public class MaximumMatching implements Segmentation{
                 //如果查不到，则长度减一后继续
                 len--;
             }
-            result.add(new Word(text.substring(start, start+len).toLowerCase()));
+            addWord(result, text, start, len);
             //从待分词文本中向后移动索引，滑过已经分词的文本
             start+=len;
             //每一次成功切词后都要重置截取长度
@@ -84,6 +85,28 @@ public class MaximumMatching implements Segmentation{
             result = PersonName.recognize(result);
         }
         return result;
+    }
+    private void addWord(List<Word> result, String text, int start, int len){
+        //方便编译器优化
+        if(KEEP_WHITESPACE){
+            //保留空白字符
+            result.add(new Word(text.substring(start, start+len).toLowerCase()));
+        }else{
+            //忽略空白字符，包括：空格、全角空格、\t、\n                
+            if(len > 1){
+                //长度大于1，不会是空白字符
+                result.add(new Word(text.substring(start, start+len).toLowerCase()));
+            }else{
+                //长度为1，只要非空白字符
+                if(!(text.substring(start, start+len).charAt(0) == ' ')
+                    && !(text.substring(start, start+len).charAt(0) == '　')
+                    && !(text.substring(start, start+len).charAt(0) == '\t')
+                    && !(text.substring(start, start+len).charAt(0) == '\n')){
+                    //不是空白字符，保留
+                    result.add(new Word(text.substring(start, start+len).toLowerCase()));                        
+                }
+            }
+        }
     }
     public static void main(String[] args){
         String text = "他十分惊讶地说：“啊，原来是您，杨尚川！能见到您真是太好了，我有个Nutch问题想向您请教呢！”";

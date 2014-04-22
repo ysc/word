@@ -42,6 +42,7 @@ public class MinimumMatching implements Segmentation{
     private static final Logger LOGGER = LoggerFactory.getLogger(MinimumMatching.class);
     private static final Dictionary DIC = DictionaryFactory.getDictionary();
     private static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
+    private static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
     @Override
     public List<Word> seg(String text) {
         List<Word> result = new ArrayList<>();
@@ -72,7 +73,7 @@ public class MinimumMatching implements Segmentation{
                 //如果查不到，则长度加一后继续
                 len++;
             }
-            result.add(new Word(text.substring(start, start+len).toLowerCase()));
+            addWord(result, text, start, len);
             //从待分词文本中向后移动索引，滑过已经分词的文本
             start+=len;
             //每一次成功切词后都要重置截取长度
@@ -83,6 +84,28 @@ public class MinimumMatching implements Segmentation{
             result = PersonName.recognize(result);
         }
         return result;
+    }
+    private void addWord(List<Word> result, String text, int start, int len){
+        //方便编译器优化
+        if(KEEP_WHITESPACE){
+            //保留空白字符
+            result.add(new Word(text.substring(start, start+len).toLowerCase()));
+        }else{
+            //忽略空白字符，包括：空格、全角空格、\t、\n                
+            if(len > 1){
+                //长度大于1，不会是空白字符
+                result.add(new Word(text.substring(start, start+len).toLowerCase()));
+            }else{
+                //长度为1，只要非空白字符
+                if(!(text.substring(start, start+len).charAt(0) == ' ')
+                    && !(text.substring(start, start+len).charAt(0) == '　')
+                    && !(text.substring(start, start+len).charAt(0) == '\t')
+                    && !(text.substring(start, start+len).charAt(0) == '\n')){
+                    //不是空白字符，保留
+                    result.add(new Word(text.substring(start, start+len).toLowerCase()));                        
+                }
+            }
+        }
     }
     public static void main(String[] args){
         String text = "《红楼梦》的作者是曹雪芹。课文里有一篇鲁迅的《从百草园到三味书屋》。他的文章在《人民日报》上发表了。桌上放着一本《中国语文》。《〈中国工人〉发刊词》发表于1940年2月7日。杨尚川是APDPlat应用级产品开发平台的作者";

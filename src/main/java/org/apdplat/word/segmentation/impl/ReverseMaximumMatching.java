@@ -43,6 +43,7 @@ public class ReverseMaximumMatching implements Segmentation{
     private static final Logger LOGGER = LoggerFactory.getLogger(ReverseMaximumMatching.class);
     private static final Dictionary DIC = DictionaryFactory.getDictionary();
     private static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
+    private static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
     @Override
     public List<Word> seg(String text) {
         Stack<Word> result = new Stack<>();
@@ -82,7 +83,7 @@ public class ReverseMaximumMatching implements Segmentation{
                 len--;
                 start++;
             }
-            result.push(new Word(text.substring(start, start+len).toLowerCase()));
+            addWord(result, text, start, len);
             //每一次成功切词后都要重置截取长度
             len=DIC.getMaxLength();            
             if(len>start){
@@ -105,6 +106,28 @@ public class ReverseMaximumMatching implements Segmentation{
         }
         return list;        
     }    
+    private void addWord(Stack<Word> result, String text, int start, int len){
+        //方便编译器优化
+        if(KEEP_WHITESPACE){
+            //保留空白字符
+            result.push(new Word(text.substring(start, start+len).toLowerCase()));
+        }else{
+            //忽略空白字符，包括：空格、全角空格、\t、\n                
+            if(len > 1){
+                //长度大于1，不会是空白字符
+                result.push(new Word(text.substring(start, start+len).toLowerCase()));
+            }else{
+                //长度为1，只要非空白字符
+                if(!(text.substring(start, start+len).charAt(0) == ' ')
+                    && !(text.substring(start, start+len).charAt(0) == '　')
+                    && !(text.substring(start, start+len).charAt(0) == '\t')
+                    && !(text.substring(start, start+len).charAt(0) == '\n')){
+                    //不是空白字符，保留
+                    result.push(new Word(text.substring(start, start+len).toLowerCase()));                        
+                }
+            }
+        }
+    }
     public static void main(String[] args){
         String text = "'软件工程四大圣经'：《设计模式》、《反模式》、《重构》、《解析极限编程》。其中《设计模式》和《重构》号称'软工双雄'。";
         if(args !=null && args.length == 1){
