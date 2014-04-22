@@ -8,7 +8,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -53,7 +55,7 @@ public class Punctuation {
                 in = new FileInputStream(path);
             }
             try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
-                List<String> list = new ArrayList<>();
+                Set<Character> set = new HashSet<>();
                 String line;
                 while((line = reader.readLine()) != null){
                     line = line.trim();
@@ -61,15 +63,24 @@ public class Punctuation {
                         continue;
                     }
                     if(line.length() == 1){
-                        list.add(line);
+                        set.add(line.charAt(0));
+                    }else{
+                        LOGGER.warn("长度不为一的标点符号："+line);
                     }
                 }
+                //增加空白字符
+                set.add(' ');
+                set.add('　');
+                set.add('\t');
+                set.add('\n');
+                List<Character> list = new ArrayList<>();
+                list.addAll(set);
                 Collections.sort(list);
                 int len = list.size();
                 LOGGER.info("开始构造标点符号有序字符数组："+list);
                 chars = new char[len];
                 for(int i=0; i<len; i++){
-                    chars[i] = list.get(i).charAt(0);
+                    chars[i] = list.get(i);
                 }
                 list.clear();
             }
@@ -102,5 +113,9 @@ public class Punctuation {
     public static void main(String[] args){
         LOGGER.info("标点符号资源");
         LOGGER.info(", : "+is(','));
+        LOGGER.info("  : "+is(' '));
+        LOGGER.info("　 : "+is('　'));
+        LOGGER.info("\t : "+is('\t'));
+        LOGGER.info("\n : "+is('\n'));
     }
 }
