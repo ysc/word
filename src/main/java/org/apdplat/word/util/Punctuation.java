@@ -78,6 +78,19 @@ public class Punctuation {
         }
     }
     /**
+     * 判断文本中是否包含标点符号
+     * @param text
+     * @return 
+     */
+    public static boolean has(String text){
+        for(char c : text.toCharArray()){
+            if(is(c)){
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
      * 判断一个字符是否是标点符号
      * @param _char 字符
      * @return 是否是标点符号
