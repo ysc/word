@@ -187,7 +187,10 @@ public class RecognitionTool {
         }
         char lastChar = text.charAt(start+len-1);
         if(Quantifier.is(lastChar)
-                && (isNumber(text, start, len-1) || isChineseNumber(text, start, len-1)) ){
+                && 
+                (isNumber(text, start, len-1) || 
+                isChineseNumber(text, start, len-1) || 
+                isFraction(text, start, len-1)) ){
             LOGGER.debug("识别数量词："+text.substring(start, start+len));
             return true;
         }
@@ -287,5 +290,9 @@ public class RecognitionTool {
         }
         LOGGER.debug("识别出中文数字："+text.substring(start, start+len));
         return true;
+    }    
+    public static void main(String[] args){
+        String t="0.08%";
+        LOGGER.info(""+recog(t, 0, t.length()));
     }
 }
