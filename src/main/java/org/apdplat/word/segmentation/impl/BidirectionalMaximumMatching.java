@@ -22,6 +22,11 @@ package org.apdplat.word.segmentation.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
@@ -39,13 +44,32 @@ public class BidirectionalMaximumMatching implements Segmentation{
     private static final Logger LOGGER = LoggerFactory.getLogger(BidirectionalMaximumMatching.class);
     private static final Segmentation MM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
     private static final Segmentation RMM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     @Override
-    public List<Word> seg(String text) {
+    public List<Word> seg(final String text) {
         //逆向最大匹配
-        List<Word> wordsRMM = RMM.seg(text);
+        Future<List<Word>> wordsRMMFuture = EXECUTOR_SERVICE.submit(new Callable<List<Word>>(){
+            @Override
+            public List<Word> call() throws Exception {
+                return RMM.seg(text);
+            }            
+        });
         //正向最大匹配
-        List<Word> wordsMM = MM.seg(text);
-        
+        Future<List<Word>> wordsMMFuture = EXECUTOR_SERVICE.submit(new Callable<List<Word>>(){
+            @Override
+            public List<Word> call() throws Exception {
+                return MM.seg(text);
+            }            
+        });
+        List<Word> wordsRMM = null;
+        List<Word> wordsMM = null;
+        try{
+            wordsRMM = wordsRMMFuture.get();
+            wordsMM = wordsMMFuture.get();
+        }catch(InterruptedException | ExecutionException e){
+            LOGGER.error("获取分词结果失败：", e);
+            return null;
+        }
         //如果分词结果都一样，则直接返回结果
         if(wordsRMM.toString().equals(wordsMM.toString())){            
             return wordsRMM;
