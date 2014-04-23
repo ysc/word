@@ -20,12 +20,14 @@
 
 package org.apdplat.word.segmentation.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.Punctuation;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +41,31 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected static final Dictionary DIC = DictionaryFactory.getDictionary();
     protected static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
     protected static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
-
+    
+    public abstract List<Word> segImpl(String text);
+    
+    /**
+     * 默认分词算法实现：
+     * 1、把要分词的文本根据标点符号进行分割
+     * 2、对分割后的文本进行分词
+     * 3、组合分词结果
+     * @param text 文本
+     * @return 分词结果
+     */
+    @Override
+    public List<Word> seg(String text) {
+        List<Word> result = new ArrayList<>();
+        List<String> sentences = Punctuation.seg(text, true);
+        for(String sentence : sentences){
+            if(sentence.length() == 1){
+                result.add(new Word(sentence));
+            }
+            if(sentence.length() > 1){
+                result.addAll(segImpl(sentence));
+            }
+        }
+        return result;
+    }
     /**
      * 将识别出的词放入队列
      * @param result 队列
