@@ -34,7 +34,7 @@ import org.apdplat.word.util.Punctuation;
  */
 public class MaximumMatching extends AbstractSegmentation{
     @Override
-    public List<Word> seg(String text) {
+    public List<Word> segImpl(String text) {
         List<Word> result = new ArrayList<>();
         //文本长度
         final int textLen=text.length();

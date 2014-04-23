@@ -35,7 +35,7 @@ import org.apdplat.word.util.Punctuation;
  */
 public class ReverseMaximumMatching extends AbstractSegmentation{
     @Override
-    public List<Word> seg(String text) {
+    public List<Word> segImpl(String text) {
         Stack<Word> result = new Stack<>();
         //文本长度
         final int textLen=text.length();
