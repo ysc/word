@@ -25,7 +25,6 @@ import java.util.List;
 import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.util.Punctuation;
 
 /**
  * 基于词典的正向最小匹配算法
@@ -50,12 +49,6 @@ public class MinimumMatching extends AbstractSegmentation{
                 //或已经遍历完剩下的文本且在词典中未找到匹配
                 //则按长度为一切分
                 if(len==DIC.getMaxLength() || len==textLen-start){
-                    //重置截取长度为一
-                    len=1;
-                    break;
-                }
-                //判断下一个字符是否是标点符号，如果是则结束查词典，加快分词速度
-                if(Punctuation.is(text.charAt(start+len))){
                     //重置截取长度为一
                     len=1;
                     break;

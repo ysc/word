@@ -26,7 +26,6 @@ import java.util.Stack;
 import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.util.Punctuation;
 
 /**
  * 基于词典的逆向最大匹配算法
@@ -59,13 +58,6 @@ public class ReverseMaximumMatching extends AbstractSegmentation{
                 //如果长度为一且在词典中未找到匹配
                 //则按长度为一切分
                 if(len==1){
-                    break;
-                }
-                //判断最后2个字符是否是标点符号，如果有一个字符是则结束查词典，加快分词速度
-               if(Punctuation.is(text.charAt(start+len-1)) || Punctuation.is(text.charAt(start+len-2))){
-                    //重置截取长度为一
-                    start+=len-1;
-                    len=1;
                     break;
                 }
                 //如果查不到，则长度减一

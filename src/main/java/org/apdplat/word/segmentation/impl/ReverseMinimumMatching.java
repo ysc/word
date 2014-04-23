@@ -26,7 +26,6 @@ import java.util.Stack;
 import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.util.Punctuation;
 
 /**
  * 基于词典的逆向最小匹配算法
@@ -47,14 +46,6 @@ public class ReverseMinimumMatching extends AbstractSegmentation{
         while(start>=0){
             //用长为len的字符串查词典
             while(!DIC.contains(text, start, len) && !RecognitionTool.recog(text, start, len)){
-                //判断下一个字符是否是标点符号，如果是则结束查词典，加快分词速度
-                if(start > 1 && Punctuation.is(text.charAt(start-1))){
-                    //重置截取长度为一
-                    //向后移动start索引
-                    start+=len-1;
-                    len=1;
-                    break;
-                }
                 //如果查不到，则长度加一后继续
                 //索引向前移动一个字，然后继续
                 len++;
