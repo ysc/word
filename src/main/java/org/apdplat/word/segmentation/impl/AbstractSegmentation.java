@@ -40,43 +40,59 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
     protected static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
 
+    /**
+     * 将识别出的词放入队列
+     * @param result 队列
+     * @param text 文本
+     * @param start 词开始索引
+     * @param len 词长度
+     */
     protected void addWord(List<Word> result, String text, int start, int len){
-        //方便编译器优化
-        if(KEEP_WHITESPACE){
-            //保留空白字符
-            result.add(new Word(text.substring(start, start+len).toLowerCase()));
-        }else{
-            //忽略空白字符，包括：空格、全角空格、\t、\n                
-            if(len > 1){
-                //长度大于1，不会是空白字符
-                result.add(new Word(text.substring(start, start+len).toLowerCase()));
-            }else{
-                //长度为1，只要非空白字符
-                if(!(isWhiteSpace(text, start, len))){
-                    //不是空白字符，保留
-                    result.add(new Word(text.substring(start, start+len).toLowerCase()));                        
-                }
-            }
+        Word word = getWord(text, start, len);
+        if(word != null){
+            result.add(word);
         }
     }
+    /**
+     * 将识别出的词入栈
+     * @param result 栈
+     * @param text 文本
+     * @param start 词开始索引
+     * @param len 词长度
+     */
     protected void addWord(Stack<Word> result, String text, int start, int len){
+        Word word = getWord(text, start, len);
+        if(word != null){
+            result.push(word);
+        }
+    }    
+    /**
+     * 获取一个已经识别的词
+     * @param text 文本
+     * @param start 词开始索引
+     * @param len 词长度
+     * @return 词或空
+     */
+    protected Word getWord(String text, int start, int len){
+        Word word = new Word(text.substring(start, start+len).toLowerCase());
         //方便编译器优化
         if(KEEP_WHITESPACE){
             //保留空白字符
-            result.push(new Word(text.substring(start, start+len).toLowerCase()));
+            return word;
         }else{
             //忽略空白字符，包括：空格、全角空格、\t、\n                
             if(len > 1){
                 //长度大于1，不会是空白字符
-                result.push(new Word(text.substring(start, start+len).toLowerCase()));
+                return word;
             }else{
                 //长度为1，只要非空白字符
                 if(!(isWhiteSpace(text, start, len))){
                     //不是空白字符，保留
-                    result.push(new Word(text.substring(start, start+len).toLowerCase()));                        
+                    return word;           
                 }
             }
         }
+        return null;
     }
     /**
      * 判断索引下标为start的字符是否为空白字符
