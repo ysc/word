@@ -52,10 +52,7 @@ public abstract class AbstractSegmentation  implements Segmentation{
                 result.add(new Word(text.substring(start, start+len).toLowerCase()));
             }else{
                 //长度为1，只要非空白字符
-                if(!(text.substring(start, start+len).charAt(0) == ' ')
-                    && !(text.substring(start, start+len).charAt(0) == '　')
-                    && !(text.substring(start, start+len).charAt(0) == '\t')
-                    && !(text.substring(start, start+len).charAt(0) == '\n')){
+                if(!(isWhiteSpace(text, start, len))){
                     //不是空白字符，保留
                     result.add(new Word(text.substring(start, start+len).toLowerCase()));                        
                 }
@@ -74,15 +71,32 @@ public abstract class AbstractSegmentation  implements Segmentation{
                 result.push(new Word(text.substring(start, start+len).toLowerCase()));
             }else{
                 //长度为1，只要非空白字符
-                if(!(text.substring(start, start+len).charAt(0) == ' ')
-                    && !(text.substring(start, start+len).charAt(0) == '　')
-                    && !(text.substring(start, start+len).charAt(0) == '\t')
-                    && !(text.substring(start, start+len).charAt(0) == '\n')){
+                if(!(isWhiteSpace(text, start, len))){
                     //不是空白字符，保留
                     result.push(new Word(text.substring(start, start+len).toLowerCase()));                        
                 }
             }
         }
+    }
+    /**
+     * 判断索引下标为start的字符是否为空白字符
+     * 这个方法只用在这里
+     * 为了速度，不检查索引下标是否越界
+     * @param text 文本
+     * @param start 索引下标
+     * @param len 长度
+     * @return 是否
+     */
+    protected boolean isWhiteSpace(String text, int start, int len){
+        return isWhiteSpace(text.charAt(start));
+    }
+    /**
+     * 判断指定的字符是否是空白字符
+     * @param c 字符
+     * @return 是否是空白字符
+     */
+    protected boolean isWhiteSpace(char c){
+        return c == ' ' || c == '　' || c == '\t' || c == '\n';
     }
     public static void main(String[] args){
 
