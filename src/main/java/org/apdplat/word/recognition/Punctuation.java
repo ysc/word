@@ -104,17 +104,26 @@ public class Punctuation {
     }
     /**
      * 将一段文本根据标点符号分割为多个不包含标点符号的文本
+     * 可指定要保留那些标点符号
      * @param text 文本
      * @param withPunctuation 是否保留标点符号
+     * @param reserve 保留的标点符号列表
      * @return 文本列表
      */
-    public static List<String> seg(String text, boolean withPunctuation){
+    public static List<String> seg(String text, boolean withPunctuation, char... reserve){
         List<String> list = new ArrayList<>();
         int start = 0;
         char[] array = text.toCharArray();
         int len = array.length;
-        for(int i=0; i<len; i++){
-            if(Punctuation.is(array[i])){
+        outer:for(int i=0; i<len; i++){
+            char c = array[i];
+            for(char t : reserve){
+                if(c == t){
+                    //保留的标点符号
+                    continue outer;
+                }
+            }
+            if(Punctuation.is(c)){
                 if(i > start){
                     list.add(text.substring(start, i));
                     //下一句开始索引
@@ -124,7 +133,7 @@ public class Punctuation {
                     start++;
                 }
                 if(withPunctuation){
-                    list.add(Character.toString(array[i]));
+                    list.add(Character.toString(c));
                 }
             }
         }
