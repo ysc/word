@@ -28,25 +28,21 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.apdplat.word.corpus.Bigram;
-import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.Word;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 基于词典的双向最大匹配算法
  * Dictionary-based bidirectional maximum matching algorithm
  * @author 杨尚川
  */
-public class BidirectionalMaximumMatching implements Segmentation{
-    private static final Logger LOGGER = LoggerFactory.getLogger(BidirectionalMaximumMatching.class);
-    private static final Segmentation MM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
-    private static final Segmentation RMM = SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
+public class BidirectionalMaximumMatching extends AbstractSegmentation{
+    private static final AbstractSegmentation MM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
+    private static final AbstractSegmentation RMM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     @Override
-    public List<Word> seg(final String text) {
+    public List<Word> segImpl(final String text) {
         //逆向最大匹配
         Future<List<Word>> wordsRMMFuture = EXECUTOR_SERVICE.submit(new Callable<List<Word>>(){
             @Override
@@ -98,7 +94,7 @@ public class BidirectionalMaximumMatching implements Segmentation{
         return result;
     }
     public static void main(String[] args){
-        String text = "他十分惊讶地说：“啊，原来是您，杨尚川！能见到您真是太好了，我有个Nutch问题想向您请教呢！”";
+        String text = "APDPlat的雏形可以追溯到2008年，并于4年后即2012年4月9日在GITHUB开源 。APDPlat在演化的过程中，经受住了众多项目的考验，一直追求简洁优雅，一直对架构、设计和代码进行重构优化。 ";
         if(args !=null && args.length == 1){
             text = args[0];
         }
