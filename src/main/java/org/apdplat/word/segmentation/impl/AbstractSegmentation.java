@@ -68,7 +68,12 @@ public abstract class AbstractSegmentation  implements Segmentation{
                 }
             }
             if(sentence.length() > 1){
-                result.addAll(segImpl(sentence));
+                List<Word> list = segImpl(sentence);
+                if(list != null){
+                    result.addAll(list);
+                }else{
+                    LOGGER.error("文本 "+sentence+" 没有获得分词结果");
+                }
             }
         }
         return result;
