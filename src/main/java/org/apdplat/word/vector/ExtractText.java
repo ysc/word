@@ -63,8 +63,10 @@ public class ExtractText {
     }
     /**
      * 从语料库中抽取内容
+     * @param output 保存抽取出的文本的文件路径
+     * @param separator 词之间的分隔符
      */
-    private static void extractFromCorpus(String output, String separator){
+    public static void extractFromCorpus(String output, String separator){
         String zipFile = "src/main/resources/corpus/corpora.zip";        
         LOGGER.info("开始从语料库中抽取文本");
         long start = System.currentTimeMillis();        
