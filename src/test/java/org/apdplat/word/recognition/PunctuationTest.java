@@ -18,7 +18,7 @@
  * 
  */
 
-package org.apdplat.word.util;
+package org.apdplat.word.recognition;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

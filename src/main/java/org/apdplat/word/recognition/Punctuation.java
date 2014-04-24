@@ -1,4 +1,4 @@
-package org.apdplat.word.util;
+package org.apdplat.word.recognition;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.LoggerFactory;
 
 /**
