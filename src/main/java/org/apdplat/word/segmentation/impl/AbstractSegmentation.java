@@ -41,6 +41,7 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected static final Dictionary DIC = DictionaryFactory.getDictionary();
     protected static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
     protected static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
+    protected static final boolean KEEP_PUNCTUATION = "true".equals(WordConfTools.get("keep.punctuation", "false"));
     
     public abstract List<Word> segImpl(String text);
     
@@ -55,7 +56,7 @@ public abstract class AbstractSegmentation  implements Segmentation{
     @Override
     public List<Word> seg(String text) {
         List<Word> result = new ArrayList<>();
-        List<String> sentences = Punctuation.seg(text, true);
+        List<String> sentences = Punctuation.seg(text, KEEP_PUNCTUATION);
         for(String sentence : sentences){
             if(sentence.length() == 1){
                 if(KEEP_WHITESPACE){
