@@ -118,6 +118,10 @@ public class WordSegmenter {
             long start = System.currentTimeMillis();
             String line = null;
             while((line = reader.readLine()) != null){
+                if("".equals(line.trim())){
+                    writer.write("\n");
+                    continue;
+                }
                 textLength += line.length();
                 List<Word> words = null;
                 if(removeStopWords){
