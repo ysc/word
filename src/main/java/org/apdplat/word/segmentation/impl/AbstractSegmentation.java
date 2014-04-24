@@ -58,7 +58,13 @@ public abstract class AbstractSegmentation  implements Segmentation{
         List<String> sentences = Punctuation.seg(text, true);
         for(String sentence : sentences){
             if(sentence.length() == 1){
-                result.add(new Word(sentence));
+                if(KEEP_WHITESPACE){
+                    result.add(new Word(sentence));
+                }else{
+                    if(!isWhiteSpace(sentence.charAt(0))){
+                        result.add(new Word(sentence));
+                    }
+                }
             }
             if(sentence.length() > 1){
                 result.addAll(segImpl(sentence));
