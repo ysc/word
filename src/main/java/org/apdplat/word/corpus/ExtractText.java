@@ -18,7 +18,7 @@
  * 
  */
 
-package org.apdplat.word.vector;
+package org.apdplat.word.corpus;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
