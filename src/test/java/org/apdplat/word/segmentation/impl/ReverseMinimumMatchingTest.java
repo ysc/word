@@ -84,14 +84,14 @@ public class ReverseMinimumMatchingTest {
         expResult.add("[提高, 人民, 生活, 水平]");
         expResult.add("[他俩, 儿, 谈, 恋爱, 是从, 头年, 元月, 开始, 的]");
         expResult.add("[王府, 饭店, 的, 设施, 和, 服务, 是, 一流, 的]");
-        expResult.add("[和, 服务于, 三, 日后, 裁制, 完毕, ，, 并, 呈送, 将军, 府中]");
+        expResult.add("[和, 服务于, 三, 日后, 裁制, 完毕, 并, 呈送, 将军, 府中]");
         expResult.add("[研究, 生命, 的, 起源]");
         expResult.add("[他, 明天, 起身, 去, 北京]");
         expResult.add("[在, 这些, 企业, 中, 国有, 企业, 有, 十个]");
         expResult.add("[他, 站, 起身, 来]");
         expResult.add("[他们, 是, 来, 查, 金泰, 撞人, 那, 件事, 的]");
         expResult.add("[行, 侠, 仗义, 的, 查, 金泰, 远近, 闻名]");
-        expResult.add("[他, 从, 马上, 摔下, 来了, ,, 你, 马上, 下来, 一下]");
+        expResult.add("[他, 从, 马上, 摔下, 来了, 你, 马上, 下来, 一下]");
         expResult.add("[乒乓球, 拍卖, 完了]");
         expResult.add("[咬死, 猎人, 的, 狗]");
         expResult.add("[地, 面积, 了, 厚厚的, 雪]");
