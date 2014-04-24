@@ -28,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -207,47 +206,51 @@ public class WordSegmenter {
         long cost = System.currentTimeMillis() - start;
         LOGGER.info("耗时: "+cost+" 毫秒");
     }
-    public static void processCommand(String... args) throws Exception{
+    public static void processCommand(String... args) {
         if(args == null || args.length < 1){
             LOGGER.info("命令不正确");
             return;
         }
-        switch(args[0].trim().charAt(0)){
-            case 'd':
-                demo();
-                break;
-            case 't':
-                if(args.length < 2){
-                    showUsage();
-                }else{
+        try{
+            switch(args[0].trim().charAt(0)){
+                case 'd':
+                    demo();
+                    break;
+                case 't':
+                    if(args.length < 2){
+                        showUsage();
+                    }else{
+                        StringBuilder str = new StringBuilder();
+                        for(int i=1; i<args.length; i++){
+                            str.append(args[i]).append(" ");
+                        }
+                        List<Word> words = segWithStopWords(str.toString());
+                        LOGGER.info("切分句子："+str.toString());
+                        LOGGER.info("切分结果："+words.toString());
+                    }
+                    break;
+                case 'f':
+                    if(args.length != 3){
+                        showUsage();
+                    }else{
+                        segWithStopWords(new File(args[1]), new File(args[2]));
+                    }
+                    break;
+                default:
                     StringBuilder str = new StringBuilder();
-                    for(int i=1; i<args.length; i++){
-                        str.append(args[i]).append(" ");
+                    for(String a : args){
+                        str.append(a).append(" ");
                     }
                     List<Word> words = segWithStopWords(str.toString());
                     LOGGER.info("切分句子："+str.toString());
                     LOGGER.info("切分结果："+words.toString());
-                }
-                break;
-            case 'f':
-                if(args.length != 3){
-                    showUsage();
-                }else{
-                    segWithStopWords(new File(args[1]), new File(args[2]));
-                }
-                break;
-            default:
-                StringBuilder str = new StringBuilder();
-                for(String a : args){
-                    str.append(a).append(" ");
-                }
-                List<Word> words = segWithStopWords(str.toString());
-                LOGGER.info("切分句子："+str.toString());
-                LOGGER.info("切分结果："+words.toString());
-                break;
+                    break;
+            }
+        }catch(Exception e){
+            showUsage();
         }
     }
-    private static void run(String encoding) throws UnsupportedEncodingException, IOException, Exception {
+    private static void run(String encoding) {
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, encoding))){
             String line = null;
             while((line = reader.readLine()) != null){
@@ -262,6 +265,8 @@ public class WordSegmenter {
                 processCommand(line.split(" "));
                 showUsage();
             }
+        } catch (IOException ex) {
+            LOGGER.error("程序中断：", ex);
         }
     }
     private static void showUsage(){
@@ -277,7 +282,7 @@ public class WordSegmenter {
         LOGGER.info("********************************************");
         LOGGER.info("输入命令后回车确认：");
     }
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
         String encoding = "utf-8";
         if(args.length == 0){
             showUsage();
