@@ -70,7 +70,7 @@ public class DictionaryMerge {
                     || line.length() < 2
                     || !Utils.isChineseCharAndLengthAtLeastTwo(line)
                     || RecognitionTool.recog(line)){
-                LOGGER.info("过滤："+line);
+                LOGGER.debug("过滤："+line);
                 continue;
             }
             set.add(line);
