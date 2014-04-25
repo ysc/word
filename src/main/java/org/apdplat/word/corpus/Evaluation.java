@@ -59,7 +59,7 @@ public class Evaluation {
             Files.createDirectory(path);
         }
         //1、抽取文本
-        ExtractText.extractFromCorpus(corpusText, " ");
+        ExtractText.extractFromCorpus(corpusText, " ", false);
         //2、生成测试数据集和标准数据集
         generateDataset(corpusText, testText, standardText);
         Map<String, String> map = new HashMap<>();
@@ -139,7 +139,8 @@ public class Evaluation {
         }
         long cost = System.currentTimeMillis() - start;
         int total = perfectCount+wrongCount;
-        String report = "耗时："+cost+" 毫秒 ，总行数："+total+" ，完美行数："+perfectCount+" ，错误行数："+wrongCount+" ，完美率："+perfectCount/(float)total*100+"% ，错误率："+wrongCount/(float)total*100+"%";
+        LOGGER.info("评估耗时："+cost+" 毫秒");
+        String report = "总行数："+total+" ，完美行数："+perfectCount+" ，错误行数："+wrongCount+" ，完美率："+perfectCount/(float)total*100+"% ，错误率："+wrongCount/(float)total*100+"%";
         LOGGER.info(report);
         return report;
     }
