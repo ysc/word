@@ -59,19 +59,19 @@ public class ExtractText {
             output = args[0];
             separator = args[1];
         }
-        extractFromCorpus(output, separator);
+        extractFromCorpus(output, separator, true);
     }
     /**
      * 从语料库中抽取内容
      * @param output 保存抽取出的文本的文件路径
      * @param separator 词之间的分隔符
      */
-    public static void extractFromCorpus(String output, String separator){
+    public static void extractFromCorpus(String output, String separator, boolean includePhrase){
         String zipFile = "src/main/resources/corpus/corpora.zip";        
         LOGGER.info("开始从语料库中抽取文本");
         long start = System.currentTimeMillis();        
         try{
-            analyzeCorpus(zipFile, output, separator);
+            analyzeCorpus(zipFile, output, separator, includePhrase);
         } catch (IOException ex) {
             LOGGER.info("抽取失败："+ex.getMessage());
         }
@@ -84,7 +84,7 @@ public class ExtractText {
      * @param zipFile 压缩的语料库
      * @throws IOException 
      */
-    private static void analyzeCorpus(String zipFile, String output, final String separator) throws IOException{
+    private static void analyzeCorpus(String zipFile, String output, final String separator, final boolean includePhrase) throws IOException{
         try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipFile), ExtractText.class.getClassLoader());
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"));) {
             for(Path path : fs.getRootDirectories()){                
@@ -97,7 +97,7 @@ public class ExtractText {
                         // 拷贝到本地文件系统
                         Path temp = Paths.get("target/corpus-"+System.currentTimeMillis()+".txt");
                         Files.copy(file, temp, StandardCopyOption.REPLACE_EXISTING);
-                        extractText(temp, writer, separator);
+                        extractText(temp, writer, separator, includePhrase);
                         return FileVisitResult.CONTINUE;
                     }
                     
@@ -109,8 +109,10 @@ public class ExtractText {
      * 从语料库中抽取文本保存到指定文件
      * @param file 语料库
      * @param writer 输出文件
+     * @param separator 词与词的分隔符
+     * @param includePhrase 是否包含识别出的短语
      */
-    private static void extractText(Path file, BufferedWriter writer, String separator){
+    private static void extractText(Path file, BufferedWriter writer, String separator, boolean includePhrase){
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file.toFile()),"utf-8"));){
             String line;
             while( (line = reader.readLine()) != null ){
@@ -151,7 +153,9 @@ public class ExtractText {
                         }
                         if(find && attr.length > 1 && attr[1].trim().endsWith("]")){
                             find = false;
-                            writer.write(phrase.toString()+separator);
+                            if(includePhrase){
+                                writer.write(phrase.toString()+separator);
+                            }
                             phrase.setLength(0);
                         }
                         //词数目
