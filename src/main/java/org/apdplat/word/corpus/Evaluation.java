@@ -32,8 +32,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apdplat.word.WordSegmenter;
 import org.apdplat.word.recognition.Punctuation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
@@ -89,6 +91,8 @@ public class Evaluation {
             BufferedWriter testWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(test),"utf-8"));
             BufferedWriter standardWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(standard),"utf-8"))){
             String line;
+            int duplicateCount=0;
+            Set<String> set = new HashSet<>();
             while( (line = reader.readLine()) != null ){
                 //不把空格当做标点符号
                 List<String> list = Punctuation.seg(line, false, ' ');
@@ -99,10 +103,17 @@ public class Evaluation {
                             || item.length()==1){
                         continue;
                     }
+                    //忽略重复的内容
+                    if(set.contains(item)){
+                        duplicateCount++;
+                        continue;
+                    }
+                    set.add(item);
                     testWriter.write(item.replaceAll(" ", "")+"\n");
                     standardWriter.write(item+"\n");
                 }
             }
+            LOGGER.info("重复行数为："+duplicateCount);
         } catch (IOException ex) {
             LOGGER.error("生成测试数据集和标准数据集失败：", ex);
         }
