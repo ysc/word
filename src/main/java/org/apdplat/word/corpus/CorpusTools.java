@@ -324,16 +324,12 @@ public class CorpusTools {
     }
     /**
      * 分析处理并存储不重复词
-     * 过滤单字词或包含非中文字符的词
      */
     private static void processWords() {
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/dic.txt"),"utf-8"));
                 BufferedWriter writerFreq = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/dic_with_freq.txt"),"utf-8"))){
             for(String word : WORDS.keySet()){
-                //过滤单字词
-                if(word.length() > 1){
-                    writer.write(word+"\n");
-                }
+                writer.write(word+"\n");
             }
             List<Entry<String, Integer>> entrys = Utils.getSortedMapByValue(WORDS);
             for(Entry<String, Integer> entry : entrys){
