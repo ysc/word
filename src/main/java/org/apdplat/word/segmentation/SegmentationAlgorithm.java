@@ -30,5 +30,6 @@ public enum SegmentationAlgorithm {
     ReverseMaximumMatching,
     MinimumMatching,
     ReverseMinimumMatching,
-    BidirectionalMaximumMatching
+    BidirectionalMaximumMatching,
+    BidirectionalMinimumMatching
 }
