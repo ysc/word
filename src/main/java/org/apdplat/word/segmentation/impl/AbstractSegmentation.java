@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Stack;
 import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
+import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.recognition.Punctuation;
@@ -70,6 +71,9 @@ public abstract class AbstractSegmentation  implements Segmentation{
             if(sentence.length() > 1){
                 List<Word> list = segImpl(sentence);
                 if(list != null){
+                    if(PERSON_NAME_RECOGNIZE){
+                        list = PersonName.recognize(list);
+                    }
                     result.addAll(list);
                 }else{
                     LOGGER.error("文本 "+sentence+" 没有获得分词结果");

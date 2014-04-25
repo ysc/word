@@ -22,7 +22,6 @@ package org.apdplat.word.segmentation.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Word;
 
@@ -63,9 +62,6 @@ public class MaximumMatching extends AbstractSegmentation{
             start+=len;
             //每一次成功切词后都要重置截取长度
             len=DIC.getMaxLength();
-        }
-        if(PERSON_NAME_RECOGNIZE){
-            result = PersonName.recognize(result);
         }
         return result;
     }    

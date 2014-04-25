@@ -23,7 +23,6 @@ package org.apdplat.word.segmentation.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Word;
 
@@ -71,9 +70,6 @@ public class ReverseMinimumMatching extends AbstractSegmentation{
         List<Word> list = new ArrayList<>(len);
         for(int i=0;i<len;i++){
             list.add(result.pop());
-        }
-        if(PERSON_NAME_RECOGNIZE){
-            list = PersonName.recognize(list);
         }
         return list;        
     }
