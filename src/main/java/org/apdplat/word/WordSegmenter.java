@@ -76,6 +76,24 @@ public class WordSegmenter {
      */
     public static List<Word> seg(String text, SegmentationAlgorithm segmentationAlgorithm){        
         List<Word> words = SegmentationFactory.getSegmentation(segmentationAlgorithm).seg(text);
+        return filterStopWords(words);
+    }
+    /**
+     * 对文本进行分词，移除停用词
+     * 使用双向最大匹配算法
+     * @param text 文本
+     * @return 分词结果
+     */
+    public static List<Word> seg(String text){
+        List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg(text);
+        return filterStopWords(words);
+    }    
+    /**
+     * 移除停用词
+     * @param words 词列表
+     * @return 无停用词的词列表
+     */
+    public static List<Word> filterStopWords(List<Word> words){
         Iterator<Word> iter = words.iterator();
         while(iter.hasNext()){
             Word word = iter.next();
@@ -87,25 +105,6 @@ public class WordSegmenter {
         }
         return words;
     }
-    /**
-     * 对文本进行分词，移除停用词
-     * 使用双向最大匹配算法
-     * @param text 文本
-     * @return 分词结果
-     */
-    public static List<Word> seg(String text){
-        List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg(text);
-        Iterator<Word> iter = words.iterator();
-        while(iter.hasNext()){
-            Word word = iter.next();
-            if(StopWord.is(word.getText())){
-                //去除停用词
-                LOGGER.debug("去除停用词："+word.getText());
-                iter.remove();
-            }
-        }
-        return words;
-    }    
     /**
      * 对文件进行分词，保留停用词
      * 可指定其他分词算法
