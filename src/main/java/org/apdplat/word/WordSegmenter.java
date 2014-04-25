@@ -33,7 +33,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.recognition.StopWord;
@@ -44,27 +43,58 @@ import org.slf4j.LoggerFactory;
 /**
  * 中文分词基础入口
  * 默认使用双向最大匹配算法
- * 利用二元模型来消除歧义
+ * 也可指定其他分词算法
  * @author 杨尚川
  */
 public class WordSegmenter {
     private static final Logger LOGGER = LoggerFactory.getLogger(WordSegmenter.class);    
-    private static final Segmentation segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
     /**
      * 对文本进行分词，保留停用词
+     * 可指定其他分词算法
+     * @param text 文本
+     * @param segmentationAlgorithm 分词算法
+     * @return 分词结果
+     */
+    public static List<Word> segWithStopWords(String text, SegmentationAlgorithm segmentationAlgorithm){
+        return SegmentationFactory.getSegmentation(segmentationAlgorithm).seg(text);
+    }
+    /**
+     * 对文本进行分词，保留停用词
+     * 使用双向最大匹配算法
      * @param text 文本
      * @return 分词结果
      */
     public static List<Word> segWithStopWords(String text){
-        return segmentation.seg(text);
+        return SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg(text);
     }
     /**
      * 对文本进行分词，移除停用词
+     * 可指定其他分词算法
+     * @param text 文本
+     * @param segmentationAlgorithm 分词算法
+     * @return 分词结果
+     */
+    public static List<Word> seg(String text, SegmentationAlgorithm segmentationAlgorithm){        
+        List<Word> words = SegmentationFactory.getSegmentation(segmentationAlgorithm).seg(text);
+        Iterator<Word> iter = words.iterator();
+        while(iter.hasNext()){
+            Word word = iter.next();
+            if(StopWord.is(word.getText())){
+                //去除停用词
+                LOGGER.debug("去除停用词："+word.getText());
+                iter.remove();
+            }
+        }
+        return words;
+    }
+    /**
+     * 对文本进行分词，移除停用词
+     * 使用双向最大匹配算法
      * @param text 文本
      * @return 分词结果
      */
     public static List<Word> seg(String text){
-        List<Word> words = segmentation.seg(text);
+        List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg(text);
         Iterator<Word> iter = words.iterator();
         while(iter.hasNext()){
             Word word = iter.next();
@@ -78,21 +108,45 @@ public class WordSegmenter {
     }    
     /**
      * 对文件进行分词，保留停用词
+     * 可指定其他分词算法
+     * @param input 输入文件
+     * @param output 输出文件
+     * @param segmentationAlgorithm 分词算法
+     * @throws Exception 
+     */
+    public static void segWithStopWords(File input, File output, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
+        seg(input, output, false, segmentationAlgorithm);
+    }
+    /**
+     * 对文件进行分词，保留停用词
+     * 使用双向最大匹配算法
      * @param input 输入文件
      * @param output 输出文件
      * @throws Exception 
      */
     public static void segWithStopWords(File input, File output) throws Exception{
-        seg(input, output, false);
+        seg(input, output, false, SegmentationAlgorithm.BidirectionalMaximumMatching);
     }
     /**
      * 对文件进行分词，移除停用词
+     * 可指定其他分词算法
+     * @param input 输入文件
+     * @param output 输出文件
+     * @param segmentationAlgorithm 分词算法
+     * @throws Exception 
+     */
+    public static void seg(File input, File output, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
+        seg(input, output, true, segmentationAlgorithm);
+    }
+    /**
+     * 对文件进行分词，移除停用词
+     * 使用双向最大匹配算法
      * @param input 输入文件
      * @param output 输出文件
      * @throws Exception 
      */
     public static void seg(File input, File output) throws Exception{
-        seg(input, output, true);
+        seg(input, output, true, SegmentationAlgorithm.BidirectionalMaximumMatching);
     }
     /**
      * 
@@ -100,9 +154,10 @@ public class WordSegmenter {
      * @param input 输入文件
      * @param output 输出文件
      * @param removeStopWords 是否移除停用词
+     * @param segmentationAlgorithm 分词算法
      * @throws Exception 
      */
-    private static void seg(File input, File output, boolean removeStopWords) throws Exception{
+    private static void seg(File input, File output, boolean removeStopWords, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
         LOGGER.info("开始对文件进行分词："+input.toString());
         float max=(float)Runtime.getRuntime().maxMemory()/1000000;
         float total=(float)Runtime.getRuntime().totalMemory()/1000000;
@@ -125,9 +180,9 @@ public class WordSegmenter {
                 textLength += line.length();
                 List<Word> words = null;
                 if(removeStopWords){
-                    words = seg(line);
+                    words = seg(line, segmentationAlgorithm);
                 }else{
-                    words = segWithStopWords(line);
+                    words = segWithStopWords(line, segmentationAlgorithm);
                 }
                 if(words == null){
                     continue;
