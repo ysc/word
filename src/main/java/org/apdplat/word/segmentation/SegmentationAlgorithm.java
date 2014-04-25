@@ -26,10 +26,28 @@ package org.apdplat.word.segmentation;
  * @author 杨尚川
  */
 public enum SegmentationAlgorithm {
+    /**
+     * 正向最大匹配算法
+     */
     MaximumMatching,
+    /**
+     * 逆向最大匹配算法
+     */
     ReverseMaximumMatching,
+    /**
+     * 正向最小匹配算法
+     */
     MinimumMatching,
+    /**
+     * 逆向最小匹配算法
+     */
     ReverseMinimumMatching,
+    /**
+     * 双向最大匹配算法
+     */
     BidirectionalMaximumMatching,
+    /**
+     * 双向最小匹配算法
+     */
     BidirectionalMinimumMatching
 }
