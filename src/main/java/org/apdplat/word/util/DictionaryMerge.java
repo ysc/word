@@ -63,10 +63,10 @@ public class DictionaryMerge {
         Set<String> set = new HashSet<>();
         for(String line : lines){
             line = line.trim();
-            // 词长度：大于等于2并且小于等于7
+            // 词长度：大于等于2并且小于等于4
             // 识别功能 能识别的词 就不用放到词典中了，没必要多此一举
             //至少要两个中文字符，防止大量无意义或特殊词混入词典
-            if(line.length() > 7 
+            if(line.length() > 4 
                     || line.length() < 2
                     || !Utils.isChineseCharAndLengthAtLeastTwo(line)
                     || RecognitionTool.recog(line)){
