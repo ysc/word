@@ -93,10 +93,14 @@ public class Evaluation {
                 //不把空格当做标点符号
                 List<String> list = Punctuation.seg(line, false, ' ');
                 for(String item : list){
+                    item = item.trim();
+                    //忽略空行和长度为一的行
+                    if("".equals(item)
+                            || item.length()==1){
+                        continue;
+                    }
                     testWriter.write(item.replaceAll(" ", "")+"\n");
-                }
-                for(String item : list){
-                    standardWriter.write(item.trim()+"\n");
+                    standardWriter.write(item+"\n");
                 }
             }
         } catch (IOException ex) {
