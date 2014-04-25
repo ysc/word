@@ -37,12 +37,16 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.util.DictionaryMerge;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
@@ -62,6 +66,7 @@ public class CorpusTools {
     private static final AtomicInteger CHAR_COUNT = new AtomicInteger();    
     private static final AtomicInteger LINES_COUNT = new AtomicInteger();    
     private static final Map<String, Integer> WORDS = new TreeMap<>();
+    private static final Set<String> PHRASES = new HashSet<>();
     
     public static void main(String[] args){
         process();
@@ -77,6 +82,8 @@ public class CorpusTools {
     private static void process(){
         //分析语料库
         analyzeCorpus();
+        //分析处理并保存短语结构
+        processPhrase();
         //分析处理并保存二元模型
         processBiGram();
         BIGRAM.clear();
@@ -131,7 +138,7 @@ public class CorpusTools {
         }
     }
     /**
-     * 构建二元模型、三元模型，统计字符数、词数
+     * 构建二元模型、三元模型、短语结构，统计字符数、词数
      * 构建不重复词列表
      * @param file 
      */
@@ -173,7 +180,7 @@ public class CorpusTools {
                         //字符数目
                         CHAR_COUNT.addAndGet(item.length());
                         if(find){
-                            phrase.append(item);
+                            phrase.append(item).append(" ");
                             phraseCount++;
                         }
                         //短语标注错误
@@ -184,9 +191,10 @@ public class CorpusTools {
                         }
                         if(find && attr.length > 1 && attr[1].trim().endsWith("]")){
                             find = false;
-                            list.add(phrase.toString());
+                            PHRASES.add(phrase.toString());
+                            list.add(phrase.toString().replaceAll("\\s+", ""));
                             //不重复词
-                            addWord(phrase.toString());
+                            addWord(phrase.toString().replaceAll("\\s+", ""));
                             //词数目
                             WORD_COUNT.incrementAndGet();
                             phrase.setLength(0);
@@ -347,6 +355,29 @@ public class CorpusTools {
             DictionaryMerge.merge(sources, target);
         } catch (IOException ex) {
             LOGGER.info("和现有词典合并失败：", ex);
+        }
+    }
+    /**
+     * 生成短语结构
+     */
+    private static void processPhrase() {
+        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/phrase.txt"),"utf-8"))){
+            List<String> list = new ArrayList<>();
+            list.addAll(PHRASES);
+            PHRASES.clear();
+            Collections.sort(list);
+            for(String phrase : list){
+                String p = phrase.replaceAll("\\s+", "");
+                if(p.length() <= 7 
+                        && p.length() > 1 
+                        && Utils.isChineseCharAndLengthAtLeastTwo(p)
+                        && !RecognitionTool.recog(p)){
+                    writer.write(p+"="+phrase.trim()+"\n");
+                }
+            }
+            list.clear();
+        }catch(Exception e){
+            LOGGER.info("保存短语结构失败：", e);
         }
     }
 }
