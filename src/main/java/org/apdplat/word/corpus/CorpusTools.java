@@ -46,7 +46,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apdplat.word.dictionary.DictionaryMerge;
+import org.apdplat.word.dictionary.DictionaryTools;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +95,7 @@ public class CorpusTools {
         //将新提取的词和原来的词典合并
         mergeWordsWithOldDic();
         //移除词典中的短语结构
-        DictionaryMerge.removePhraseFromDic("target/phrase.txt", "src/main/resources/dic.txt");
+        DictionaryTools.removePhraseFromDic("target/phrase.txt", "src/main/resources/dic.txt");
     }    
     /**
      * 分析语料库
@@ -344,7 +344,7 @@ public class CorpusTools {
         sources.add("src/main/resources/dic.txt");
         String target = "src/main/resources/dic.txt";
         try {
-            DictionaryMerge.merge(sources, target);
+            DictionaryTools.merge(sources, target);
         } catch (IOException ex) {
             LOGGER.info("和现有词典合并失败：", ex);
         }

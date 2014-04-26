@@ -35,13 +35,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 词典合并清理
- * 去除单字词
- * 去除非中文词
+ * 词典工具
+ * 1、把多个词典合并为一个并规范清理
+ * 词长度：只保留大于等于2并且小于等于4的长度的词
+ * 识别功能： 移除能识别的词
+ * 移除非中文词：防止大量无意义或特殊词混入词典
+ * 2、移除词典中的短语结构
  * @author 杨尚川
  */
-public class DictionaryMerge {    
-    private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryMerge.class);
+public class DictionaryTools {    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryTools.class);
     public static void main(String[] args) throws IOException{
         List<String> sources = new ArrayList<>();
         sources.add("src/main/resources/dic.txt");
