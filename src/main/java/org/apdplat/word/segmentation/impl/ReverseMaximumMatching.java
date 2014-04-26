@@ -38,7 +38,7 @@ public class ReverseMaximumMatching extends AbstractSegmentation{
         //文本长度
         final int textLen=text.length();
         //从未分词的文本中截取的长度
-        int len=DIC.getMaxLength();
+        int len=getInterceptLength();
         //剩下未分词的文本的索引
         int start=textLen-len;
         //处理文本长度小于最大词长的情况
@@ -66,7 +66,7 @@ public class ReverseMaximumMatching extends AbstractSegmentation{
             }
             addWord(result, text, start, len);
             //每一次成功切词后都要重置截取长度
-            len=DIC.getMaxLength();            
+            len=getInterceptLength();            
             if(len>start){
                 //如果未分词的文本的长度小于截取的长度
                 //则缩短截取的长度

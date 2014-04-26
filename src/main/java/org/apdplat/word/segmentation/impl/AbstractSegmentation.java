@@ -43,9 +43,18 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
     protected static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
     protected static final boolean KEEP_PUNCTUATION = "true".equals(WordConfTools.get("keep.punctuation", "false"));
-    
+    private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
     public abstract List<Word> segImpl(String text);
-    
+    /**
+     * 分词时截取的字符串的最大长度
+     * @return 
+     */
+    public int getInterceptLength(){
+        if(DIC.getMaxLength() > INTERCEPT_LENGTH){
+            return DIC.getMaxLength();
+        }
+        return INTERCEPT_LENGTH;
+    }
     /**
      * 默认分词算法实现：
      * 1、把要分词的文本根据标点符号进行分割

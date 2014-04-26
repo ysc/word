@@ -52,7 +52,7 @@ public class ReverseMinimumMatching extends AbstractSegmentation{
                 //如果长度为词典最大长度且在词典中未找到匹配
                 //或已经遍历完剩下的文本且在词典中未找到匹配
                 //则按长度为一切分
-                if(len>DIC.getMaxLength() || start<0){
+                if(len>getInterceptLength() || start<0){
                     //重置截取长度为一
                     //向后移动start索引
                     start+=len-1;

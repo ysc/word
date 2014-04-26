@@ -47,7 +47,7 @@ public class MinimumMatching extends AbstractSegmentation{
                 //如果长度为词典最大长度且在词典中未找到匹配
                 //或已经遍历完剩下的文本且在词典中未找到匹配
                 //则按长度为一切分
-                if(len==DIC.getMaxLength() || len==textLen-start){
+                if(len==getInterceptLength() || len==textLen-start){
                     //重置截取长度为一
                     len=1;
                     break;

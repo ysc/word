@@ -37,7 +37,7 @@ public class MaximumMatching extends AbstractSegmentation{
         //文本长度
         final int textLen=text.length();
         //从未分词的文本中截取的长度
-        int len=DIC.getMaxLength();
+        int len=getInterceptLength();
         //剩下未分词的文本的索引
         int start=0;
         //只要有词未切分完就一直继续
@@ -61,7 +61,7 @@ public class MaximumMatching extends AbstractSegmentation{
             //从待分词文本中向后移动索引，滑过已经分词的文本
             start+=len;
             //每一次成功切词后都要重置截取长度
-            len=DIC.getMaxLength();
+            len=getInterceptLength();
         }
         return result;
     }    
