@@ -95,7 +95,7 @@ public class MinimumMatchingTest {
         expResult.add("[乒乓, 球拍, 卖完, 了]");
         expResult.add("[咬死, 猎人, 的, 狗]");
         expResult.add("[地面, 积, 了, 厚厚, 的, 雪]");
-        expResult.add("[这, 几块, 地面, 积, 还真, 不小]");
+        expResult.add("[这, 几, 块, 地面, 积, 还真, 不小]");
         expResult.add("[大学, 生活, 象, 白纸]");
         expResult.add("[结合, 成分, 子式]");
         expResult.add("[有意, 见, 分歧]");
