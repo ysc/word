@@ -192,7 +192,6 @@ public class CorpusTools {
                         if(find && attr.length > 1 && attr[1].trim().endsWith("]")){
                             find = false;
                             PHRASES.add(phrase.toString());
-                            list.add(phrase.toString().replaceAll("\\s+", ""));
                             //不重复词
                             addWord(phrase.toString().replaceAll("\\s+", ""));
                             //词数目
