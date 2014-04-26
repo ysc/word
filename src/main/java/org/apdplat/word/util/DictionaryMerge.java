@@ -47,6 +47,38 @@ public class DictionaryMerge {
         sources.add("target/dic.txt");
         String target = "src/main/resources/dic.txt";
         merge(sources, target);
+    }    
+    /**
+     * 移除词典中的短语结构
+     * @param phrasePath
+     * @param dicPath
+     */
+    public static void removePhraseFromDic(String phrasePath, String dicPath) {
+        try{
+            Set<String> set = new HashSet<>();
+            List<String> phrases = Files.readAllLines(Paths.get(phrasePath), Charset.forName("utf-8"));            
+            for(String phrase : phrases){
+                String[] attr = phrase.split("=");
+                if(attr != null && attr.length == 2){
+                    set.add(attr[0]);
+                }
+            }
+            List<String> list = new ArrayList<>();
+            List<String> words = Files.readAllLines(Paths.get(dicPath), Charset.forName("utf-8"));
+            int len = words.size();
+            for(String word : words){
+                if(!set.contains(word)){
+                    list.add(word);
+                }
+            }        
+            words.clear();
+            set.clear();
+            Files.write(Paths.get(dicPath), list, Charset.forName("utf-8"));        
+            len = len - list.size();
+            LOGGER.info("移除短语结构数目："+len);
+        }catch(Exception e){
+            LOGGER.error("移除短语结构失败：", e);
+        }
     }
     /**
      * 把多个词典合并为一个

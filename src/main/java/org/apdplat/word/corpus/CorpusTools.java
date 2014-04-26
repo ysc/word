@@ -94,6 +94,8 @@ public class CorpusTools {
         WORDS.clear();
         //将新提取的词和原来的词典合并
         mergeWordsWithOldDic();
+        //移除词典中的短语结构
+        DictionaryMerge.removePhraseFromDic("target/phrase.txt", "src/main/resources/dic.txt");
     }    
     /**
      * 分析语料库
