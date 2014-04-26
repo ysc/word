@@ -127,6 +127,8 @@ public class Evaluation {
         long start = System.currentTimeMillis();
         int perfectCount=0;
         int wrongCount=0;
+        int perfectCharCount=0;
+        int wrongCharCount=0;
         try(BufferedReader resultReader = new BufferedReader(new InputStreamReader(new FileInputStream(resultText),"utf-8"));
             BufferedReader standardReader = new BufferedReader(new InputStreamReader(new FileInputStream(standardText),"utf-8"));
             BufferedWriter perfectResultWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(perfectResult),"utf-8"));
@@ -142,11 +144,13 @@ public class Evaluation {
                     //分词结果和标准一模一样
                     perfectResultWriter.write(standard+"\n");
                     perfectCount++;
+                    perfectCharCount+=standard.replaceAll("\\s+", "").length();
                 }else{
                     //分词结果和标准不一样
                     wrongResultWriter.write("实际分词结果："+result+"\n");
                     wrongResultWriter.write("标准分词结果："+standard+"\n");
                     wrongCount++;
+                    wrongCharCount+=standard.replaceAll("\\s+", "").length();
                 }
             }
         } catch (IOException ex) {
@@ -154,8 +158,10 @@ public class Evaluation {
         }
         long cost = System.currentTimeMillis() - start;
         int total = perfectCount+wrongCount;
+        int totalCharCount = perfectCharCount+wrongCharCount;
         LOGGER.info("评估耗时："+cost+" 毫秒");
-        String report = "总行数："+total+" ，完美行数："+perfectCount+" ，错误行数："+wrongCount+" ，完美率："+perfectCount/(float)total*100+"% ，错误率："+wrongCount/(float)total*100+"%";
+        String report = "总行数："+total+"  ，完美行数："+perfectCount+"  ，错误行数："+wrongCount+"  ，完美率："+perfectCount/(float)total*100+"%  ，错误率："+wrongCount/(float)total*100+"%\n";
+        report+="总字符："+totalCharCount+" ，完美字符："+perfectCharCount+" ，错误行数："+wrongCharCount+" ，完美率："+perfectCharCount/(float)totalCharCount*100+"% ，错误率："+wrongCharCount/(float)totalCharCount*100+"%";
         LOGGER.info(report);
         return report;
     }
