@@ -46,7 +46,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.util.DictionaryMerge;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
@@ -352,19 +351,14 @@ public class CorpusTools {
      * 生成短语结构
      */
     private static void processPhrase() {
-        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/phrase.txt"),"utf-8"))){
+        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/phrase.txt"),"utf-8"))){
             List<String> list = new ArrayList<>();
             list.addAll(PHRASES);
             PHRASES.clear();
             Collections.sort(list);
             for(String phrase : list){
                 String p = phrase.replaceAll("\\s+", "");
-                if(p.length() <= 7 
-                        && p.length() > 1 
-                        && Utils.isChineseCharAndLengthAtLeastTwo(p)
-                        && !RecognitionTool.recog(p)){
-                    writer.write(p+"="+phrase.trim()+"\n");
-                }
+                writer.write(p+"="+phrase.trim()+"\n");
             }
             list.clear();
         }catch(Exception e){
