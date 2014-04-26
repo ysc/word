@@ -21,8 +21,8 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 				System.out.println(words);
     
     输出：
-	移除停用词：[杨尚川, apdplat, 应用级, 产品开发, 平台, 作者]
-	保留停用词：[杨尚川, 是, apdplat, 应用级, 产品开发, 平台, 的, 作者]
+	移除停用词：[杨尚川, apdplat, 应用级, 产品, 开发平台, 作者]
+	保留停用词：[杨尚川, 是, apdplat, 应用级, 产品, 开发平台, 的, 作者]
 
 	3、对文件进行分词
 	String input = "d:/text.txt";
@@ -68,7 +68,19 @@ Chinese Word Segmentation Component （中文分词组件 - word）
 	classpath:stopwords.txt，classpath:custom_stopwords_dic_dir，
 	d:/stopwords_more.txt，d:/STOPWORDS_DIR，d:/STOPWORDS2_DIR，stopwords_dir，remove.txt
 	
+	8、显式指定分词算法
+	对文本进行分词时，可显式指定特定的分词算法，如：
+	WordSegmenter.seg("APDPlat应用级产品开发平台", SegmentationAlgorithm.BidirectionalMaximumMatching);
 	
+	SegmentationAlgorithm的可选类型为：	 
+	正向最大匹配算法：MaximumMatching
+	逆向最大匹配算法：ReverseMaximumMatching
+	正向最小匹配算法：MinimumMatching
+	逆向最小匹配算法：ReverseMinimumMatching
+	双向最大匹配算法：BidirectionalMaximumMatching
+	双向最小匹配算法：BidirectionalMinimumMatching
+
+
 	
 Lucene插件：
 
