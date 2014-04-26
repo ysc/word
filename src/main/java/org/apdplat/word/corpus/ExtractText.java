@@ -65,6 +65,7 @@ public class ExtractText {
      * 从语料库中抽取内容
      * @param output 保存抽取出的文本的文件路径
      * @param separator 词之间的分隔符
+     * @param includePhrase 是否抽取短语
      */
     public static void extractFromCorpus(String output, String separator, boolean includePhrase){
         String zipFile = "src/main/resources/corpus/corpora.zip";        
@@ -82,6 +83,9 @@ public class ExtractText {
     /**
      * 分析语料库
      * @param zipFile 压缩的语料库
+     * @param output 保存抽取出的文本的文件路径
+     * @param separator 词之间的分隔符
+     * @param includePhrase 是否抽取短语
      * @throws IOException 
      */
     private static void analyzeCorpus(String zipFile, String output, final String separator, final boolean includePhrase) throws IOException{
