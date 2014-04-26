@@ -18,7 +18,7 @@
  * 
  */
 
-package org.apdplat.word.util;
+package org.apdplat.word.dictionary;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apdplat.word.recognition.RecognitionTool;
+import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

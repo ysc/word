@@ -46,7 +46,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apdplat.word.util.DictionaryMerge;
+import org.apdplat.word.dictionary.DictionaryMerge;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
