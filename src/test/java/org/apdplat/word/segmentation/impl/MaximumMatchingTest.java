@@ -81,7 +81,7 @@ public class MaximumMatchingTest {
         expResult.add("[杨尚川, 好]");
         expResult.add("[杨尚川, 是, apdplat, 应用级, 产品开发, 平台, 的, 作者]");
         expResult.add("[他, 说, 的确, 实在, 理]");
-        expResult.add("[提高, 人民生活水平]");
+        expResult.add("[提高, 人民生活, 水平]");
         expResult.add("[他俩, 儿, 谈恋爱, 是从, 头年, 元月, 开始, 的]");
         expResult.add("[王府, 饭店, 的, 设施, 和服, 务, 是, 一流, 的]");
         expResult.add("[和服, 务, 于, 三日, 后, 裁制, 完毕, 并, 呈送, 将军府, 中]");
@@ -99,7 +99,7 @@ public class MaximumMatchingTest {
         expResult.add("[大学生活, 象, 白纸]");
         expResult.add("[结合, 成分, 子式]");
         expResult.add("[有意见, 分歧]");
-        expResult.add("[发展中国家, 兔, 的, 计划]");
+        expResult.add("[发展中, 国家, 兔, 的, 计划]");
         expResult.add("[明天, 他, 将来, 北京]");
         expResult.add("[税收制度, 将来, 会, 更, 完善]");
         expResult.add("[依靠群众, 才能, 做好, 工作]");
@@ -109,7 +109,7 @@ public class MaximumMatchingTest {
         expResult.add("[以, 新的, 姿态, 出现在, 世界, 东方]");
         expResult.add("[使节, 约, 粮食, 进一步, 形成, 风气]");
         expResult.add("[反映, 了, 一个人, 的, 精神面貌]");
-        expResult.add("[美国加州大学, 的, 科学家, 发现]");
+        expResult.add("[美国加州, 大学, 的, 科学家, 发现]");
         expResult.add("[我, 好不, 挺好]");
         expResult.add("[木, 有]");
         expResult.add("[下雨天, 留客, 天天, 留, 我, 不留]");
