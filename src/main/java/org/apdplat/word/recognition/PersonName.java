@@ -20,17 +20,14 @@
 
 package org.apdplat.word.recognition;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,26 +41,18 @@ public class PersonName {
     private static final Set<String> surname1=new HashSet<>();
     private static final Set<String> surname2=new HashSet<>();
     static{
-        loadSurname();
-    }
-    private static void loadSurname(){
-        try{
-            String path = WordConfTools.get("surname.path", "classpath:surname.txt");
-            path = path.trim();
-            LOGGER.info("初始化百家姓："+path);
-            InputStream in = null;
-            if(path.startsWith("classpath:")){
-                in = PersonName.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
-            }else{
-                in = new FileInputStream(path);
+        AutoDetector.loadAndWatch(new ResourceLoader(){
+
+            @Override
+            public void clear() {
+                surname1.clear();
+                surname2.clear();
             }
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
-                String line;
-                while((line = reader.readLine()) != null){
-                    line = line.trim();
-                    if(line.equals("") || line.startsWith("#")){
-                        continue;
-                    }
+
+            @Override
+            public void load(List<String> lines) {
+                LOGGER.info("初始化百家姓");
+                for(String line : lines){
                     if(line.length()==1){
                         surname1.add(line);
                     }else if(line.length()==2){
@@ -72,10 +61,10 @@ public class PersonName {
                        LOGGER.error("错误的姓："+line);
                     }
                 }
+                LOGGER.info("百家姓初始化完毕，单姓个数："+surname1.size()+"，复姓个数："+surname2.size());
             }
-        }catch(IOException e){
-            LOGGER.error("加载百家姓出错：", e);
-        }
+        
+        }, WordConfTools.get("surname.path", "classpath:surname.txt"));
     }
     /**
      * 获取所有的姓
