@@ -57,6 +57,7 @@ public class WordConfTools {
         long start = System.currentTimeMillis();
         loadConf("word.conf");
         loadConf("word.local.conf");
+        checkSystemProperties();
         long cost = System.currentTimeMillis() - start;
         LOGGER.info("配置文件加载完毕，耗时"+cost+" 毫秒，配置项数目："+conf.size());
         LOGGER.info("配置信息：");
@@ -71,7 +72,7 @@ public class WordConfTools {
     private static void loadConf(String confFile) {
         InputStream in = WordConfTools.class.getClassLoader().getResourceAsStream(confFile);
         if(in == null){
-            LOGGER.info("不存在配置文件："+confFile);
+            LOGGER.info("未找到配置文件："+confFile);
             return;
         }
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"))){
@@ -89,6 +90,18 @@ public class WordConfTools {
         } catch (IOException ex) {
             System.err.println("配置文件加载失败:"+ex.getMessage());
             throw new RuntimeException(ex);
+        }
+    }
+    /**
+     * 使用系统属性覆盖配置文件
+     */
+    private static void checkSystemProperties() {
+        for(String key : conf.keySet()){
+            String value = System.getProperty(key);
+            if(value != null){
+                conf.put(key, value);
+                LOGGER.info("系统属性覆盖默认配置："+key+"="+value);
+            }
         }
     }
     public static void main(String[] args){
