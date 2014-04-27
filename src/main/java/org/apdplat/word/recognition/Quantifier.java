@@ -20,13 +20,11 @@
 
 package org.apdplat.word.recognition;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,43 +34,36 @@ import org.slf4j.LoggerFactory;
  * @author 杨尚川
  */
 public class Quantifier {
-private static final Logger LOGGER = LoggerFactory.getLogger(PersonName.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Quantifier.class);
     private static final Set<Character> quantifiers=new HashSet<>();
+
     static{
-        loadNumberSuffix();
-    }
-    private static void loadNumberSuffix(){
-        try{
-            String path = WordConfTools.get("quantifier.path", "classpath:quantifier.txt");
-            path = path.trim();
-            LOGGER.info("初始化数量词："+path);
-            InputStream in = null;
-            if(path.startsWith("classpath:")){
-                in = PersonName.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
-            }else{
-                in = new FileInputStream(path);
+        AutoDetector.loadAndWatch(new ResourceLoader(){
+
+            @Override
+            public void clear() {
+                quantifiers.clear();
             }
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
-                String line;
-                while((line = reader.readLine()) != null){
-                    line = line.trim();
-                    if(line.startsWith("#")){
-                        continue;
-                    }
+
+            @Override
+            public void load(List<String> lines) {
+                LOGGER.info("初始化数量词");
+                for(String line : lines){
                     if(line.length() == 1){
                         char _char = line.charAt(0);
                         if(quantifiers.contains(_char)){
                             LOGGER.info("配置文件有重复项："+line);
+                        }else{
+                            quantifiers.add(_char);
                         }
-                        quantifiers.add(_char);
                     }else{
-                        LOGGER.info("忽略不合法配置项："+line);
+                        LOGGER.info("忽略不合法数量词："+line);
                     }
                 }
+                LOGGER.info("数量词初始化完毕，数量词个数："+quantifiers.size());
             }
-        }catch(IOException e){
-            LOGGER.error("加载数量词出错：", e);
-        }
+        
+        }, WordConfTools.get("quantifier.path", "classpath:quantifier.txt"));
     }
     public static boolean is(char _char){
         return quantifiers.contains(_char);
