@@ -49,8 +49,8 @@ import org.slf4j.LoggerFactory;
  * 资源变化自动检测
  * @author 杨尚川
  */
-public class AutoDetecter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AutoDetecter.class);
+public class AutoDetector {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AutoDetector.class);
     //已经被监控的文件
     private static final Set<String> fileWatchers = new HashSet<>();
     private static final Map<DirectoryWatcher, String> resources = new HashMap<>();
@@ -125,7 +125,7 @@ public class AutoDetecter {
     private static List<String> loadClasspathResource(String resource, ResourceLoader resourceLoader, String resourcePaths) throws IOException{
         List<String> result = new ArrayList<>();
         LOGGER.info("类路径资源："+resource);
-        Enumeration<URL> ps = AutoDetecter.class.getClassLoader().getResources(resource);
+        Enumeration<URL> ps = AutoDetector.class.getClassLoader().getResources(resource);
         while(ps.hasMoreElements()) {
             URL url=ps.nextElement();
             LOGGER.info("类路径资源URL："+url);
@@ -213,7 +213,7 @@ public class AutoDetecter {
                 if(System.currentTimeMillis() - lastExecute > 1000){
                     lastExecute = System.currentTimeMillis();
                     LOGGER.info("事件："+kind.name()+" ,路径："+path);
-                    synchronized(AutoDetecter.class){
+                    synchronized(AutoDetector.class){
                         DirectoryWatcher dw = watcherCallbacks.get(this);
                         String paths = resources.get(dw);
                         ResourceLoader loader = resourceLoaders.get(dw);
@@ -247,7 +247,7 @@ public class AutoDetecter {
             InputStream in = null;
             LOGGER.info("加载资源："+path);
             if(path.startsWith("classpath:")){
-                in = AutoDetecter.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
+                in = AutoDetector.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
             }else{
                 in = new FileInputStream(path);
             }        
@@ -287,7 +287,7 @@ public class AutoDetecter {
                         return;
                     }
                     LOGGER.info("事件："+kind.name()+" ,路径："+path);
-                    synchronized(AutoDetecter.class){
+                    synchronized(AutoDetector.class){
                         DirectoryWatcher dw = watcherCallbacks.get(this);
                         String paths = resources.get(dw);
                         ResourceLoader loader = resourceLoaders.get(dw);
@@ -307,7 +307,7 @@ public class AutoDetecter {
         resourceLoaders.put(fileWatcher, resourceLoader);
     }
     public static void main(String[] args){
-        AutoDetecter.detect(new ResourceLoader(){
+        AutoDetector.detect(new ResourceLoader(){
 
             @Override
             public void clear() {
