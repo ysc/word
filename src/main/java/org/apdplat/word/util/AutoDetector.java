@@ -57,43 +57,16 @@ public class AutoDetector {
     private static final Map<DirectoryWatcher, ResourceLoader> resourceLoaders = new HashMap<>();
     private static final Map<DirectoryWatcher.WatcherCallback, DirectoryWatcher> watcherCallbacks = new HashMap<>();
     
-    
     /**
      * 加载资源并自动检测资源变化
      * 当资源发生变化的时候重新自动加载
-     * @param resourceLoader 加载特定资源的逻辑 
-     * @param resource 资源标识，配置文件中的key
-     * @param defaultValue 资源路径，key的默认值
-     */
-    public static void detect(ResourceLoader resourceLoader, String resource, String... defaultValue){
-        LOGGER.info("开始加载资源");
-        long start = System.currentTimeMillis();
-        StringBuilder defaultVal = new StringBuilder();
-        if(defaultValue != null && defaultValue.length > 0){
-            for(int i=0; i<defaultValue.length; i++){
-                if(i > 0){
-                    defaultVal.append(",");
-                }
-                defaultVal.append(defaultValue[i]);
-            }
-        }
-        String resourcePaths = System.getProperty(resource);
-        if(resourcePaths == null){
-            resourcePaths = WordConfTools.get(resource, defaultVal.toString());
-        }
-        LOGGER.info(resource+"="+resourcePaths);
-        
-        loadAndWatch(resourceLoader, resourcePaths);
-        
-        long cost = System.currentTimeMillis() - start;
-        LOGGER.info("完成加载资源，耗时"+cost+" 毫秒");
-    }
-    /**
-     * 加载并监控资源
      * @param resourceLoader 资源加载逻辑
      * @param resourcePaths 多个资源路径，用逗号分隔
      */
     private static void loadAndWatch(ResourceLoader resourceLoader, String resourcePaths) {
+        LOGGER.info("开始加载资源");
+        LOGGER.info(resourcePaths);
+        long start = System.currentTimeMillis();
         List<String> result = new ArrayList<>();
         for(String resource : resourcePaths.split("[,，]")){
             try{
@@ -112,7 +85,9 @@ public class AutoDetector {
         LOGGER.info("加载资源 "+result.size()+" 行");
         //调用自定义加载逻辑
         resourceLoader.clear();
-        resourceLoader.load(result);
+        resourceLoader.load(result);        
+        long cost = System.currentTimeMillis() - start;
+        LOGGER.info("完成加载资源，耗时"+cost+" 毫秒");
     }
     /**
      * 加载类路径资源
@@ -307,7 +282,7 @@ public class AutoDetector {
         resourceLoaders.put(fileWatcher, resourceLoader);
     }
     public static void main(String[] args){
-        AutoDetector.detect(new ResourceLoader(){
+        AutoDetector.loadAndWatch(new ResourceLoader(){
 
             @Override
             public void clear() {
@@ -320,6 +295,6 @@ public class AutoDetector {
                     System.out.println(line);
                 }
             }
-        }, "test.dirs", "d:/DIC, d:/DIC2, d:/dic.txt, classpath:dic2.txt,classpath:dic");
+        }, "d:/DIC, d:/DIC2, d:/dic.txt, classpath:dic2.txt,classpath:dic");
     }
 }
