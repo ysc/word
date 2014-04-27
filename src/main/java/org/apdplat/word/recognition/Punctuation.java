@@ -1,19 +1,3 @@
-package org.apdplat.word.recognition;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.apdplat.word.util.WordConfTools;
-import org.slf4j.LoggerFactory;
-
 /**
  * 
  * APDPlat - Application Product Development Platform
@@ -34,6 +18,20 @@ import org.slf4j.LoggerFactory;
  * 
  */
 
+package org.apdplat.word.recognition;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.ResourceLoader;
+import org.apdplat.word.util.WordConfTools;
+import org.slf4j.LoggerFactory;
+
+
 /**
  * 判断一个字符是否是标点符号
  * @author 杨尚川
@@ -42,27 +40,18 @@ public class Punctuation {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Punctuation.class);
     private static char[] chars = null;
     static{
-        init();
-    }
-    private static void init(){
-        try{
-            String path = WordConfTools.get("punctuation.path", "classpath:punctuation.txt");
-            path = path.trim();
-            LOGGER.info("初始化标点符号资源："+path);
-            InputStream in = null;
-            if(path.startsWith("classpath:")){
-                in = Punctuation.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
-            }else{
-                in = new FileInputStream(path);
+        AutoDetector.loadAndWatch(new ResourceLoader(){
+
+            @Override
+            public void clear() {
+                chars = null;
             }
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
+
+            @Override
+            public void load(List<String> lines) {
+                LOGGER.info("初始化标点符号");
                 Set<Character> set = new HashSet<>();
-                String line;
-                while((line = reader.readLine()) != null){
-                    line = line.trim();
-                    if("".equals(line) || line.startsWith("#")){
-                        continue;
-                    }
+                for(String line : lines){
                     if(line.length() == 1){
                         set.add(line.charAt(0));
                     }else{
@@ -78,16 +67,16 @@ public class Punctuation {
                 list.addAll(set);
                 Collections.sort(list);
                 int len = list.size();
-                LOGGER.info("开始构造标点符号有序字符数组："+list);
                 chars = new char[len];
                 for(int i=0; i<len; i++){
                     chars[i] = list.get(i);
                 }
+                set.clear();
                 list.clear();
+                LOGGER.info("标点符号初始化完毕，标点符号个数："+chars.length);
             }
-        }catch (IOException ex) {
-            LOGGER.error("加载标点符号失败：", ex);
-        }
+        
+        }, WordConfTools.get("punctuation.path", "classpath:punctuation.txt"));
     }
     /**
      * 判断文本中是否包含标点符号
