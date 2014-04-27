@@ -29,18 +29,34 @@ import org.elasticsearch.index.settings.IndexSettings;
 import org.elasticsearch.index.analysis.AbstractTokenizerFactory;
 import java.io.Reader;
 import org.apdplat.word.lucene.ChineseWordTokenizer;
+import org.apdplat.word.segmentation.Segmentation;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
+import org.apdplat.word.segmentation.SegmentationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 中文分词器工厂
  * @author 杨尚川
  */
 public class ChineseWordTokenizerFactory extends AbstractTokenizerFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChineseWordTokenizerFactory.class);
+    private final Segmentation segmentation;
     @Inject
     public ChineseWordTokenizerFactory(Index index, @IndexSettings Settings indexSettings, @Assisted String name, @Assisted Settings settings) {
         super(index, indexSettings, name, settings);
+        String segAlgorithm = settings.get("segAlgorithm");
+        if(segAlgorithm != null){
+            LOGGER.info("tokenizer使用指定分词算法："+segAlgorithm);
+            segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.valueOf(segAlgorithm));
+        }else{
+            LOGGER.info("没有为word tokenizer指定segAlgorithm参数");
+            LOGGER.info("tokenizer使用默认分词算法："+SegmentationAlgorithm.BidirectionalMaximumMatching);
+            segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
+        }
     }
     @Override
     public Tokenizer create(Reader reader) {
-        return new ChineseWordTokenizer(reader);
+        return new ChineseWordTokenizer(reader, segmentation);
     }
 }
