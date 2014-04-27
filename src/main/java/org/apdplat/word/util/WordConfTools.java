@@ -36,6 +36,9 @@ import org.slf4j.LoggerFactory;
 public class WordConfTools {
     private static final Logger LOGGER = LoggerFactory.getLogger(WordConfTools.class);
     private static final Map<String, String> conf = new HashMap<>();
+    public static void set(String key, String value){
+        conf.put(key, value);
+    }
     public static int getInt(String key, int defaultValue){
         LOGGER.info("获取配置项："+key);
         return conf.get(key) == null ? defaultValue : getInt(key);
