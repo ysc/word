@@ -63,7 +63,7 @@ public class AutoDetector {
      * @param resourceLoader 资源加载逻辑
      * @param resourcePaths 多个资源路径，用逗号分隔
      */
-    private static void loadAndWatch(ResourceLoader resourceLoader, String resourcePaths) {
+    public static void loadAndWatch(ResourceLoader resourceLoader, String resourcePaths) {
         LOGGER.info("开始加载资源");
         LOGGER.info(resourcePaths);
         long start = System.currentTimeMillis();
