@@ -21,6 +21,8 @@
 package org.apdplat.word.util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -76,6 +78,19 @@ public class WordConfTools {
         }
     }
     /**
+     * 强制覆盖默认配置
+     * @param confFile 配置文件路径
+     */
+    public static void forceOverride(String confFile) {
+        File file = new File(confFile);
+        try(InputStream in = new FileInputStream(file)){
+            LOGGER.info("使用配置文件 "+file.getAbsolutePath()+" 强制覆盖默认配置");
+            loadConf(in);
+        } catch (Exception ex) {
+            LOGGER.error("强制覆盖默认配置失败：", ex);
+        }
+    }
+    /**
      * 加载配置文件
      * @param confFile 类路径下的配置文件 
      */
@@ -85,6 +100,13 @@ public class WordConfTools {
             LOGGER.info("未找到配置文件："+confFile);
             return;
         }
+        loadConf(in);
+    }
+    /**
+     * 加载配置文件
+     * @param in 文件输入流
+     */
+    private static void loadConf(InputStream in) {
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"))){
             String line;
             while((line = reader.readLine()) != null){
