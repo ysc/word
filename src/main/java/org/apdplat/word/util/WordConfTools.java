@@ -53,6 +53,13 @@ public class WordConfTools {
         return conf.get(key);
     }
     static{
+        reload();
+    }
+    /**
+     * 重新加载配置文件
+     */
+    public static void reload(){
+        conf.clear();
         LOGGER.info("开始加载配置文件");
         long start = System.currentTimeMillis();
         loadConf("word.conf");
