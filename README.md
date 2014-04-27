@@ -162,10 +162,28 @@ ElasticSearch插件：
 
 	4、修改文件elasticsearch-1.1.0/config/elasticsearch.yml，新增如下配置：	
 		index.analysis.analyzer.default.type : "word"
+		index.analysis.tokenizer.default.type : "word"
 	
 	5、启动ElasticSearch测试效果，在Chrome浏览器中访问：	
 		http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
-
+		
+	6、自定义配置
+		从word-1.0.jar中提取配置文件word.conf，改名为word.local.conf，放到elasticsearch-1.1.0/plugins/word目录下
+		
+	7、指定分词算法
+		修改文件elasticsearch-1.1.0/config/elasticsearch.yml，新增如下配置：
+		index.analysis.analyzer.default.segAlgorithm : "ReverseMinimumMatching"
+		index.analysis.tokenizer.default.segAlgorithm : "ReverseMinimumMatching"
+		
+		这里segAlgorithm可指定的值有：
+		正向最大匹配算法：MaximumMatching
+		逆向最大匹配算法：ReverseMaximumMatching
+		正向最小匹配算法：MinimumMatching
+		逆向最小匹配算法：ReverseMinimumMatching
+		双向最大匹配算法：BidirectionalMaximumMatching
+		双向最小匹配算法：BidirectionalMinimumMatching
+		如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
+	
 	
 		
 词向量：
