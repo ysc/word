@@ -52,7 +52,8 @@ Java实现的中文分词组件，提供了多种基于词典的分词算法，�
 		
 	指定方式有三种：
 		指定方式一，编程指定（高优先级）：
-			System.setProperty("dic.path", "classpath:dic.txt，d:/custom_dic");
+			WordConfTools.set("dic.path", "classpath:dic.txt，d:/custom_dic");
+			DictionaryFactory.reload();//更改词典路径之后，重新加载词典
 		指定方式二，Java虚拟机启动参数（中优先级）：
 			java -Ddic.path=classpath:dic.txt，d:/custom_dic
 		指定方式三，配置文件指定（低优先级）：
@@ -120,12 +121,30 @@ Solr插件：
 	<tokenizer class="solr.WhitespaceTokenizerFactory"/>和
 	<tokenizer class="solr.StandardTokenizerFactory"/>全部替换为
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"/>
+	并移除所有的filter标签
 	
 	执行 mvn clean install 生成word中文分词组件target/word-1.0.jar
 	
 	创建目录solr-4.7.1/example/solr/lib，将target/word-1.0.jar文件复制到lib目录
+	
+	如果需要使用特定的分词算法：
+	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"/>
+	segAlgorithm可选值有：	 
+	正向最大匹配算法：MaximumMatching
+	逆向最大匹配算法：ReverseMaximumMatching
+	正向最小匹配算法：MinimumMatching
+	逆向最小匹配算法：ReverseMinimumMatching
+	双向最大匹配算法：BidirectionalMaximumMatching
+	双向最小匹配算法：BidirectionalMinimumMatching
+	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
+	
+	如果需要指定特定的配置文件：
+	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"
+			conf="C:/solr-4.7.0/example/solr/nutch/conf/word.local.conf"/>
+	word.local.conf文件中可配置的内容见 word-1.0.jar 中的word.conf文件
+	如不指定，使用默认配置文件，位于 word-1.0.jar 中的word.conf文件
 
-
+	
 	
 ElasticSearch插件：
 
