@@ -159,9 +159,11 @@ public final class DictionaryFactory {
             showStatistics(map);
         }
         private static void loadClasspathDic(String dic, final Map<Integer, Integer> map) throws IOException{
-            Enumeration<URL> ps = Thread.currentThread().getContextClassLoader().getResources(dic);
+            LOGGER.info("类路径资源："+dic);
+            Enumeration<URL> ps = DictionaryFactory.class.getClassLoader().getResources(dic);
             while(ps.hasMoreElements()) {
                 URL url=ps.nextElement();
+                LOGGER.info("类路径资源URL："+url);
                 if(url.getFile().contains(".jar!")){
                     //加载jar资源
                     load("classpath:"+dic, map);

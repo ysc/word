@@ -158,9 +158,11 @@ public class StopWord {
         }
     }
     private static void loadClasspathDic(String dic) throws IOException{
-        Enumeration<URL> ps = Thread.currentThread().getContextClassLoader().getResources(dic);
+        LOGGER.info("类路径资源："+dic);
+        Enumeration<URL> ps = StopWord.class.getClassLoader().getResources(dic);
         while(ps.hasMoreElements()) {
             URL url=ps.nextElement();
+            LOGGER.info("类路径资源URL："+url);
             if(url.getFile().contains(".jar!")){
                 //加载jar资源
                 load("classpath:"+dic);
