@@ -41,6 +41,9 @@ public class PersonName {
     private static final Set<String> surname1=new HashSet<>();
     private static final Set<String> surname2=new HashSet<>();
     static{
+        reload();
+    }
+    public static void reload(){
         AutoDetector.loadAndWatch(new ResourceLoader(){
 
             @Override

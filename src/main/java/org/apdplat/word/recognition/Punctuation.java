@@ -40,6 +40,9 @@ public class Punctuation {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Punctuation.class);
     private static char[] chars = null;
     static{
+        reload();
+    }
+    public static void reload(){
         AutoDetector.loadAndWatch(new ResourceLoader(){
 
             @Override

@@ -36,8 +36,10 @@ import org.slf4j.LoggerFactory;
 public class Quantifier {
     private static final Logger LOGGER = LoggerFactory.getLogger(Quantifier.class);
     private static final Set<Character> quantifiers=new HashSet<>();
-
     static{
+        reload();
+    }
+    public static void reload(){
         AutoDetector.loadAndWatch(new ResourceLoader(){
 
             @Override

@@ -52,6 +52,9 @@ public final class DictionaryFactory {
     public static final Dictionary getDictionary(){
         return DictionaryHolder.DIC;
     }
+    public static void reload(){
+        DictionaryHolder.reload();
+    }
     private static final class DictionaryHolder{
         private static final Dictionary DIC = constructDictionary();
         private static Dictionary constructDictionary(){  
@@ -66,6 +69,9 @@ public final class DictionaryFactory {
             }
         }
         static{
+            reload();
+        }
+        public static void reload(){
             AutoDetector.loadAndWatch(new ResourceLoader(){
 
                 @Override

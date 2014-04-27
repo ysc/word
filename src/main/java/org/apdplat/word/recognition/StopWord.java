@@ -45,8 +45,10 @@ import org.slf4j.LoggerFactory;
 public class StopWord {
     private static final Logger LOGGER = LoggerFactory.getLogger(StopWord.class);
     private static final Set<String> stopwords = new HashSet<>();
-    
     static{
+        reload();
+    }
+    public static void reload(){
         AutoDetector.loadAndWatch(new ResourceLoader(){
 
             @Override
