@@ -22,7 +22,6 @@ package org.apdplat.word.segmentation.impl;
 
 import java.util.List;
 import java.util.Map;
-import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.Word;
@@ -50,19 +49,19 @@ public class BidirectionalMinimumMatching extends AbstractSegmentation{
             return wordsRMIM;
         }
         
-        //如果分词结果不一样，则利用二元模型消歧
-        Map<List<Word>, Float> words = Bigram.bigram(wordsRMIM, wordsMIM);        
+        //如果分词结果不一样，则利用ngram消歧
+        Map<List<Word>, Float> words = ngram(wordsRMIM, wordsMIM);        
       
         //如果分值都一样，则选择逆向最小匹配
         float score = words.get(wordsRMIM);
-        LOGGER.debug("逆向最小匹配："+wordsRMIM.toString()+" : 二元模型分值="+score);
+        LOGGER.debug("逆向最小匹配："+wordsRMIM.toString()+" : ngram分值="+score);
         //最终结果
         List<Word> result = wordsRMIM;
         //最小分值
         float max = score;
         
         score = words.get(wordsMIM);
-        LOGGER.debug("正向最小匹配："+wordsMIM.toString()+" : 二元模型分值="+score);
+        LOGGER.debug("正向最小匹配："+wordsMIM.toString()+" : ngram分值="+score);
         //只有正向最小匹配的分值大于逆向最小匹配，才会被选择
         if(score > max){
             result = wordsMIM;

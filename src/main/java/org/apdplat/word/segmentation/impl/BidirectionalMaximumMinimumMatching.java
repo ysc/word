@@ -22,7 +22,6 @@ package org.apdplat.word.segmentation.impl;
 
 import java.util.List;
 import java.util.Map;
-import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.Word;
@@ -30,7 +29,7 @@ import org.apdplat.word.segmentation.Word;
 /**
  * 基于词典的双向最大最小匹配算法
  * Dictionary-based bidirectional maximum minimum matching algorithm
- * 利用二元模型从
+ * 利用ngram从
  * 逆向最大匹配、正向最大匹配、逆向最小匹配、正向最小匹配
  * 4种切分结果中选择一种最好的分词结果
  * 如果分值都一样，则选择逆向最大匹配
@@ -65,33 +64,33 @@ public class BidirectionalMaximumMinimumMatching extends AbstractSegmentation{
             return wordsRMM;
         }
         
-        //如果分词结果不一样，则利用二元模型消歧
-        Map<List<Word>, Float> words = Bigram.bigram(wordsRMM, wordsMM, wordsRMIM, wordsMIM);        
+        //如果分词结果不一样，则利用ngram消歧
+        Map<List<Word>, Float> words = ngram(wordsRMM, wordsMM, wordsRMIM, wordsMIM);        
       
         //如果分值都一样，则选择逆向最大匹配
         float score = words.get(wordsRMM);
-        LOGGER.debug("逆向最大匹配："+wordsRMM.toString()+" : 二元模型分值="+score);
+        LOGGER.debug("逆向最大匹配："+wordsRMM.toString()+" : ngram分值="+score);
         //最终结果
         List<Word> result = wordsRMM;
         //最大分值
         float max = score;
         
         score = words.get(wordsMM);
-        LOGGER.debug("正向最大匹配："+wordsMM.toString()+" : 二元模型分值="+score);
+        LOGGER.debug("正向最大匹配："+wordsMM.toString()+" : ngram分值="+score);
         if(score > max){
             result = wordsMM;
             max = score;
         }
         
         score = words.get(wordsRMIM);
-        LOGGER.debug("逆向最小匹配："+wordsRMIM.toString()+" : 二元模型分值="+score);
+        LOGGER.debug("逆向最小匹配："+wordsRMIM.toString()+" : ngram分值="+score);
         if(score > max){
             result = wordsRMIM;
             max = score;
         }
         
         score = words.get(wordsMIM);
-        LOGGER.debug("正向最小匹配："+wordsMIM.toString()+" : 二元模型分值="+score);
+        LOGGER.debug("正向最小匹配："+wordsMIM.toString()+" : ngram分值="+score);
         if(score > max){
             result = wordsMIM;
             max = score;

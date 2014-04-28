@@ -22,7 +22,6 @@ package org.apdplat.word.segmentation.impl;
 
 import java.util.List;
 import java.util.Map;
-import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.Word;
@@ -50,19 +49,19 @@ public class BidirectionalMaximumMatching extends AbstractSegmentation{
             return wordsRMM;
         }
         
-        //如果分词结果不一样，则利用二元模型消歧
-        Map<List<Word>, Float> words = Bigram.bigram(wordsRMM, wordsMM);        
+        //如果分词结果不一样，则利用ngram消歧
+        Map<List<Word>, Float> words = ngram(wordsRMM, wordsMM);        
       
         //如果分值都一样，则选择逆向最大匹配
         float score = words.get(wordsRMM);
-        LOGGER.debug("逆向最大匹配："+wordsRMM.toString()+" : 二元模型分值="+score);
+        LOGGER.debug("逆向最大匹配："+wordsRMM.toString()+" : ngram分值="+score);
         //最终结果
         List<Word> result = wordsRMM;
         //最大分值
         float max = score;
         
         score = words.get(wordsMM);
-        LOGGER.debug("正向最大匹配："+wordsMM.toString()+" : 二元模型分值="+score);
+        LOGGER.debug("正向最大匹配："+wordsMM.toString()+" : ngram分值="+score);
         //只有正向最大匹配的分值大于逆向最大匹配，才会被选择
         if(score > max){
             result = wordsMM;
