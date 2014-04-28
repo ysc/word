@@ -20,7 +20,9 @@
 
 package org.apdplat.word.corpus;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.AutoDetector;
 import org.apdplat.word.util.ResourceLoader;
@@ -63,6 +65,37 @@ public class Trigram {
             }
         
         }, WordConfTools.get("trigram.path", "classpath:trigram.txt"));
+    }
+    /**
+     * 一次性计算多种分词结果的三元模型分值
+     * @param sentences 多种分词结果
+     * @return 分词结果及其对应的分值
+     */
+    public static Map<List<Word>, Float> trigram(List<Word>... sentences){
+        Map<List<Word>, Float> map = new HashMap<>();
+        //计算多种分词结果的分值
+        for(List<Word> sentence : sentences){
+            if(map.get(sentence) != null){
+                //相同的分词结果只计算一次分值
+                continue;
+            }
+            float score=0;
+            //计算其中一种分词结果的分值
+            if(sentence.size() > 2){
+                for(int i=0; i<sentence.size()-2; i++){
+                    String first = sentence.get(i).getText();
+                    String second = sentence.get(i+1).getText();
+                    String third = sentence.get(i+2).getText();
+                    float trigramScore = getScore(first, second, third);
+                    if(trigramScore > 0){
+                        score += trigramScore;
+                    }
+                }
+            }
+            map.put(sentence, score);
+        }
+        
+        return map;
     }
     /**
      * 计算分词结果的三元模型分值
