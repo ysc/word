@@ -80,19 +80,21 @@ public class Bigram {
         //2、利用获得的二元模型分值重新计算分词结果的分值
         //补偿细粒度切分获得分值而粗粒度切分未获得分值的情况
         //计算多种分词结果的分值
-        for(List<Word> sentence : map.keySet()){
-            //计算其中一种分词结果的分值
-            for(Word word : sentence){
-                Float bigramScore = bigramScores.get(word.getText());
-                Float twoBigramScore = twoBigramScores.get(word.getText());
-                Float[] array = {bigramScore, twoBigramScore};
-                for(Float score : array){
-                    if(score !=null && score > 0){
-                        LOGGER.debug(word.getText()+" 获得分值："+score);
-                        float value = map.get(sentence);
-                        value += score;
-                        map.put(sentence, value);
-                    }                    
+        if(bigramScores.size() > 0 || twoBigramScores.size() > 0){
+            for(List<Word> sentence : map.keySet()){
+                //计算其中一种分词结果的分值
+                for(Word word : sentence){
+                    Float bigramScore = bigramScores.get(word.getText());
+                    Float twoBigramScore = twoBigramScores.get(word.getText());
+                    Float[] array = {bigramScore, twoBigramScore};
+                    for(Float score : array){
+                        if(score !=null && score > 0){
+                            LOGGER.debug(word.getText()+" 获得分值："+score);
+                            float value = map.get(sentence);
+                            value += score;
+                            map.put(sentence, value);
+                        }                    
+                    }
                 }
             }
         }
