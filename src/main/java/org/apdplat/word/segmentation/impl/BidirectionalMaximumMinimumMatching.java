@@ -56,9 +56,9 @@ public class BidirectionalMaximumMinimumMatching extends AbstractSegmentation{
         if(wordsRMM.size() == wordsMM.size()
                 && wordsRMM.size() == wordsRMIM.size()
                 && wordsRMM.size() == wordsMIM.size()
-                && wordsRMM.toString().equals(wordsMM.toString())
-                && wordsRMM.toString().equals(wordsRMIM.toString())
-                && wordsRMM.toString().equals(wordsMIM.toString())){            
+                && wordsRMM.equals(wordsMM)
+                && wordsRMM.equals(wordsRMIM)
+                && wordsRMM.equals(wordsMIM)){            
             return wordsRMM;
         }
         

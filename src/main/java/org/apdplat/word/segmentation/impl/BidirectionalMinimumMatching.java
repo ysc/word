@@ -43,7 +43,7 @@ public class BidirectionalMinimumMatching extends AbstractSegmentation{
         List<Word> wordsMIM = MIM.seg(text);
         //如果分词结果都一样，则直接返回结果
         if(wordsRMIM.size() == wordsMIM.size() 
-                && wordsRMIM.toString().equals(wordsMIM.toString())){            
+                && wordsRMIM.equals(wordsMIM)){            
             return wordsRMIM;
         }
         
