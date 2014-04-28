@@ -56,6 +56,9 @@ public class Bigram {
         Map<String, Float> twoBigramScores = new HashMap<>();
         //1、计算多种分词结果的分值
         for(List<Word> sentence : sentences){
+            if(map.get(sentence) != null){
+                continue;
+            }
             float score=0;
             //计算其中一种分词结果的分值
             if(sentence.size() > 1){
