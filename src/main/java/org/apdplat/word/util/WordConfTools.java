@@ -42,20 +42,24 @@ public class WordConfTools {
         conf.put(key, value);
     }
     public static int getInt(String key, int defaultValue){
-        LOGGER.info("获取配置项："+key);
-        return conf.get(key) == null ? defaultValue : getInt(key);
+        int value = conf.get(key) == null ? defaultValue : Integer.parseInt(conf.get(key));
+        LOGGER.debug("获取配置项："+key+"="+value);
+        return value;
     }
     public static int getInt(String key){
-        LOGGER.info("获取配置项："+key);
-        return Integer.parseInt(conf.get(key));
+        int value = Integer.parseInt(conf.get(key));
+        LOGGER.debug("获取配置项："+key+"="+value);
+        return value;
     }
     public static String get(String key, String defaultValue){
-        LOGGER.info("获取配置项："+key);
-        return conf.get(key) == null ? defaultValue : conf.get(key);
+        String value = conf.get(key) == null ? defaultValue : conf.get(key);
+        LOGGER.debug("获取配置项："+key+"="+value);
+        return value;
     }
     public static String get(String key){
-        LOGGER.info("获取配置项："+key);
-        return conf.get(key);
+        String value = conf.get(key);
+        LOGGER.debug("获取配置项："+key+"="+value);
+        return value;
     }
     static{
         reload();
@@ -73,8 +77,9 @@ public class WordConfTools {
         long cost = System.currentTimeMillis() - start;
         LOGGER.info("配置文件加载完毕，耗时"+cost+" 毫秒，配置项数目："+conf.size());
         LOGGER.info("配置信息：");
+        int i=1;
         for(String key : conf.keySet()){
-            LOGGER.info(key+"="+conf.get(key));
+            LOGGER.info((i++)+"、"+key+"="+conf.get(key));
         }
     }
     /**
@@ -100,6 +105,7 @@ public class WordConfTools {
             LOGGER.info("未找到配置文件："+confFile);
             return;
         }
+        LOGGER.info("加载配置文件："+confFile);
         loadConf(in);
     }
     /**
