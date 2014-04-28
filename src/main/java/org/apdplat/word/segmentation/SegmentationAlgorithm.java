@@ -29,29 +29,36 @@ public enum SegmentationAlgorithm {
     /**
      * 正向最大匹配算法
      */
-    MaximumMatching,
+    MaximumMatching("正向最大匹配算法"),
     /**
      * 逆向最大匹配算法
      */
-    ReverseMaximumMatching,
+    ReverseMaximumMatching("逆向最大匹配算法"),
     /**
      * 正向最小匹配算法
      */
-    MinimumMatching,
+    MinimumMatching("正向最小匹配算法"),
     /**
      * 逆向最小匹配算法
      */
-    ReverseMinimumMatching,
+    ReverseMinimumMatching("逆向最小匹配算法"),
     /**
      * 双向最大匹配算法
      */
-    BidirectionalMaximumMatching,
+    BidirectionalMaximumMatching("双向最大匹配算法"),
     /**
      * 双向最小匹配算法
      */
-    BidirectionalMinimumMatching,
+    BidirectionalMinimumMatching("双向最小匹配算法"),
     /**
      * 双向最大最小匹配算法
      */
-    BidirectionalMaximumMinimumMatching
+    BidirectionalMaximumMinimumMatching("双向最大最小匹配算法");
+    private SegmentationAlgorithm(String des){
+        this.des = des;
+    }
+    private final String des;
+    public String getDes() {
+        return des;
+    }
 }
