@@ -22,7 +22,10 @@ package org.apdplat.word.segmentation.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
+import org.apdplat.word.corpus.Bigram;
+import org.apdplat.word.corpus.Trigram;
 import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.PersonName;
@@ -52,6 +55,21 @@ public abstract class AbstractSegmentation  implements Segmentation{
      */
     public boolean ngramEnabled(){
         return "bigram".equals(NGRAM) || "trigram".equals(NGRAM);
+    }
+    /**
+     * 利用ngram进行评分
+     * @param sentences 多个分词结果
+     * @return 评分后的结果
+     */
+    public Map<List<Word>, Float> ngram(List<Word>... sentences){
+        if("bigram".equals(NGRAM)){
+            return Bigram.bigram(sentences);
+      
+        }
+        if("trigram".equals(NGRAM)){
+            return Trigram.trigram(sentences);
+        }
+        return null;
     }
     /**
      * 分词时截取的字符串的最大长度
