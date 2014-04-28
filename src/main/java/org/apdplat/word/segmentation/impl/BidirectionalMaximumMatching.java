@@ -42,7 +42,8 @@ public class BidirectionalMaximumMatching extends AbstractSegmentation{
         //正向最大匹配
         List<Word> wordsMM = MM.seg(text);
         //如果分词结果都一样，则直接返回结果
-        if(wordsRMM.toString().equals(wordsMM.toString())){            
+        if(wordsRMM.size() == wordsMM.size() 
+                && wordsRMM.toString().equals(wordsMM.toString())){            
             return wordsRMM;
         }
         
