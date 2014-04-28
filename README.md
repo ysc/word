@@ -87,6 +87,7 @@ Java实现的中文分词组件，提供了多种基于词典的分词算法，�
 	逆向最小匹配算法：ReverseMinimumMatching
 	双向最大匹配算法：BidirectionalMaximumMatching
 	双向最小匹配算法：BidirectionalMinimumMatching
+	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 
 
 	
@@ -136,6 +137,7 @@ Solr插件：
 	逆向最小匹配算法：ReverseMinimumMatching
 	双向最大匹配算法：BidirectionalMaximumMatching
 	双向最小匹配算法：BidirectionalMinimumMatching
+	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
 	如果需要指定特定的配置文件：
@@ -182,6 +184,7 @@ ElasticSearch插件：
 		逆向最小匹配算法：ReverseMinimumMatching
 		双向最大匹配算法：BidirectionalMaximumMatching
 		双向最小匹配算法：BidirectionalMinimumMatching
+		双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 		如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
 	

@@ -49,5 +49,9 @@ public enum SegmentationAlgorithm {
     /**
      * 双向最小匹配算法
      */
-    BidirectionalMinimumMatching
+    BidirectionalMinimumMatching,
+    /**
+     * 双向最大最小匹配算法
+     */
+    BidirectionalMaximumMinimumMatching
 }
