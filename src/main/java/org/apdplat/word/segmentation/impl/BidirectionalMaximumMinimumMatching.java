@@ -46,6 +46,9 @@ public class BidirectionalMaximumMinimumMatching extends AbstractSegmentation{
     public List<Word> segImpl(final String text) {
         //逆向最大匹配为默认选择，如果分值都一样的话
         List<Word> wordsRMM = RMM.seg(text);
+        if(!ngramEnabled()){
+            return wordsRMM;
+        }
         //正向最大匹配
         List<Word> wordsMM = MM.seg(text);
         //逆向最小匹配

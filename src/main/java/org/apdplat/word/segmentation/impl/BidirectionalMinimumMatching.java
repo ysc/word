@@ -39,6 +39,9 @@ public class BidirectionalMinimumMatching extends AbstractSegmentation{
     public List<Word> segImpl(final String text) {
         //逆向最小匹配
         List<Word> wordsRMIM = RMIM.seg(text);
+        if(!ngramEnabled()){
+            return wordsRMIM;
+        }
         //正向最小匹配
         List<Word> wordsMIM = MIM.seg(text);
         //如果分词结果都一样，则直接返回结果
