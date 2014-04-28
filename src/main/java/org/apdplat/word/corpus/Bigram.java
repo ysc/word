@@ -20,15 +20,13 @@
 
 package org.apdplat.word.corpus;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.ResourceLoader;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +37,35 @@ import org.slf4j.LoggerFactory;
 public class Bigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bigram.class);
     private static final GramTrie GRAM_TRIE = new GramTrie();
+    static{
+        reload();
+    }
+    public static void reload(){
+        AutoDetector.loadAndWatch(new ResourceLoader(){
+
+            @Override
+            public void clear() {
+                GRAM_TRIE.clear();
+            }
+
+            @Override
+            public void load(List<String> lines) {
+                LOGGER.info("初始化bigram");
+                int count=0;
+                for(String line : lines){
+                    try{
+                        String[] attr = line.split("\\s+");
+                        GRAM_TRIE.put(attr[0], Integer.parseInt(attr[1]));
+                        count++;
+                    }catch(Exception e){
+                        LOGGER.error("错误的bigram数据："+line);
+                    }
+                }
+                LOGGER.info("bigram初始化完毕，bigram数据条数："+count);
+            }
+        
+        }, WordConfTools.get("bigram.path", "classpath:bigram.txt"));
+    }
     /**
      * 含有语境的二元模型分值算法
      * 计算多种分词结果的分值
@@ -132,41 +159,5 @@ public class Bigram {
             LOGGER.debug("二元模型 "+first+":"+second+" 获得分值："+value);
         }
         return value;
-    }
-    static{
-        try{
-            LOGGER.info("开始加载bigram文件");
-            long start = System.currentTimeMillis();
-            String bigramPath = System.getProperty("bigram.path");
-            InputStream in = null;
-            if(bigramPath == null){
-                in = Bigram.class.getClassLoader().getResourceAsStream("bigram.txt");
-                LOGGER.info("从类路径bigram.txt加载默认二元语法模型");
-            }else{
-                bigramPath = bigramPath.trim();
-                if(bigramPath.startsWith("classpath:")){
-                    in = Bigram.class.getClassLoader().getResourceAsStream(bigramPath.replace("classpath:", ""));
-                }else{
-                    in = new FileInputStream(bigramPath);
-                }                    
-            }
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));){
-                String line;
-                while( (line = reader.readLine()) != null ){
-                    //去除首尾空白字符
-                    line = line.trim();
-                    //忽略空行
-                    if(!"".equals(line)){
-                        String[] attr = line.split("\\s+");
-                        GRAM_TRIE.put(attr[0], Integer.parseInt(attr[1]));
-                    }
-                }
-            }
-            long cost = System.currentTimeMillis() - start;
-            LOGGER.info("成功加载bigram文件，耗时："+cost+" 毫秒");
-        }catch (IOException ex) {
-            System.err.println("bigram文件装载失败:"+ex.getMessage());
-            throw new RuntimeException(ex);
-        }
     }
 }
