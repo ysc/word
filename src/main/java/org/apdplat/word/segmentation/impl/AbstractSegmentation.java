@@ -44,7 +44,15 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
     protected static final boolean KEEP_PUNCTUATION = "true".equals(WordConfTools.get("keep.punctuation", "false"));
     private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
+    private static final String NGRAM = WordConfTools.get("ngram", "bigram");
     public abstract List<Word> segImpl(String text);
+    /**
+     * 是否启用ngram
+     * @return 是或否
+     */
+    public boolean ngramEnabled(){
+        return "bigram".equals(NGRAM) || "trigram".equals(NGRAM);
+    }
     /**
      * 分词时截取的字符串的最大长度
      * @return 
