@@ -96,9 +96,9 @@ Java实现的中文分词组件，提供了多种基于词典的分词算法，�
 	corpus-text.txt为分好词的人工标注文本，词之间以空格分隔
 	test-text.txt为测试文本，是把corpus-text.txt以标点符号分隔为多行的结果
 	standard-text.txt为测试文本对应的人工标注文本，作为分词是否正确的标准
-	result-text-***，***为各种分词算法名称，这是word分词结果
-	perfect-result-***，***为各种分词算法名称，这是分词结果和人工标注标准完全一致的文本
-	wrong-result-***，***为各种分词算法名称，这是分词结果和人工标注标准不一致的文本
+	result-text-***.txt，***为各种分词算法名称，这是word分词结果
+	perfect-result-***.txt，***为各种分词算法名称，这是分词结果和人工标注标准完全一致的文本
+	wrong-result-***.txt，***为各种分词算法名称，这是分词结果和人工标注标准不一致的文本
 	
 
 	
@@ -106,8 +106,10 @@ Lucene插件：
 
 
 
+	1、构造一个word分析器ChineseWordAnalyzer
     Analyzer analyzer = new ChineseWordAnalyzer();
 	
+	2、利用word分析器切分文本
 	TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
 	while(tokenStream.incrementToken()){
 		CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
@@ -115,10 +117,12 @@ Lucene插件：
 		System.out.println(charTermAttribute.toString()+" "+offsetAttribute.startOffset());
 	}
 	
+	3、利用word分析器建立Lucene索引
 	Directory directory = new RAMDirectory();
 	IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_47, analyzer);
 	IndexWriter indexWriter = new IndexWriter(directory, config);
 	
+	4、利用word分析器查询Lucene索引
 	QueryParser queryParser = new QueryParser(Version.LUCENE_47, "text", analyzer);
 	Query query = queryParser.parse("text:杨尚川");
 	TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
