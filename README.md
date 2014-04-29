@@ -118,17 +118,19 @@ Solr插件：
 
     
 	
+	1、生成分词组件二进制jar
+	执行 mvn clean install 生成word中文分词组件target/word-1.0.jar
+	
+	2、创建目录solr-4.7.1/example/solr/lib，将target/word-1.0.jar文件复制到lib目录
+	
+	3、配置schema指定分词器
 	将solr-4.7.1/example/solr/collection1/conf/schema.xml文件中所有的
 	<tokenizer class="solr.WhitespaceTokenizerFactory"/>和
 	<tokenizer class="solr.StandardTokenizerFactory"/>全部替换为
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"/>
 	并移除所有的filter标签
 	
-	执行 mvn clean install 生成word中文分词组件target/word-1.0.jar
-	
-	创建目录solr-4.7.1/example/solr/lib，将target/word-1.0.jar文件复制到lib目录
-	
-	如果需要使用特定的分词算法：
+	4、如果需要使用特定的分词算法：
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"/>
 	segAlgorithm可选值有：	 
 	正向最大匹配算法：MaximumMatching
@@ -140,7 +142,7 @@ Solr插件：
 	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
-	如果需要指定特定的配置文件：
+	5、如果需要指定特定的配置文件：
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"
 			conf="C:/solr-4.7.0/example/solr/nutch/conf/word.local.conf"/>
 	word.local.conf文件中可配置的内容见 word-1.0.jar 中的word.conf文件
