@@ -133,13 +133,16 @@ public class Evaluation {
     }
     /**
      * 分词效果评估
-     * @param resultText 实际分词结果
-     * @param standardText 标准分词结果
+     * @param resultText 实际分词结果文件路径
+     * @param standardText 标准分词结果文件路径
+     * @param perfectResult 分词完美内容保存文件路径
+     * @param wrongResult 分词错误内容保存文件路径
+     * @return 评估结果
      */
-    private static EvaluationResult evaluation(String resultText, String standardText, String perfectResult, String wrongResult) {
+    public static EvaluationResult evaluation(String resultText, String standardText, String perfectResult, String wrongResult) {
         long start = System.currentTimeMillis();
-        int perfectCount=0;
-        int wrongCount=0;
+        int perfectLineCount=0;
+        int wrongLineCount=0;
         int perfectCharCount=0;
         int wrongCharCount=0;
         try(BufferedReader resultReader = new BufferedReader(new InputStreamReader(new FileInputStream(resultText),"utf-8"));
@@ -156,13 +159,13 @@ public class Evaluation {
                 if(result.equals(standard)){
                     //分词结果和标准一模一样
                     perfectResultWriter.write(standard+"\n");
-                    perfectCount++;
+                    perfectLineCount++;
                     perfectCharCount+=standard.replaceAll("\\s+", "").length();
                 }else{
                     //分词结果和标准不一样
                     wrongResultWriter.write("实际分词结果："+result+"\n");
                     wrongResultWriter.write("标准分词结果："+standard+"\n");
-                    wrongCount++;
+                    wrongLineCount++;
                     wrongCharCount+=standard.replaceAll("\\s+", "").length();
                 }
             }
@@ -170,116 +173,60 @@ public class Evaluation {
             LOGGER.error("分词效果评估失败：", ex);
         }
         long cost = System.currentTimeMillis() - start;
-        int total = perfectCount+wrongCount;
+        int totalLineCount = perfectLineCount+wrongLineCount;
         int totalCharCount = perfectCharCount+wrongCharCount;
         LOGGER.info("评估耗时："+cost+" 毫秒");
         EvaluationResult er = new EvaluationResult();
         er.setPerfectCharCount(perfectCharCount);
-        er.setPerfectCount(perfectCount);
+        er.setPerfectLineCount(perfectLineCount);
         er.setTotalCharCount(totalCharCount);
-        er.setTotalLineCount(total);
+        er.setTotalLineCount(totalLineCount);
         er.setWrongCharCount(wrongCharCount);
-        er.setWrongCount(wrongCount);     
+        er.setWrongLineCount(wrongLineCount);     
         return er;
     }
-    private static class EvaluationResult implements Comparable{
-        private SegmentationAlgorithm segmentationAlgorithm;
-        private float segSpeed;
-        private int totalLineCount;
-        private int perfectCount;
-        private int wrongCount;
-        private int totalCharCount;
-        private int perfectCharCount;
-        private int wrongCharCount;
-
-        public SegmentationAlgorithm getSegmentationAlgorithm() {
-            return segmentationAlgorithm;
-        }
-        public void setSegmentationAlgorithm(SegmentationAlgorithm segmentationAlgorithm) {
-            this.segmentationAlgorithm = segmentationAlgorithm;
-        }
-        public float getSegSpeed() {
-            return segSpeed;
-        }
-        public void setSegSpeed(float segSpeed) {
-            this.segSpeed = segSpeed;
-        }
-        public float getLinePerfectRate(){
-            return perfectCount/(float)totalLineCount*100;
-        }
-        public float getLineWrongRate(){
-            return wrongCount/(float)totalLineCount*100;
-        }
-        public float getCharPerfectRate(){
-            return perfectCharCount/(float)totalCharCount*100;
-        }
-        public float getCharWrongRate(){
-            return wrongCharCount/(float)totalCharCount*100;
-        }
-        public int getTotalLineCount() {
-            return totalLineCount;
-        }
-        public void setTotalLineCount(int totalLineCount) {
-            this.totalLineCount = totalLineCount;
-        }
-        public int getPerfectCount() {
-            return perfectCount;
-        }
-        public void setPerfectCount(int perfectCount) {
-            this.perfectCount = perfectCount;
-        }
-        public int getWrongCount() {
-            return wrongCount;
-        }
-        public void setWrongCount(int wrongCount) {
-            this.wrongCount = wrongCount;
-        }
-        public int getTotalCharCount() {
-            return totalCharCount;
-        }
-        public void setTotalCharCount(int totalCharCount) {
-            this.totalCharCount = totalCharCount;
-        }
-        public int getPerfectCharCount() {
-            return perfectCharCount;
-        }
-        public void setPerfectCharCount(int perfectCharCount) {
-            this.perfectCharCount = perfectCharCount;
-        }
-        public int getWrongCharCount() {
-            return wrongCharCount;
-        }
-        public void setWrongCharCount(int wrongCharCount) {
-            this.wrongCharCount = wrongCharCount;
-        }
-        @Override
-        public String toString(){
-            return segmentationAlgorithm.name()+"（"+segmentationAlgorithm.getDes()+"）："
-                    +"\n"
-                    +"分词速度："+segSpeed+" 字符/毫秒"
-                    +"\n"
-                    +"行数完美率："+getLinePerfectRate()+"%"
-                    +"  行数错误率："+getLineWrongRate()+"%"
-                    +"  总的行数："+totalLineCount
-                    +"  完美行数："+perfectCount
-                    +"  错误行数："+wrongCount
-                    +"\n"
-                    +"字数完美率："+getCharPerfectRate()+"%"
-                    +" 字数错误率："+getCharWrongRate()+"%"
-                    +" 总的字数："+totalCharCount
-                    +" 完美字数："+perfectCharCount
-                    +" 错误字数："+wrongCharCount;
-        }
-        @Override
-        public int compareTo(Object o) {
-            EvaluationResult other = (EvaluationResult)o;
-            if(other.getLinePerfectRate() - getLinePerfectRate() > 0){
-                return 1;
+    /**
+     * 分词效果评估
+     * @param resultText 实际分词结果文件路径
+     * @param standardText 标准分词结果文件路径
+     * @return 评估结果
+     */
+    public static EvaluationResult evaluation(String resultText, String standardText) {
+        int perfectLineCount=0;
+        int wrongLineCount=0;
+        int perfectCharCount=0;
+        int wrongCharCount=0;
+        try(BufferedReader resultReader = new BufferedReader(new InputStreamReader(new FileInputStream(resultText),"utf-8"));
+            BufferedReader standardReader = new BufferedReader(new InputStreamReader(new FileInputStream(standardText),"utf-8"))){
+            String result;
+            while( (result = resultReader.readLine()) != null ){
+                result = result.trim();
+                String standard = standardReader.readLine().trim();
+                if(result.equals("")){
+                    continue;
+                }
+                if(result.equals(standard)){
+                    //分词结果和标准一模一样
+                    perfectLineCount++;
+                    perfectCharCount+=standard.replaceAll("\\s+", "").length();
+                }else{
+                    //分词结果和标准不一样
+                    wrongLineCount++;
+                    wrongCharCount+=standard.replaceAll("\\s+", "").length();
+                }
             }
-            if(other.getLinePerfectRate() - getLinePerfectRate() < 0){
-                return -1;
-            }
-            return 0;
+        } catch (IOException ex) {
+            LOGGER.error("分词效果评估失败：", ex);
         }
+        int totalLineCount = perfectLineCount+wrongLineCount;
+        int totalCharCount = perfectCharCount+wrongCharCount;
+        EvaluationResult er = new EvaluationResult();
+        er.setPerfectCharCount(perfectCharCount);
+        er.setPerfectLineCount(perfectLineCount);
+        er.setTotalCharCount(totalCharCount);
+        er.setTotalLineCount(totalLineCount);
+        er.setWrongCharCount(wrongCharCount);
+        er.setWrongLineCount(wrongLineCount);     
+        return er;
     }
 }
