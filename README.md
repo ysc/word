@@ -1,4 +1,4 @@
-Chinese Word Segmentation Component （中文分词组件 - word）
+Chinese Word Segmentation Component （Java中文分词组件 - word分词）
 
 
 
@@ -88,7 +88,18 @@ Java实现的中文分词组件，提供了多种基于词典的分词算法，�
 	双向最大匹配算法：BidirectionalMaximumMatching
 	双向最小匹配算法：BidirectionalMinimumMatching
 	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
-
+	
+	9、分词效果评估
+	运行项目根目录下的脚本evaluation.bat可以对分词效果进行评估
+	评估采用的测试文本有253 3709行，共2837 4490个字符
+	评估结果位于target/evaluation目录下：
+	corpus-text.txt为分好词的人工标注文本，词之间以空格分隔
+	test-text.txt为测试文本，是把corpus-text.txt以标点符号分隔为多行的结果
+	standard-text.txt为测试文本对应的人工标注文本，作为分词是否正确的标准
+	result-text-***，***为各种分词算法名称，这是word分词结果
+	perfect-result-***，***为各种分词算法名称，这是分词结果和人工标注标准完全一致的文本
+	wrong-result-***，***为各种分词算法名称，这是分词结果和人工标注标准不一致的文本
+	
 
 	
 Lucene插件：

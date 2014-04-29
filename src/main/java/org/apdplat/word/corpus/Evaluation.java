@@ -44,18 +44,33 @@ import org.slf4j.LoggerFactory;
 /**
  * 利用人工标注的语料库
  * 对分词算法效果进行评估
+ * 评估采用的测试文本有253 3709行，共2837 4490个字符
+ * 评估结果位于target/evaluation目录下：
+ * corpus-text.txt为分好词的人工标注文本，词之间以空格分隔
+ * test-text.txt为测试文本，是把corpus-text.txt以标点符号分隔为多行的结果
+ * standard-text.txt为测试文本对应的人工标注文本，作为分词是否正确的标准
+ * result-text-***，***为各种分词算法名称，这是word分词结果
+ * perfect-result-***，***为各种分词算法名称，这是分词结果和人工标注标准完全一致的文本
+ * wrong-result-***，***为各种分词算法名称，这是分词结果和人工标注标准不一致的文本	
  * @author 杨尚川
  */
 public class Evaluation {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Evaluation.class);
 
     public static void main(String[] args) throws Exception{
+        //分好词的人工标注文本，词之间以空格分隔
         String corpusText = "target/evaluation/corpus-text.txt";
+        //测试文本，是把corpus-text.txt以标点符号分隔为多行的结果
         String testText = "target/evaluation/test-text.txt";
+        //测试文本对应的人工标注文本，作为分词是否正确的标准
         String standardText = "target/evaluation/standard-text.txt";
+        //word分词结果
         String resultText = "target/evaluation/result-text-";
+        //分词结果和人工标注标准完全一致的文本
         String perfectResult = "target/evaluation/perfect-result-";
+        //分词结果和人工标注标准不一致的文本
         String wrongResult = "target/evaluation/wrong-result-";
+        //评估结果位于target/evaluation目录下：
         Path path = Paths.get("target/evaluation");
         if(!Files.exists(path)){
             Files.createDirectory(path);
@@ -78,7 +93,7 @@ public class Evaluation {
             result.add(evaluationResult);
         }
         //5、输出测试报告
-        LOGGER.info("**********************************************************************************************");
+        LOGGER.info("*************************************************************************************************************");
         Collections.sort(result);
         for(int i=0; i<result.size(); i++){
             LOGGER.info(result.get(i).toString());
@@ -86,7 +101,7 @@ public class Evaluation {
                 LOGGER.info("");
             }
         }
-        LOGGER.info("**********************************************************************************************");
+        LOGGER.info("*************************************************************************************************************");
     }
     /**
      * 生成测试数据集和标准数据集
