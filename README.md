@@ -233,3 +233,5 @@ ElasticSearch插件：
    [4、中文分词算法 之 基于词典的正向最小匹配算法](http://yangshangchuan.iteye.com/blog/2040423)
    
    [5、中文分词算法 之 基于词典的逆向最小匹配算法](http://yangshangchuan.iteye.com/blog/2040431)
+   
+   [6、Java开源项目cws_evaluation：中文分词器分词效果评估](https://github.com/ysc/cws_evaluation/)
