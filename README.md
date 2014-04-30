@@ -1,8 +1,8 @@
-Chinese Word Segmentation Component （Java中文分词组件 - word分词）
+Java Chinese Word Segmentation Component （Java中文分词组件 - word分词）
 
 
 
-Java实现的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。
+word分词是一个Java实现的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。
 能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。
 同时提供了Lucene、Solr、ElasticSearch插件。
 
