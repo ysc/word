@@ -23,7 +23,7 @@ package org.apdplat.word.dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apdplat.word.dictionary.impl.TrieV4;
+import org.apdplat.word.dictionary.impl.DictionaryTrie;
 import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.util.AutoDetector;
 import org.apdplat.word.util.ResourceLoader;
@@ -33,17 +33,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 词典工厂
- * 通过系统属性及配置文件指定词典实现类（dic.class）和词典文件（dic.path）
- * 指定方式一，编程指定（高优先级）：
- *      WordConfTools.set("dic.class", "org.apdplat.word.dictionary.impl.TrieV4");
- *      WordConfTools.set("dic.path", "classpath:dic.txt");
- * 指定方式二，Java虚拟机启动参数（中优先级）：
- *      java -Ddic.class=org.apdplat.word.dictionary.impl.TrieV4 -Ddic.path=classpath:dic.txt
- * 指定方式三，配置文件指定（低优先级）：
- *      在类路径下的word.conf中指定配置信息
- *      dic.class=org.apdplat.word.dictionary.impl.TrieV4
- *      dic.path=classpath:dic.txt
- * 如未指定，则默认使用词典实现类（org.apdplat.word.dictionary.impl.TrieV4）和词典文件（类路径下的dic.txt）
+ 通过系统属性及配置文件指定词典实现类（dic.class）和词典文件（dic.path）
+ 指定方式一，编程指定（高优先级）：
+      WordConfTools.set("dic.class", "org.apdplat.word.dictionary.impl.DictionaryTrie");
+      WordConfTools.set("dic.path", "classpath:dic.txt");
+ 指定方式二，Java虚拟机启动参数（中优先级）：
+      java -Ddic.class=org.apdplat.word.dictionary.impl.DictionaryTrie -Ddic.path=classpath:dic.txt
+ 指定方式三，配置文件指定（低优先级）：
+      在类路径下的word.conf中指定配置信息
+      dic.class=org.apdplat.word.dictionary.impl.DictionaryTrie
+      dic.path=classpath:dic.txt
+ 如未指定，则默认使用词典实现类（org.apdplat.word.dictionary.impl.DictionaryTrie）和词典文件（类路径下的dic.txt）
  * @author 杨尚川
  */
 public final class DictionaryFactory {
@@ -105,9 +105,9 @@ public final class DictionaryFactory {
                         map.put(len, value);
                     }
                     showStatistics(map);
-                    if(DIC instanceof TrieV4){
-                        TrieV4 trieV4 = (TrieV4)DIC;
-                        trieV4.showConflict();
+                    if(DIC instanceof DictionaryTrie){
+                        DictionaryTrie dictionaryTrie = (DictionaryTrie)DIC;
+                        dictionaryTrie.showConflict();
                     }                    
                     LOGGER.info("词典初始化完毕");
                 }

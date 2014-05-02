@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
  * 用于查找一个指定的字符串是否在字典中
  * @author 杨尚川
  */
-public class TrieV4 implements Dictionary{
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrieV4.class);
+public class DictionaryTrie implements Dictionary{
+    private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryTrie.class);
     //词表的首字母数量在一个可控范围内，默认值为24000
     private static final int INDEX_LENGTH = 24000;
     private final TrieNode[] ROOT_NODES_INDEX = new TrieNode[INDEX_LENGTH];
@@ -355,7 +355,7 @@ public class TrieV4 implements Dictionary{
         }
     }
     public static void main(String[] args){
-        TrieV4 trie = new TrieV4();
+        DictionaryTrie trie = new DictionaryTrie();
         trie.add("APDPlat");
         trie.add("APP");
         trie.add("APD");

@@ -29,11 +29,11 @@ import static org.junit.Assert.*;
  *
  * @author 杨尚川
  */
-public class TrieV4Test {
-    private TrieV4 trie = null;
+public class DictionaryTrieTest {
+    private DictionaryTrie trie = null;
     @Before
     public void setUp() {
-        trie = new TrieV4();
+        trie = new DictionaryTrie();
         trie.add("APDPlat");
         trie.add("APP");
         trie.add("APD");
