@@ -20,7 +20,6 @@
 
 package org.apdplat.word.corpus;
 
-import org.apdplat.word.dictionary.impl.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author 杨尚川
  */
 public class GramTrie{
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrieV4.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GramTrie.class);
     //词表的首字母数量在一个可控范围内，默认值为12000
     private static final int INDEX_LENGTH = 12000;
     private final TrieNode[] ROOT_NODES_INDEX = new TrieNode[INDEX_LENGTH];
