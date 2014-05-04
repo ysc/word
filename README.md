@@ -1,4 +1,4 @@
-Java Chinese Word Segmentation Component （Java中文分词组件 - word分词）
+Java中文分词组件 - word分词
 
 
 
@@ -6,6 +6,13 @@ word分词是一个Java实现的中文分词组件，提供了多种基于词典
 能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。
 同时提供了Lucene、Solr、ElasticSearch插件。
 
+
+
+编译版本下载：
+	
+	
+	
+	[Java中文分词组件word-1.0](http://pan.baidu.com/s/1o6yQmJg)
 
 
 
