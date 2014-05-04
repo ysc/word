@@ -115,6 +115,7 @@ public abstract class AbstractSegmentation  implements Segmentation{
                 }
             }
         }
+        sentences.clear();
         return result;
     }
     /**

@@ -53,7 +53,11 @@ public enum SegmentationAlgorithm {
     /**
      * 双向最大最小匹配算法
      */
-    BidirectionalMaximumMinimumMatching("双向最大最小匹配算法");
+    BidirectionalMaximumMinimumMatching("双向最大最小匹配算法"),
+    /**
+     * 全切分算法
+     */
+    FullSegmentation("全切分算法");
     private SegmentationAlgorithm(String des){
         this.des = des;
     }
