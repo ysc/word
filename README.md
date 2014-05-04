@@ -1,22 +1,22 @@
-Java中文分词组件 - word分词
+##**Java中文分词组件 - word分词**
 
 
 
-word分词是一个Java实现的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。
+###**word分词是一个Java实现的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。
 能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。
-同时提供了Lucene、Solr、ElasticSearch插件。
+同时提供了Lucene、Solr、ElasticSearch插件。**
 
 
 
-编译版本下载：
+###编译版本下载：
 	
 	
 	
-	[Java中文分词组件word-1.0](http://pan.baidu.com/s/1o6yQmJg)
+   [Java中文分词组件word-1.0](http://pan.baidu.com/s/1o6yQmJg)
 
 
 
-分词使用方法：
+###分词使用方法：
 
 
 
@@ -110,7 +110,7 @@ word分词是一个Java实现的中文分词组件，提供了多种基于词典
 
 	
 	
-分词算法效果评估：
+###分词算法效果评估：
 
 
 
@@ -164,7 +164,7 @@ word分词是一个Java实现的中文分词组件，提供了多种基于词典
 	
 
 	
-Lucene插件：
+###Lucene插件：
 
 
 
@@ -191,7 +191,7 @@ Lucene插件：
 	
 
 
-Solr插件：
+###Solr插件：
 
     
 	
@@ -228,7 +228,7 @@ Solr插件：
 
 	
 	
-ElasticSearch插件：
+###ElasticSearch插件：
 
     
 	
@@ -270,7 +270,7 @@ ElasticSearch插件：
 	
 	
 		
-词向量：
+###词向量：
 
 
 
@@ -284,7 +284,7 @@ ElasticSearch插件：
 	
 
 	
-分词算法文章：
+###分词算法文章：
 
 
     
