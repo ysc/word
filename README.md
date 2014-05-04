@@ -6,11 +6,11 @@
 
 
 
-###编译版本下载：
+###下载地址：
 	
 	
 	
-   [Java中文分词组件word-1.0](http://pan.baidu.com/s/1o6yQmJg)
+   [Java中文分词组件word](http://pan.baidu.com/s/1dDziDFz)
 
 
 
