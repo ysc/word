@@ -11,9 +11,34 @@
 	
 	
    [Java中文分词组件word](http://pan.baidu.com/s/1dDziDFz)
+   
+   
+   
+###Maven依赖：
 
 
 
+   1、在pom.xml中指定repository
+
+	<repositories>
+	  <repository>
+		  <id>org.apdplat.word</id>
+		  <url>http://apdplat.org/word/maven</url>
+	  </repository>
+	</repositories>   
+	
+   2、在pom.xml中指定dependency
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apdplat</groupId>
+			<artifactId>word</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+
+	
+	
 ###分词使用方法：
 
 
