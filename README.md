@@ -6,19 +6,11 @@
 
 
 
-###下载地址：
+###[下载地址](http://pan.baidu.com/s/1dDziDFz)
+		
 	
-	
-	
-   [Java中文分词组件word](http://pan.baidu.com/s/1dDziDFz)
 
-
-
-###在线API：
-	
-	
-	
-   [word 1.0 API](http://apdplat.org/word/apidocs/1.0/)
+###[word 1.0 API](http://apdplat.org/word/apidocs/1.0/)
    
    
    
