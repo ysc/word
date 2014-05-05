@@ -226,10 +226,10 @@
 
     
 	
-	1、生成分词组件二进制jar
-	执行 mvn clean install 生成word中文分词组件target/word-1.0.jar
+	1、下载word-1.0.jar
+	下载地址：http://apdplat.org/word/maven/org/apdplat/word/1.0/word-1.0.jar
 	
-	2、创建目录solr-4.7.1/example/solr/lib，将target/word-1.0.jar文件复制到lib目录
+	2、创建目录solr-4.7.1/example/solr/lib，将word-1.0.jar复制到lib目录
 	
 	3、配置schema指定分词器
 	将solr-4.7.1/example/solr/collection1/conf/schema.xml文件中所有的
