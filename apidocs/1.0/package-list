@@ -1,0 +1,13 @@
+org.apdplat.word
+org.apdplat.word.corpus
+org.apdplat.word.dictionary
+org.apdplat.word.dictionary.impl
+org.apdplat.word.elasticsearch
+org.apdplat.word.lucene
+org.apdplat.word.recognition
+org.apdplat.word.segmentation
+org.apdplat.word.segmentation.impl
+org.apdplat.word.solr
+org.apdplat.word.test
+org.apdplat.word.util
+org.apdplat.word.vector
