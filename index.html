@@ -76,9 +76,11 @@ file d:/text.txt d:/word.txt
 exit
 
 2、对文本进行分词
-移除停用词：List&lt;Word&gt; words = WordSegmenter.seg("杨尚川是APDPlat应用级产品开发平台的作者");
-保留停用词：List&lt;Word&gt; words = WordSegmenter.segWithStopWords("杨尚川是APDPlat应用级产品开发平台的作者");
-            System.out.println(words);
+移除停用词：
+List&lt;Word&gt; words = WordSegmenter.seg("杨尚川是APDPlat应用级产品开发平台的作者");
+保留停用词：
+List&lt;Word&gt; words = WordSegmenter.segWithStopWords("杨尚川是APDPlat应用级产品开发平台的作者");
+System.out.println(words);
 
 输出：
 移除停用词：[杨尚川, apdplat, 应用级, 产品, 开发平台, 作者]
@@ -131,7 +133,8 @@ d:/stopwords_more.txt，d:/STOPWORDS_DIR，d:/STOPWORDS2_DIR，stopwords_dir，r
 
 8、显式指定分词算法
 对文本进行分词时，可显式指定特定的分词算法，如：
-WordSegmenter.seg("APDPlat应用级产品开发平台", SegmentationAlgorithm.BidirectionalMaximumMatching);
+WordSegmenter.seg("APDPlat应用级产品开发平台", 
+		SegmentationAlgorithm.BidirectionalMaximumMatching);
 
 SegmentationAlgorithm的可选类型为：   
 正向最大匹配算法：MaximumMatching
