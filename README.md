@@ -18,16 +18,7 @@
 
 
 
-   1、在pom.xml中指定repository
-
-	<repositories>
-	  <repository>
-		  <id>org.apdplat.word</id>
-		  <url>http://apdplat.org/word/maven</url>
-	  </repository>
-	</repositories>   
-	
-   2、在pom.xml中指定dependency
+   在pom.xml中指定dependency
 
 	<dependencies>
 		<dependency>
