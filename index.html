@@ -248,7 +248,8 @@ TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
 并移除所有的filter标签
 
 4、如果需要使用特定的分词算法：
-&lt;tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"/&gt;
+&lt;tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"
+        segAlgorithm="ReverseMinimumMatching"/&gt;
 segAlgorithm可选值有：  
 正向最大匹配算法：MaximumMatching
 逆向最大匹配算法：ReverseMaximumMatching
@@ -261,7 +262,8 @@ segAlgorithm可选值有：
 如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 
 5、如果需要指定特定的配置文件：
-&lt;tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"
+&lt;tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"
+        segAlgorithm="ReverseMinimumMatching"
         conf="C:/solr-4.7.0/example/solr/nutch/conf/word.local.conf"/&gt;
 word.local.conf文件中可配置的内容见 word-1.0.jar 中的word.conf文件
 如不指定，使用默认配置文件，位于 word-1.0.jar 中的word.conf文件

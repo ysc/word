@@ -82,7 +82,7 @@ h3 {
 }
 
 h4 {
-  font-size: 21px;
+  font-size: 24px;
 }
 
 h5 {
@@ -120,9 +120,14 @@ a {
 
 a:hover, a:focus {text-decoration: underline;}
 
-footer a {
-  color: #F2F2F2;
-  text-decoration: underline;
+#main_content a:hover {
+  color: #0069ba;
+  text-shadow: #0090ff 0px 0px 2px;
+}
+
+footer a:hover {
+  color: #43adff;
+  text-shadow: #0090ff 0px 0px 2px;
 }
 
 em {
@@ -264,7 +269,7 @@ Full-Width Styles
 
 .inner {
   position: relative;
-  max-width: 1200px;
+  max-width: 1058px;
   padding: 20px 10px;
   margin: 0 auto;
 }
