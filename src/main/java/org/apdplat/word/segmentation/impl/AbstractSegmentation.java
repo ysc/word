@@ -24,6 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.corpus.Trigram;
 import org.apdplat.word.dictionary.Dictionary;
@@ -48,6 +53,7 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected static final boolean KEEP_PUNCTUATION = "true".equals(WordConfTools.get("keep.punctuation", "false"));
     private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
     private static final String NGRAM = WordConfTools.get("ngram", "bigram");
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(WordConfTools.getInt("thread.pool.size", 4));
     public abstract List<Word> segImpl(String text);
     /**
      * 是否启用ngram
@@ -91,32 +97,65 @@ public abstract class AbstractSegmentation  implements Segmentation{
      */
     @Override
     public List<Word> seg(String text) {
-        List<Word> result = new ArrayList<>();
         List<String> sentences = Punctuation.seg(text, KEEP_PUNCTUATION);
+        if(sentences.size() == 1){
+            return segSentence(sentences.get(0));
+        }
+        //如果是多个句子，可以利用多线程提升分词速度
+        List<Future<List<Word>>> futures = new ArrayList<>(sentences.size());
         for(String sentence : sentences){
-            if(sentence.length() == 1){
-                if(KEEP_WHITESPACE){
-                    result.add(new Word(sentence));
-                }else{
-                    if(!isWhiteSpace(sentence.charAt(0))){
-                        result.add(new Word(sentence));
-                    }
+            futures.add(submit(sentence));
+        }
+        sentences.clear();
+        List<Word> result = new ArrayList<>();
+        for(Future<List<Word>> future : futures){
+            List<Word> words;
+            try {
+                words = future.get();
+                if(words != null){
+                    result.addAll(words);
                 }
+            } catch (InterruptedException | ExecutionException ex) {
+                LOGGER.error("获取分词结果失败", ex);
             }
-            if(sentence.length() > 1){
-                List<Word> list = segImpl(sentence);
-                if(list != null){
-                    if(PERSON_NAME_RECOGNIZE){
-                        list = PersonName.recognize(list);
-                    }
-                    result.addAll(list);
-                }else{
-                    LOGGER.error("文本 "+sentence+" 没有获得分词结果");
+        }
+        futures.clear();
+        return result;
+    }
+    private Future<List<Word>> submit(final String sentence){
+        return EXECUTOR_SERVICE.submit(new Callable<List<Word>>(){
+            @Override
+            public List<Word> call() {
+                return segSentence(sentence);
+            }
+        });
+    }
+    private List<Word> segSentence(final String sentence){
+        if(sentence.length() == 1){
+            if(KEEP_WHITESPACE){
+                List<Word> result = new ArrayList<>(1);
+                result.add(new Word(sentence));
+                return result;
+            }else{
+                if(!isWhiteSpace(sentence.charAt(0))){
+                    List<Word> result = new ArrayList<>(1);
+                    result.add(new Word(sentence));
+                    return result;
                 }
             }
         }
-        sentences.clear();
-        return result;
+        if(sentence.length() > 1){
+            List<Word> list = segImpl(sentence);
+            if(list != null){
+                if(PERSON_NAME_RECOGNIZE){
+                    list = PersonName.recognize(list);
+                }
+                return list;
+            }else{
+                LOGGER.error("文本 "+sentence+" 没有获得分词结果");
+            }
+        }
+        return null;
     }
     /**
      * 将识别出的词放入队列
