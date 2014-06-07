@@ -126,7 +126,7 @@
         <slf4j-api.version>1.6.4</slf4j-api.version>
         <logback-classic.version>0.9.28</logback-classic.version>
         <lucene.version>4.8.1</lucene.version>
-        <elasticsearch.version>1.2.0</elasticsearch.version>
+        <elasticsearch.version>1.2.1</elasticsearch.version>
   </properties>
 
   <dependencies>
