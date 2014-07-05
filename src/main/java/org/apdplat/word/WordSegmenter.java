@@ -351,6 +351,8 @@ public class WordSegmenter {
             run(args[0]);
         }else{
             processCommand(args);
+            //非交互模式，退出JVM
+            System.exit(0);
         }
     }
 }
