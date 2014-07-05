@@ -24,7 +24,7 @@ import java.io.Reader;
 import java.util.Map;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
-import org.apache.lucene.util.AttributeSource;
+import org.apache.lucene.util.AttributeFactory;
 import org.apdplat.word.lucene.ChineseWordTokenizer;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
@@ -73,7 +73,7 @@ public class ChineseWordTokenizerFactory extends TokenizerFactory {
         }
     }
     @Override
-    public Tokenizer create(AttributeSource.AttributeFactory af, Reader reader) {
+    public Tokenizer create(AttributeFactory af, Reader reader) {
         return new ChineseWordTokenizer(reader, segmentation);
     }
 }
