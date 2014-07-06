@@ -1,8 +1,8 @@
-##Java中文分词组件 - word分词
+##Java分布式中文分词组件 - word分词
 
 
 
-###word分词是一个Java实现的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。同时提供了Lucene、Solr、ElasticSearch插件。
+###word分词是一个Java实现的分布式的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。同时提供了Lucene、Solr、ElasticSearch插件。
 
 
 
@@ -122,6 +122,11 @@
 	perfect-result-***.txt，***为各种分词算法名称，这是分词结果和人工标注标准完全一致的文本
 	wrong-result-***.txt，***为各种分词算法名称，这是分词结果和人工标注标准不一致的文本
 
+	10、分布式中文分词器
+	1、在自定义配置文件word.conf或word.local.conf中指定所有的配置项*.path使用HTTP资源，同时指定配置项redis.*
+	2、配置并启动提供HTTP资源的web服务器，将项目：https://github.com/ysc/word_web部署到tomcat
+	3、配置并启动redis服务器
+	
 	
 	
 ###分词算法效果评估：
