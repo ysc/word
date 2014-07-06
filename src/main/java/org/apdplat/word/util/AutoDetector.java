@@ -138,6 +138,10 @@ public class AutoDetector {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(resource).openConnection().getInputStream(), "utf-8"))) {
             String line = null;
             while((line = reader.readLine()) != null){
+                line = line.trim();
+                if("".equals(line) || line.startsWith("#")){
+                    continue;
+                }
                 result.add(line);
             }
         }
