@@ -45,6 +45,10 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisPubSub;
 
 /**
  * 资源变化自动检测
@@ -53,7 +57,8 @@ import org.slf4j.LoggerFactory;
 public class AutoDetector {
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoDetector.class);
     //已经被监控的文件
-    private static final Set<String> fileWatchers = new HashSet<>();
+    private static final Set<String> fileWatchers = new HashSet<>();    
+    private static final Set<String> httpWatchers = new HashSet<>();
     private static final Map<DirectoryWatcher, String> resources = new HashMap<>();
     private static final Map<DirectoryWatcher, ResourceLoader> resourceLoaders = new HashMap<>();
     private static final Map<DirectoryWatcher.WatcherCallback, DirectoryWatcher> watcherCallbacks = new HashMap<>();
@@ -145,7 +150,88 @@ public class AutoDetector {
                 result.add(line);
             }
         }
+        watchHttp(resource, resourceLoader);
         return result;
+    }
+    private static void watchHttp(String resource, final ResourceLoader resourceLoader){
+        String[] attrs = resource.split("/");
+        final String channel = attrs[attrs.length-1];
+        if(httpWatchers.contains(channel)){
+            return;
+        }
+        httpWatchers.add(channel);
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String host = WordConfTools.get("redis.host", "localhost");
+                int port = WordConfTools.getInt("redis.port", 6379);
+                String channel_add = channel+".add";
+                String channel_remove = channel+".remove";
+                LOGGER.info("redis服务器配置信息 host:" + host + ",port:" + port + ",channels:[" + channel_add + "," + channel_remove+"]");
+                while(true){
+                    try{
+                        JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), host, port);
+                        final Jedis jedis = jedisPool.getResource();
+                        LOGGER.info("redis守护线程启动");                
+                        jedis.subscribe(new HttpResourceChangeRedisListener(resourceLoader), new String[]{channel_add, channel_remove});
+                        jedisPool.returnResource(jedis);
+                        LOGGER.info("redis守护线程结束");
+                        break;
+                    }catch(Exception e){
+                        LOGGER.info("redis未启动，暂停一分钟后重新连接");
+                        try {
+                            Thread.sleep(60000);
+                        } catch (InterruptedException ex) {
+                            LOGGER.error(ex.getMessage(), ex);
+                        }
+                    }
+                }
+            }
+        });
+        thread.setDaemon(true);
+        thread.setName("redis守护线程，用于动态监控资源："+channel);
+        thread.start();
+    }
+    private static final class HttpResourceChangeRedisListener extends JedisPubSub {
+        private ResourceLoader resourceLoader;
+        public HttpResourceChangeRedisListener(ResourceLoader resourceLoader){
+            this.resourceLoader = resourceLoader;
+        }
+        @Override
+        public void onMessage(String channel, String message) {
+            LOGGER.debug("onMessage channel:" + channel + " and message:" + message);
+            if(channel.endsWith(".add")){
+                this.resourceLoader.add(message);
+            }else if(channel.endsWith(".remove")){
+                this.resourceLoader.remove(message);
+            }
+        }
+
+        @Override
+        public void onPMessage(String pattern, String channel, String message) {
+            LOGGER.debug("pattern:" + pattern + " and channel:" + channel + " and message:" + message);
+            onMessage(channel, message);
+        }
+
+        @Override
+        public void onPSubscribe(String pattern, int subscribedChannels) {
+            LOGGER.debug("psubscribe pattern:" + pattern + " and subscribedChannels:" + subscribedChannels);
+        }
+
+        @Override
+        public void onPUnsubscribe(String pattern, int subscribedChannels) {
+            LOGGER.debug("punsubscribe pattern:" + pattern + " and subscribedChannels:" + subscribedChannels);
+        }
+
+        @Override
+        public void onSubscribe(String channel, int subscribedChannels) {
+            LOGGER.debug("subscribe channel:" + channel + " and subscribedChannels:" + subscribedChannels);
+        }
+
+        @Override
+        public void onUnsubscribe(String channel, int subscribedChannels) {
+            LOGGER.debug("unsubscribe channel:" + channel + " and subscribedChannels:" + subscribedChannels);
+        }
     }
     /**
      * 加载非类路径资源
