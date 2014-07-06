@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -74,6 +75,9 @@ public class AutoDetector {
                 if(resource.startsWith("classpath:")){
                     //处理类路径资源
                     result.addAll(loadClasspathResource(resource.replace("classpath:", ""), resourceLoader, resourcePaths));
+                }else if(resource.startsWith("http:")){
+                    //处理HTTP资源
+                    result.addAll(loadHttpResource(resource, resourceLoader));
                 }else{
                     //处理非类路径资源
                     result.addAll(loadNoneClasspathResource(resource, resourceLoader, resourcePaths));
@@ -120,6 +124,22 @@ public class AutoDetector {
                 //监控文件
                 watchFile(file, resourceLoader, resourcePaths);
             }            
+        }
+        return result;
+    }
+    /**
+     * 加载HTTP资源
+     * @param resource 资源URL
+     * @param resourceLoader 资源自定义加载逻辑
+     * @return 资源内容
+     */
+    private static List<String> loadHttpResource(String resource, ResourceLoader resourceLoader) throws MalformedURLException, IOException {
+        List<String> result = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(resource).openConnection().getInputStream(), "utf-8"))) {
+            String line = null;
+            while((line = reader.readLine()) != null){
+                result.add(line);
+            }
         }
         return result;
     }
