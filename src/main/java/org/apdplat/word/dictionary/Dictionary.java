@@ -32,5 +32,7 @@ public interface Dictionary {
     public boolean contains(String item);
     public void addAll(List<String> items);
     public void add(String item);
+    public void removeAll(List<String> items);
+    public void remove(String item);
     public void clear();
 }

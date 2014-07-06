@@ -204,6 +204,51 @@ public class DictionaryTrie implements Dictionary{
         }
         return false;
     }
+    
+    @Override
+    public void removeAll(List<String> items) {
+        for(String item : items){
+            remove(item);
+        }
+    }
+
+    @Override
+    public void remove(String item) {
+        if(item == null || item.isEmpty()){
+            return;
+        }
+        LOGGER.debug("从词典中移除词："+item);
+        //从根节点开始查找
+        //获取根节点
+        TrieNode node = getRootNode(item.charAt(0));
+        if(node == null){
+            //不存在根节点，结束查找
+            LOGGER.debug("词不存在："+item);
+            return;
+        }
+        int length = item.length();
+        //存在根节点，继续查找
+        for(int i=1;i<length;i++){
+            char character = item.charAt(i);
+            TrieNode child = node.getChild(character);
+            if(child == null){
+                //未找到匹配节点
+                LOGGER.debug("词不存在："+item);
+                return;
+            }else{
+                //找到节点，继续往下找
+                node = child;
+            }
+        }
+        if(node.isTerminal()){
+            //设置为非叶子节点，效果相当于从词典中移除词
+            node.setTerminal(false);
+            LOGGER.debug("成功从词典中移除词："+item);
+        }else{
+            LOGGER.debug("词不存在："+item);
+        }
+    }
+    
     @Override
     public void addAll(List<String> items){
         for(String item : items){
