@@ -112,6 +112,16 @@ public final class DictionaryFactory {
                     LOGGER.info("词典初始化完毕");
                 }
 
+                @Override
+                public void add(String line) {
+                    DIC.add(line);
+                }
+
+                @Override
+                public void remove(String line) {
+                    DIC.remove(line);
+                }
+
             }, WordConfTools.get("dic.path", "classpath:dic.txt")+","+WordConfTools.get("punctuation.path", "classpath:punctuation.txt"));
         }
         private static void showStatistics(Map<Integer, Integer> map) {

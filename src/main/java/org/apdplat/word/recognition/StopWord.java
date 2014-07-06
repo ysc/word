@@ -66,6 +66,20 @@ public class StopWord {
                 }
                 LOGGER.info("停用词初始化完毕，停用词个数："+stopwords.size());
             }
+
+            @Override
+            public void add(String line) {
+                if(!isStopChar(line)){
+                    stopwords.add(line);
+                }
+            }
+
+            @Override
+            public void remove(String line) {
+                if(!isStopChar(line)){
+                    stopwords.remove(line);
+                }
+            }
         
         }, WordConfTools.get("stopwords.path", "classpath:stopwords.txt"));
     }

@@ -66,6 +66,28 @@ public class PersonName {
                 }
                 LOGGER.info("百家姓初始化完毕，单姓个数："+surname1.size()+"，复姓个数："+surname2.size());
             }
+
+            @Override
+            public void add(String line) {
+                if (line.length() == 1) {
+                    surname1.add(line);
+                } else if (line.length() == 2) {
+                    surname2.add(line);
+                } else {
+                    LOGGER.error("错误的姓：" + line);
+                }
+            }
+
+            @Override
+            public void remove(String line) {                
+                if (line.length() == 1) {
+                    surname1.remove(line);
+                } else if (line.length() == 2) {
+                    surname2.remove(line);
+                } else {
+                    LOGGER.error("错误的姓：" + line);
+                }
+            }
         
         }, WordConfTools.get("surname.path", "classpath:surname.txt"));
     }

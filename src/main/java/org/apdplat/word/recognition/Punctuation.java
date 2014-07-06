@@ -78,6 +78,45 @@ public class Punctuation {
                 list.clear();
                 LOGGER.info("标点符号初始化完毕，标点符号个数："+chars.length);
             }
+
+            @Override
+            public void add(String line) {
+                if(line.length() != 1){
+                    LOGGER.warn("长度不为一的标点符号："+line);
+                    return;
+                }
+                List<String> lines = new ArrayList<>();
+                lines.add(line);
+                if(chars != null){
+                    for(char c : chars){
+                        lines.add(Character.toString(c));
+                    }
+                }
+                clear();
+                load(lines);
+            }
+
+            @Override
+            public void remove(String line) {                
+                if(line.length() != 1){
+                    LOGGER.warn("长度不为一的标点符号："+line);
+                    return;
+                }
+                if(chars == null || chars.length < 1){
+                    return;
+                }
+                List<String> lines = new ArrayList<>();
+                for(char c : chars){
+                    lines.add(Character.toString(c));
+                }
+                int len = lines.size();
+                lines.remove(line);
+                if(len == lines.size()){
+                    return;
+                }
+                clear();
+                load(lines);
+            }
         
         }, WordConfTools.get("punctuation.path", "classpath:punctuation.txt"));
     }

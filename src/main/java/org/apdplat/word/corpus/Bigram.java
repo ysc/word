@@ -63,6 +63,26 @@ public class Bigram {
                 }
                 LOGGER.info("bigram初始化完毕，bigram数据条数："+count);
             }
+
+            @Override
+            public void add(String line) {
+                try{
+                    String[] attr = line.split("\\s+");
+                    GRAM_TRIE.put(attr[0], Integer.parseInt(attr[1]));
+                }catch(Exception e){
+                    LOGGER.error("错误的bigram数据："+line);
+                }
+            }
+
+            @Override
+            public void remove(String line) {
+                try{
+                    String[] attr = line.split("\\s+");
+                    GRAM_TRIE.remove(attr[0]);
+                }catch(Exception e){
+                    LOGGER.error("错误的bigram数据："+line);
+                }
+            }
         
         }, WordConfTools.get("bigram.path", "classpath:bigram.txt"));
     }

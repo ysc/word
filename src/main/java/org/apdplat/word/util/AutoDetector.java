@@ -319,6 +319,16 @@ public class AutoDetector {
                     System.out.println(line);
                 }
             }
+
+            @Override
+            public void add(String line) {
+                System.out.println("add："+line);
+            }
+
+            @Override
+            public void remove(String line) {
+                System.out.println("remove："+line);
+            }
         }, "d:/DIC, d:/DIC2, d:/dic.txt, classpath:dic2.txt,classpath:dic");
     }
 }

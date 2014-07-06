@@ -64,6 +64,26 @@ public class Quantifier {
                 }
                 LOGGER.info("数量词初始化完毕，数量词个数："+quantifiers.size());
             }
+
+            @Override
+            public void add(String line) {
+                if (line.length() == 1) {
+                    char _char = line.charAt(0);
+                    quantifiers.add(_char);
+                } else {
+                    LOGGER.info("忽略不合法数量词：" + line);
+                }
+            }
+
+            @Override
+            public void remove(String line) {
+                if (line.length() == 1) {
+                    char _char = line.charAt(0);
+                    quantifiers.remove(_char);
+                } else {
+                    LOGGER.info("忽略不合法数量词：" + line);
+                }
+            }
         
         }, WordConfTools.get("quantifier.path", "classpath:quantifier.txt"));
     }
