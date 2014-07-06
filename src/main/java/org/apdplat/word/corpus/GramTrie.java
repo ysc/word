@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.apdplat.word.dictionary.impl.DictionaryTrie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,6 +164,47 @@ public class GramTrie{
         }
         return 0;
     }
+    /**
+     * 移除ngram
+     * @param item 
+     */
+    public void remove(String item) {
+        if(item == null || item.isEmpty()){
+            return;
+        }
+        LOGGER.debug("移除ngram："+item);
+        //从根节点开始查找
+        //获取根节点
+        TrieNode node = getRootNode(item.charAt(0));
+        if(node == null){
+            //不存在根节点，结束查找
+            LOGGER.debug("ngram不存在："+item);
+            return;
+        }
+        int length = item.length();
+        //存在根节点，继续查找
+        for(int i=1;i<length;i++){
+            char character = item.charAt(i);
+            TrieNode child = node.getChild(character);
+            if(child == null){
+                //未找到匹配节点
+                LOGGER.debug("ngram不存在："+item);
+                return;
+            }else{
+                //找到节点，继续往下找
+                node = child;
+            }
+        }
+        if(node.isTerminal()){
+            //设置为非叶子节点，效果相当于移除ngram
+            node.setTerminal(false);
+            node.setScore(0);
+            LOGGER.debug("成功移除ngram："+item);
+        }else{
+            LOGGER.debug("ngram不存在："+item);
+        }
+    }
+    
     public void put(String item, int score){
         //去掉首尾空白字符
         item=item.trim();
