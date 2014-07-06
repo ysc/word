@@ -127,6 +127,7 @@
         <logback-classic.version>0.9.28</logback-classic.version>
         <lucene.version>4.9.0</lucene.version>
         <elasticsearch.version>1.2.1</elasticsearch.version>
+        <jedis.version>2.5.1</jedis.version>
   </properties>
 
   <dependencies>
@@ -209,6 +210,12 @@
         <version>${elasticsearch.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
+    </dependency>
+    <!-- redis客户端库 -->
+    <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>${jedis.version}</version>
     </dependency>
   </dependencies>
 </project>
