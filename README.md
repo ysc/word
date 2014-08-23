@@ -11,6 +11,8 @@
 	
 
 ###[word 1.0 API](http://apdplat.org/word/apidocs/1.0/)
+
+###[word 1.1 API](http://apdplat.org/word/apidocs/1.1/)
    
    
    
@@ -18,7 +20,7 @@
 
 
 
-   在pom.xml中指定dependency
+   在pom.xml中指定dependency，可用版本有1.0和1.1：
 
 	<dependencies>
 		<dependency>
