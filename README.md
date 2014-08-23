@@ -246,12 +246,12 @@
     
 	
 	1、打开命令行并切换到elasticsearch的bin目录
-		cd elasticsearch-1.1.0/bin
+		cd elasticsearch-1.2.1/bin
 	
 	2、运行plugin脚本安装word分词插件：
-		plugin -u http://apdplat.org/word/archive/v1.0.zip -i word
+		plugin -u http://apdplat.org/word/archive/v1.1.zip -i word
 	
-	3、修改文件elasticsearch-1.1.0/config/elasticsearch.yml，新增如下配置：	
+	3、修改文件elasticsearch-1.2.1/config/elasticsearch.yml，新增如下配置：	
 		index.analysis.analyzer.default.type : "word"
 		index.analysis.tokenizer.default.type : "word"
 	
@@ -259,10 +259,10 @@
 		http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
 		
 	5、自定义配置
-		修改配置文件elasticsearch-1.1.0/plugins/word/word.local.conf
+		修改配置文件elasticsearch-1.2.1/plugins/word/word.local.conf
 		
 	6、指定分词算法
-		修改文件elasticsearch-1.1.0/config/elasticsearch.yml，新增如下配置：
+		修改文件elasticsearch-1.2.1/config/elasticsearch.yml，新增如下配置：
 		index.analysis.analyzer.default.segAlgorithm : "ReverseMinimumMatching"
 		index.analysis.tokenizer.default.segAlgorithm : "ReverseMinimumMatching"
 		
