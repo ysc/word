@@ -208,10 +208,10 @@
 
     
 	
-	1、下载word-1.0.jar
-	下载地址：http://apdplat.org/word/maven/org/apdplat/word/1.0/word-1.0.jar
+	1、下载word-1.1.jar
+	下载地址：http://search.maven.org/remotecontent?filepath=org/apdplat/word/1.1/word-1.1.jar
 	
-	2、创建目录solr-4.7.1/example/solr/lib，将word-1.0.jar复制到lib目录
+	2、创建目录solr-4.7.1/example/solr/lib，将word-1.1.jar复制到lib目录
 	
 	3、配置schema指定分词器
 	将solr-4.7.1/example/solr/collection1/conf/schema.xml文件中所有的
@@ -236,8 +236,8 @@
 	5、如果需要指定特定的配置文件：
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"
 			conf="C:/solr-4.7.0/example/solr/nutch/conf/word.local.conf"/>
-	word.local.conf文件中可配置的内容见 word-1.0.jar 中的word.conf文件
-	如不指定，使用默认配置文件，位于 word-1.0.jar 中的word.conf文件
+	word.local.conf文件中可配置的内容见 word-1.1.jar 中的word.conf文件
+	如不指定，使用默认配置文件，位于 word-1.1.jar 中的word.conf文件
 
 	
 	
