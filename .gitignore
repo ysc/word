@@ -6,3 +6,5 @@ logs/
 data/
 .idea/
 word.iml
+word.ipr
+word.iws
