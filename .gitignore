@@ -4,3 +4,5 @@
 target/
 logs/
 data/
+.idea/
+word.iml
