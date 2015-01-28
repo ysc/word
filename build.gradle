@@ -31,7 +31,7 @@ dependencies {
     	'redis.clients:jedis:2.5.1'
     )
 
-    compile ('ch.qos.logback:logback-classic:0.9.28') {
+    runtime ('ch.qos.logback:logback-classic:0.9.28') {
 	exclude group: 'commons-logging', module: 'commons-logging'
     }
 }

@@ -167,6 +167,7 @@
             </exclusion>
         </exclusions>
         <optional>true</optional>
+        <scope>runtime</scope>
     </dependency>
     <!-- LUCENE测试依赖，放置于lucene-core前面 -->
     <dependency>
