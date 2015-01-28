@@ -57,3 +57,51 @@ task wordDemo(type: JavaExec) {
        // of org.apdplat.word.WordSegmenter.
        args 'demo'
 }
+
+//1、从语料库中提取词，词之间以空格分隔，内容保存到文件build/word.txt
+task extractText(type: JavaExec) {
+       dependsOn classes
+       description = 'Run org.apdplat.word.corpus.ExtractText'
+       // Java main class to execute.
+       main = 'org.apdplat.word.corpus.ExtractText'
+       // We need to set the classpath.
+       classpath sourceSets.main.runtimeClasspath
+       // Extra options can be set.
+       maxHeapSize = '12000m'
+       jvmArgs '-client'
+       // We can pass arguments to the main() method
+       // of org.apdplat.word.corpus.ExtractText.
+       args 'build/word.txt'
+}
+
+//2、对分好词的文件build/word.txt建立词向量，将词向量保存到文件build/vector.txt，将词汇表保存到文件build/vocabulary.txt
+task word2Vector(type: JavaExec) {
+       dependsOn extractText
+       description = 'Run org.apdplat.word.vector.Word2Vector'
+       // Java main class to execute.
+       main = 'org.apdplat.word.vector.Word2Vector'
+       // We need to set the classpath.
+       classpath sourceSets.main.runtimeClasspath
+       // Extra options can be set.
+       maxHeapSize = '12000m'
+       jvmArgs '-client'
+       // We can pass arguments to the main() method
+       // of org.apdplat.word.vector.Word2Vector.
+       args 'build/word.txt', 'build/vector.txt', 'build/vocabulary.txt', '2', '30'
+}
+
+//3、计算不同词向量之间的相似度，控制台编码为UTF-8
+task wordVectorDemo(type: JavaExec) {
+       dependsOn word2Vector
+       description = 'Run org.apdplat.word.vector.Distance'
+       // Java main class to execute.
+       main = 'org.apdplat.word.vector.Distance'
+       // We need to set the classpath.
+       classpath sourceSets.main.runtimeClasspath
+       // Extra options can be set.
+       maxHeapSize = '12000m'
+       jvmArgs '-client'
+       // We can pass arguments to the main() method
+       // of org.apdplat.word.vector.Distance.
+       args 'build/vector.txt', 'utf-8'
+}
