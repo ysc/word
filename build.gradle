@@ -42,3 +42,18 @@ jar {
     exclude('**/corpus')
     exclude('**/logback.xml')
 }
+
+task wordDemo(type: JavaExec) {
+       dependsOn classes
+       description = 'Run org.apdplat.word.WordSegmenter'
+       // Java main class to execute.
+       main = 'org.apdplat.word.WordSegmenter'
+       // We need to set the classpath.
+       classpath sourceSets.main.runtimeClasspath
+       // Extra options can be set.
+       maxHeapSize = '1200m'
+       jvmArgs '-client'
+       // We can pass arguments to the main() method
+       // of org.apdplat.word.WordSegmenter.
+       args 'demo'
+}
