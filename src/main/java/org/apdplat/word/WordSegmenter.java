@@ -343,11 +343,10 @@ public class WordSegmenter {
     }
     public static void main(String[] args) {
         String encoding = "utf-8";
-        if(args.length == 0){
+        if(args==null || args.length == 0){
             showUsage();
             run(encoding);
-        }
-        if(Charset.isSupported(args[0])){
+        }else if(Charset.isSupported(args[0])){
             showUsage();
             run(args[0]);
         }else{
