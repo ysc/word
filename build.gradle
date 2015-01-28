@@ -43,6 +43,7 @@ jar {
     exclude('**/logback.xml')
 }
 
+//分词效果演示
 task wordDemo(type: JavaExec) {
        dependsOn classes
        description = 'Run org.apdplat.word.WordSegmenter'
@@ -104,4 +105,17 @@ task wordVectorDemo(type: JavaExec) {
        // We can pass arguments to the main() method
        // of org.apdplat.word.vector.Distance.
        args 'build/vector.txt', 'utf-8'
+}
+
+//各种分词算法的精度和速度评估
+task evaluation(type: JavaExec) {
+       dependsOn classes
+       description = 'Run org.apdplat.word.corpus.Evaluation'
+       // Java main class to execute.
+       main = 'org.apdplat.word.corpus.Evaluation'
+       // We need to set the classpath.
+       classpath sourceSets.main.runtimeClasspath
+       // Extra options can be set.
+       maxHeapSize = '1200m'
+       jvmArgs '-client'
 }
