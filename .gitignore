@@ -8,3 +8,5 @@ data/
 word.iml
 word.ipr
 word.iws
+.gradle/
+build/
