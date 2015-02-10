@@ -127,7 +127,7 @@ public class ChineseWordAnalyzerTest {
         sentences.add("张掖市明乐县");
         sentences.add("中华人民共和国万岁万岁万万岁");
         sentences.add("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
-        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_4_9, analyzer);
+        IndexWriterConfig config = new IndexWriterConfig(Version.LATEST, analyzer);
         config.setUseCompoundFile(false);
         File index = new File("target/indexes");
         Utils.deleteDir(index);
@@ -146,7 +146,7 @@ public class ChineseWordAnalyzerTest {
         try (Directory directory = new SimpleFSDirectory(index);
                 DirectoryReader directoryReader = DirectoryReader.open(directory)) {
                 IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
-                QueryParser queryParser = new QueryParser(Version.LUCENE_4_9, "text", analyzer);
+                QueryParser queryParser = new QueryParser("text", analyzer);
                 Query query = queryParser.parse("text:杨尚川");
                 TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
                 assertEquals(2, docs.totalHits);
