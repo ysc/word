@@ -7,7 +7,10 @@
 
 
 ###[下载地址](http://pan.baidu.com/s/1dDziDFz)
-		
+
+###[luke集成word分词工具下载](http://pan.baidu.com/s/1bn52ooR)
+
+###[luke集成word分词工具使用说明](http://my.oschina.net/apdplat/blog/397069)
 	
 
 ###[word 1.0 API](http://apdplat.org/word/apidocs/1.0/)
