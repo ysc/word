@@ -287,9 +287,13 @@
 
 
 	1、下载http://luke.googlecode.com/files/lukeall-4.0.0-ALPHA.jar（国内不能访问）
+
 	2、下载并解压Java中文分词组件word-1.0-bin.zip：http://pan.baidu.com/s/1dDziDFz
+
 	3、将解压后的 Java中文分词组件word-1.0-bin/word-1.0 文件夹里面的4个jar包解压到当前文件夹，用压缩解压工具如winrar打开lukeall-4.0.0-ALPHA.jar，将当前文件夹里面除了.jar、.bat、.html文件外的其他所有文件拖到lukeall-4.0.0-ALPHA.jar里面
+
 	4、执行命令 java -jar lukeall-4.0.0-ALPHA.jar 启动luke，在Search选项卡的Analysis里面就可以选择 org.apdplat.word.lucene.ChineseWordAnalyzer 分词器了
+
  	5、在Plugins选项卡的Available analyzers found on the current classpath里面也可以选择 org.apdplat.word.lucene.ChineseWordAnalyzer 分词器
 	
 	
