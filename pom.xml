@@ -125,8 +125,8 @@
         <randomizedtesting.version>2.1.11</randomizedtesting.version>
         <slf4j-api.version>1.6.4</slf4j-api.version>
         <logback-classic.version>0.9.28</logback-classic.version>
-        <lucene.version>4.10.2</lucene.version>
-        <elasticsearch.version>1.4.2</elasticsearch.version>
+        <lucene.version>4.10.4</lucene.version>
+        <elasticsearch.version>1.5.1</elasticsearch.version>
         <jedis.version>2.5.1</jedis.version>
   </properties>
 
