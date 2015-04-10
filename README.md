@@ -298,8 +298,8 @@
 
  	5、在Plugins选项卡的Available analyzers found on the current classpath里面也可以选择 
           org.apdplat.word.lucene.ChineseWordAnalyzer 分词器
-	
-        6、已经集成好的工具下载：[lukeall-4.0.0-ALPHA-with-word-1.0](http://pan.baidu.com/s/1bn52ooR)
+
+   已经集成好的Luke插件下载：[lukeall-4.0.0-ALPHA-with-word-1.0](http://pan.baidu.com/s/1bn52ooR)
 	
 	
 
