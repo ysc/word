@@ -23,13 +23,13 @@
 
 
 
-   在pom.xml中指定dependency，可用版本有1.0和1.1：
+   在pom.xml中指定dependency，可用版本有1.0、1.1、1.2：
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apdplat</groupId>
 			<artifactId>word</artifactId>
-			<version>1.1</version>
+			<version>1.2</version>
 		</dependency>
 	</dependencies>
 
@@ -211,13 +211,13 @@
 
     
 	
-	1、下载word-1.1.jar
-	下载地址：http://search.maven.org/remotecontent?filepath=org/apdplat/word/1.1/word-1.1.jar
+	1、下载word-1.2.jar
+	下载地址：http://search.maven.org/remotecontent?filepath=org/apdplat/word/1.2/word-1.2.jar
 	
-	2、创建目录solr-4.7.1/example/solr/lib，将word-1.1.jar复制到lib目录
+	2、创建目录solr-4.10.4/example/solr/lib，将word-1.2.jar复制到lib目录
 	
 	3、配置schema指定分词器
-	将solr-4.7.1/example/solr/collection1/conf/schema.xml文件中所有的
+	将solr-4.10.4/example/solr/collection1/conf/schema.xml文件中所有的
 	<tokenizer class="solr.WhitespaceTokenizerFactory"/>和
 	<tokenizer class="solr.StandardTokenizerFactory"/>全部替换为
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"/>
@@ -238,9 +238,9 @@
 	
 	5、如果需要指定特定的配置文件：
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"
-			conf="C:/solr-4.7.0/example/solr/nutch/conf/word.local.conf"/>
-	word.local.conf文件中可配置的内容见 word-1.1.jar 中的word.conf文件
-	如不指定，使用默认配置文件，位于 word-1.1.jar 中的word.conf文件
+			conf="C:/solr-4.10.4/example/solr/nutch/conf/word.local.conf"/>
+	word.local.conf文件中可配置的内容见 word-1.2.jar 中的word.conf文件
+	如不指定，使用默认配置文件，位于 word-1.2.jar 中的word.conf文件
 
 	
 	
@@ -249,12 +249,12 @@
     
 	
 	1、打开命令行并切换到elasticsearch的bin目录
-		cd elasticsearch-1.2.1/bin
+		cd elasticsearch-1.5.1/bin
 	
 	2、运行plugin脚本安装word分词插件：
-		plugin -u http://apdplat.org/word/archive/v1.1.zip -i word
+		./plugin -u http://apdplat.org/word/archive/v1.2.zip -i word
 	
-	3、修改文件elasticsearch-1.2.1/config/elasticsearch.yml，新增如下配置：	
+	3、修改文件elasticsearch-1.5.1/config/elasticsearch.yml，新增如下配置：	
 		index.analysis.analyzer.default.type : "word"
 		index.analysis.tokenizer.default.type : "word"
 	
@@ -262,10 +262,10 @@
 		http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
 		
 	5、自定义配置
-		修改配置文件elasticsearch-1.2.1/plugins/word/word.local.conf
+		修改配置文件elasticsearch-1.5.1/plugins/word/word.local.conf
 		
 	6、指定分词算法
-		修改文件elasticsearch-1.2.1/config/elasticsearch.yml，新增如下配置：
+		修改文件elasticsearch-1.5.1/config/elasticsearch.yml，新增如下配置：
 		index.analysis.analyzer.default.segAlgorithm : "ReverseMinimumMatching"
 		index.analysis.tokenizer.default.segAlgorithm : "ReverseMinimumMatching"
 		
