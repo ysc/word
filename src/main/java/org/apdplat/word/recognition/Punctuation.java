@@ -66,6 +66,7 @@ public class Punctuation {
                 set.add('　');
                 set.add('\t');
                 set.add('\n');
+                set.add('\r');
                 List<Character> list = new ArrayList<>();
                 list.addAll(set);
                 Collections.sort(list);
