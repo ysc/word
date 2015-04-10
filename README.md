@@ -4,18 +4,17 @@
 
 ###word分词是一个Java实现的分布式的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。同时提供了Lucene、Solr、ElasticSearch、Luke插件。
 
-
-
-###[下载地址](http://pan.baidu.com/s/1dDziDFz)
-
-###[luke集成word分词工具下载](http://pan.baidu.com/s/1bn52ooR)
-
-###[luke集成word分词工具使用说明](http://my.oschina.net/apdplat/blog/397069)
 	
 
-###[word 1.0 API](http://apdplat.org/word/apidocs/1.0/)
+###API在线文档：
 
-###[word 1.1 API](http://apdplat.org/word/apidocs/1.1/)
+
+
+   [word 1.0 API](http://apdplat.org/word/apidocs/1.0/)
+
+   [word 1.1 API](http://apdplat.org/word/apidocs/1.1/)
+
+   [word 1.2 API](http://apdplat.org/word/apidocs/1.1/)
    
    
    
@@ -300,8 +299,10 @@
  	5、在Plugins选项卡的Available analyzers found on the current classpath里面也可以选择 
           org.apdplat.word.lucene.ChineseWordAnalyzer 分词器
 	
+        6、已经集成好的工具下载：[lukeall-4.0.0-ALPHA-with-word-1.0](http://pan.baidu.com/s/1bn52ooR)
 	
 	
+
 ###词向量：
 
 
