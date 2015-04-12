@@ -91,4 +91,12 @@ public class PartOfSpeechTagging {
             word.setPartOfSpeech(PartOfSpeech.valueOf(PART_OF_SPEECH_TRIE.get(word.getText())));
         });
     }
+
+    public static void main(String[] args) {
+        List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.FullSegmentation).seg("杨尚川是APDPlat应用级产品开发平台的发起人");
+        words.forEach(word->System.out.print(word.getText() + " "));
+        System.out.println("");
+        PartOfSpeechTagging.process(words);
+        words.forEach(word->System.out.print(word.getText() + "/" + word.getPartOfSpeech().getPos() + " "));
+    }
 }
