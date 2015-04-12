@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class Word implements Comparable{
     private String text;
-    private PartOfSpeech partOfSpeech = PartOfSpeech.UNKNOWN;
+    private PartOfSpeech partOfSpeech = PartOfSpeech.X;
     private int frequency;
 
     public Word(String text){
