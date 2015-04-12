@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class Word implements Comparable{
     private String text;
-    private PartOfSpeech partOfSpeech = PartOfSpeech.X;
+    private PartOfSpeech partOfSpeech = null;
     private int frequency;
 
     public Word(String text){
@@ -85,7 +85,17 @@ public class Word implements Comparable{
 
     @Override
     public String toString(){
-        return text+" "+partOfSpeech+" "+frequency;
+        StringBuilder str = new StringBuilder();
+        if(text!=null){
+            str.append(text);
+        }
+        if(partOfSpeech!=null){
+            str.append("/").append(partOfSpeech.getPos());
+        }
+        if(frequency>0){
+            str.append("/").append(frequency);
+        }
+        return str.toString();
     }
 
     @Override
