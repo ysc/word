@@ -20,6 +20,7 @@
 
 package org.apdplat.word.segmentation;
 
+import org.apdplat.word.WordSegmenter;
 import org.apdplat.word.util.AutoDetector;
 import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
@@ -93,10 +94,10 @@ public class PartOfSpeechTagging {
     }
 
     public static void main(String[] args) {
-        List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.FullSegmentation).seg("杨尚川是APDPlat应用级产品开发平台的发起人");
-        words.forEach(word->System.out.print(word.getText() + " "));
-        System.out.println("");
+        List<Word> words = WordSegmenter.segWithStopWords("我爱中国");
+        System.out.println("未标注词性："+words);
+        //词性标注
         PartOfSpeechTagging.process(words);
-        words.forEach(word->System.out.print(word.getText() + "/" + word.getPartOfSpeech().getPos() + " "));
+        System.out.println("标注词性："+words);
     }
 }
