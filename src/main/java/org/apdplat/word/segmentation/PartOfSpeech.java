@@ -41,9 +41,12 @@ public class PartOfSpeech {
         this.des = des;
     }
     private static class PartOfSpeechMap{
-        private static final Map<String, PartOfSpeech> BUILDIN_POS = getBuildInPos();
-        private static Map<String, PartOfSpeech> getBuildInPos(){
-            Map<String, PartOfSpeech> bip = new HashMap<>();
+        private static volatile Map<String, PartOfSpeech> bip = null;
+        private static synchronized Map<String, PartOfSpeech> getBuildInPos(){
+            if(bip != null){
+                return bip;
+            }
+            bip = new HashMap<>();
             try {
                 for (Field field : PartOfSpeech.class.getFields()) {
                     PartOfSpeech partOfSpeech = (PartOfSpeech)field.get(PartOfSpeech.class);
@@ -56,14 +59,17 @@ public class PartOfSpeech {
         }
     }
     public static PartOfSpeech valueOf(String pos){
-        PartOfSpeech partOfSpeech = PartOfSpeechMap.BUILDIN_POS.get(pos.toLowerCase());
+        if(pos==null){
+            return X;
+        }
+        PartOfSpeech partOfSpeech = PartOfSpeechMap.getBuildInPos().get(pos.toLowerCase());
         if(partOfSpeech==null){
-            partOfSpeech = UNKNOWN;
+            partOfSpeech = X;
         }
         return partOfSpeech;
     }
     public static boolean isBuildIn(String pos){
-        return PartOfSpeechMap.BUILDIN_POS.get(pos.toLowerCase()) != null;
+        return PartOfSpeechMap.getBuildInPos().get(pos.toLowerCase()) != null;
     }
     //1. 名词
     public static final PartOfSpeech N = new PartOfSpeech("n", "名词");
@@ -116,7 +122,7 @@ public class PartOfSpeech {
     //词组
     public static final PartOfSpeech L = new PartOfSpeech("l", "词组");
     //未知词性
-    public static final PartOfSpeech UNKNOWN = new PartOfSpeech("unknown", "未知");
+    public static final PartOfSpeech X = new PartOfSpeech("x", "未知");
 
     public String getPos() {
         return pos;
