@@ -41,19 +41,26 @@ public class PartOfSpeech {
         this.des = des;
     }
     private static class PartOfSpeechMap{
-        private static final Map<String, String> BUILDIN_POS = getBuildInPos();
-        private static Map<String, String> getBuildInPos(){
-            Map<String, String> bip = new HashMap<>();
+        private static final Map<String, PartOfSpeech> BUILDIN_POS = getBuildInPos();
+        private static Map<String, PartOfSpeech> getBuildInPos(){
+            Map<String, PartOfSpeech> bip = new HashMap<>();
             try {
                 for (Field field : PartOfSpeech.class.getFields()) {
                     PartOfSpeech partOfSpeech = (PartOfSpeech)field.get(PartOfSpeech.class);
-                    bip.put(partOfSpeech.getPos(), partOfSpeech.getDes());
+                    bip.put(partOfSpeech.getPos(), partOfSpeech);
                 }
             }catch (Exception e){
                 LOGGER.error("词性初始化失败", e);
             }
             return bip;
         }
+    }
+    public static PartOfSpeech valueOf(String pos){
+        PartOfSpeech partOfSpeech = PartOfSpeechMap.BUILDIN_POS.get(pos.toLowerCase());
+        if(partOfSpeech==null){
+            partOfSpeech = UNKNOWN;
+        }
+        return partOfSpeech;
     }
     public static boolean isBuildIn(String pos){
         return PartOfSpeechMap.BUILDIN_POS.get(pos.toLowerCase()) != null;
