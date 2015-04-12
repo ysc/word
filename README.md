@@ -131,6 +131,18 @@
 	2、配置并启动提供HTTP资源的web服务器，将项目：https://github.com/ysc/word_web部署到tomcat
 	3、配置并启动redis服务器
 	
+	11、词性标注（1.3才有这个功能）
+	将分词结果作为输入参数，调用PartOfSpeechTagging类的process方法，词性保存在Word类的partOfSpeech字段中
+	如下所示：
+	List<Word> words = WordSegmenter.segWithStopWords("我爱中国");
+	System.out.println("未标注词性："+words);
+	//词性标注
+	PartOfSpeechTagging.process(words);
+	System.out.println("标注词性："+words);
+	输出内容：
+	未标注词性：[我, 爱, 中国]
+    标注词性：[我/r, 爱/v, 中国/ns]
+	
 	
 	
 ###分词算法效果评估：
