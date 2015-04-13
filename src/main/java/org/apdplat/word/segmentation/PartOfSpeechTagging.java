@@ -68,7 +68,7 @@ public class PartOfSpeechTagging {
             @Override
             public void add(String line) {
                 try {
-                    String[] attr = line.split("\\s+");
+                    String[] attr = line.split(":");
                     PART_OF_SPEECH_TRIE.put(attr[0], attr[1]);
                 } catch (Exception e) {
                     LOGGER.error("错误的词性数据：" + line);
