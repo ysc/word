@@ -85,7 +85,7 @@ public class PartOfSpeechTagging {
                 }
             }
 
-        }, WordConfTools.get("part.of.speech.path", "classpath:part_of_speech.txt"));
+        }, WordConfTools.get("part.of.speech.dic.path", "classpath:part_of_speech_dic.txt"));
     }
     public static void process(List<Word> words){
         words.parallelStream().forEach(word->{
