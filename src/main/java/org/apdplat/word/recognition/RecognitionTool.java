@@ -55,6 +55,14 @@ public class RecognitionTool {
     /**
      * 小数和分数识别
      * @param text 识别文本
+     * @return 是否识别
+     */
+    public static boolean isFraction(final String text){
+        return isFraction(text, 0, text.length());
+    }
+    /**
+     * 小数和分数识别
+     * @param text 识别文本
      * @param start 待识别文本开始索引
      * @param len 识别长度
      * @return 是否识别
@@ -109,7 +117,15 @@ public class RecognitionTool {
         }
         LOGGER.debug("识别出英文字母和数字混合串："+text.substring(start, start+len));
         return true;
-    }    
+    }
+    /**
+     * 英文单词识别
+     * @param text 识别文本
+     * @return 是否识别
+     */
+    public static boolean isEnglish(final String text){
+        return isEnglish(text, 0, text.length());
+    }
     /**
      * 英文单词识别
      * @param text 识别文本
@@ -170,6 +186,14 @@ public class RecognitionTool {
     /**
      * 数量词识别，如日期、时间、长度、容量、重量、面积等等
      * @param text 识别文本
+     * @return 是否识别
+     */
+    public static boolean isQuantifier(final String text){
+        return isQuantifier(text, 0, text.length());
+    }
+    /**
+     * 数量词识别，如日期、时间、长度、容量、重量、面积等等
+     * @param text 识别文本
      * @param start 待识别文本开始索引
      * @param len 识别长度
      * @return 是否识别
@@ -195,6 +219,14 @@ public class RecognitionTool {
             return true;
         }
         return false;
+    }
+    /**
+     * 数字识别
+     * @param text 识别文本
+     * @return 是否识别
+     */
+    public static boolean isNumber(final String text){
+        return isNumber(text, 0, text.length());
     }
     /**
      * 数字识别
@@ -246,6 +278,14 @@ public class RecognitionTool {
             return false;
         }
         return true;
+    }
+    /**
+     * 中文数字识别，包括大小写
+     * @param text 识别文本
+     * @return 是否识别
+     */
+    public static boolean isChineseNumber(final String text){
+        return isChineseNumber(text, 0, text.length());
     }
     /**
      * 中文数字识别，包括大小写
