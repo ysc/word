@@ -21,6 +21,7 @@
 package org.apdplat.word.segmentation;
 
 import org.apdplat.word.WordSegmenter;
+import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.util.AutoDetector;
 import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
@@ -89,7 +90,52 @@ public class PartOfSpeechTagging {
     }
     public static void process(List<Word> words){
         words.parallelStream().forEach(word->{
-            word.setPartOfSpeech(PartOfSpeech.valueOf(PART_OF_SPEECH_TRIE.get(word.getText())));
+            String wordText = word.getText();
+            String pos = PART_OF_SPEECH_TRIE.get(wordText);
+            if(pos == null){
+                //识别英文
+                if(RecognitionTool.isEnglish(wordText)){
+                    pos = "w";
+                }
+                //识别数字
+                if(RecognitionTool.isNumber(wordText)){
+                    pos = "m";
+                }
+                //中文数字
+                if(RecognitionTool.isChineseNumber(wordText)){
+                    pos = "mh";
+                }
+                //识别小数和分数
+                if(RecognitionTool.isFraction(wordText)){
+                    if(wordText.contains(".")||wordText.contains("．")||wordText.contains("·")){
+                        pos = "mx";
+                    }
+                    if(wordText.contains("/")||wordText.contains("／")){
+                        pos = "mf";
+                    }
+                }
+                //识别数量词
+                if(RecognitionTool.isQuantifier(wordText)){
+                    //分数
+                    if(wordText.contains("‰")||wordText.contains("%")||wordText.contains("％")){
+                        pos = "mf";
+                    }
+                    //时间量词
+                    else if(wordText.contains("时")||wordText.contains("分")||wordText.contains("秒")){
+                        pos = "tq";
+                    }
+                    //日期量词
+                    else if(wordText.contains("年")||wordText.contains("月")||wordText.contains("日")
+                            ||wordText.contains("天")||wordText.contains("号")){
+                        pos = "tdq";
+                    }
+                    //数量词
+                    else{
+                        pos = "mq";
+                    }
+                }
+            }
+            word.setPartOfSpeech(PartOfSpeech.valueOf(pos));
         });
     }
 
