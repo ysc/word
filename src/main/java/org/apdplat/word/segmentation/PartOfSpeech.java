@@ -20,16 +20,19 @@
 
 package org.apdplat.word.segmentation;
 
+import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.ResourceLoader;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 词性
- * 词性不是固定不变的，所以不能选枚举
  * @author 杨尚川
  */
 public class PartOfSpeech {
@@ -41,88 +44,76 @@ public class PartOfSpeech {
         this.des = des;
     }
     private static class PartOfSpeechMap{
-        private static volatile Map<String, PartOfSpeech> bip = null;
-        private static synchronized Map<String, PartOfSpeech> getBuildInPos(){
-            if(bip != null){
-                return bip;
-            }
-            bip = new HashMap<>();
-            try {
-                for (Field field : PartOfSpeech.class.getFields()) {
-                    PartOfSpeech partOfSpeech = (PartOfSpeech)field.get(PartOfSpeech.class);
-                    bip.put(partOfSpeech.getPos(), partOfSpeech);
+        private static final Map<String, PartOfSpeech> POS = new HashMap<>();
+        static{
+            init();
+        }
+        private static void init(){
+            AutoDetector.loadAndWatch(new ResourceLoader() {
+
+                @Override
+                public void clear() {
+                    POS.clear();
                 }
-            }catch (Exception e){
-                LOGGER.error("词性初始化失败", e);
-            }
-            return bip;
+
+                @Override
+                public void load(List<String> lines) {
+                    LOGGER.info("初始化自定义词性说明");
+                    int count = 0;
+                    for (String line : lines) {
+                        try {
+                            String[] attr = line.split("=");
+                            POS.put(attr[0], new PartOfSpeech(attr[0], attr[1]));
+                            count++;
+                        } catch (Exception e) {
+                            LOGGER.error("错误的自定义词性说明数据：" + line);
+                        }
+                    }
+                    LOGGER.info("自定义词性说明初始化完毕，数据条数：" + count);
+                }
+
+                @Override
+                public void add(String line) {
+                    try {
+                        String[] attr = line.split("=");
+                        POS.put(attr[0], new PartOfSpeech(attr[0], attr[1]));
+                    } catch (Exception e) {
+                        LOGGER.error("错误的自定义词性说明数据：" + line);
+                    }
+                }
+
+                @Override
+                public void remove(String line) {
+                    try {
+                        String[] attr = line.split("=");
+                        POS.remove(attr[0]);
+                    } catch (Exception e) {
+                        LOGGER.error("错误的自定义词性说明数据：" + line);
+                    }
+                }
+
+            }, WordConfTools.get("part.of.speech.des.path", "classpath:part_of_speech_des.txt"));
+        }
+        private static Map<String, PartOfSpeech> getPos(){
+            return POS;
         }
     }
     public static PartOfSpeech valueOf(String pos){
-        if(pos==null){
-            return X;
+        if(Objects.isNull(pos) || "".equals(pos.trim())){
+            return I;
         }
-        PartOfSpeech partOfSpeech = PartOfSpeechMap.getBuildInPos().get(pos.toLowerCase());
+        PartOfSpeech partOfSpeech = PartOfSpeechMap.getPos().get(pos.toLowerCase());
         if(partOfSpeech==null){
-            partOfSpeech = X;
+            //未知词性
+            return I;
         }
         return partOfSpeech;
     }
-    public static boolean isBuildIn(String pos){
-        return PartOfSpeechMap.getBuildInPos().get(pos.toLowerCase()) != null;
+    public static boolean isPos(String pos){
+        return PartOfSpeechMap.getPos().get(pos.toLowerCase()) != null;
     }
-    //1. 名词
-    public static final PartOfSpeech N = new PartOfSpeech("n", "名词");
-    public static final PartOfSpeech NR = new PartOfSpeech("nr", "人名");
-    public static final PartOfSpeech NS = new PartOfSpeech("ns", "地名");
-    public static final PartOfSpeech NT = new PartOfSpeech("nt", "团体机构名");
-    public static final PartOfSpeech NZ = new PartOfSpeech("nz", "其它专名");
-    //2. 动词
-    public static final PartOfSpeech V = new PartOfSpeech("v", "动词");
-    public static final PartOfSpeech VD = new PartOfSpeech("vd", "副动词");
-    public static final PartOfSpeech VN = new PartOfSpeech("vn", "名动词");
-    public static final PartOfSpeech VI = new PartOfSpeech("vi", "不及物动词");
-    //3. 形容词
-    public static final PartOfSpeech A = new PartOfSpeech("a", "形容词");
-    public static final PartOfSpeech AD = new PartOfSpeech("ad", "副形容词");
-    public static final PartOfSpeech AN = new PartOfSpeech("an", "名形容词");
-    //4. 数词
-    public static final PartOfSpeech M = new PartOfSpeech("m", "数词");
-    public static final PartOfSpeech MQ = new PartOfSpeech("mq", "数量词");
-    //5. 量词
-    public static final PartOfSpeech Q = new PartOfSpeech("q", "量词");
-    //6. 代词
-    public static final PartOfSpeech R = new PartOfSpeech("r", "代词");
-    public static final PartOfSpeech RR = new PartOfSpeech("rr", "人称代词");
-    public static final PartOfSpeech RZ = new PartOfSpeech("rz", "指示代词");
-    //7. 副词
-    public static final PartOfSpeech D = new PartOfSpeech("d", "副词");
-    //8. 介词
-    public static final PartOfSpeech P = new PartOfSpeech("p", "介词");
-    //9. 连词
-    public static final PartOfSpeech C = new PartOfSpeech("c", "连词");
-    //10. 助词
-    public static final PartOfSpeech U = new PartOfSpeech("u", "助词");
-    //11. 拟声词
-    public static final PartOfSpeech O = new PartOfSpeech("o", "拟声词");
-    //12. 叹词
-    public static final PartOfSpeech E = new PartOfSpeech("e", "叹词");
-    //13. 时间词
-    public static final PartOfSpeech T = new PartOfSpeech("t", "时间词");
-    //14. 处所词
-    public static final PartOfSpeech S = new PartOfSpeech("s", "处所词");
-    //15. 方位词
-    public static final PartOfSpeech F = new PartOfSpeech("f", "方位词");
-    //16. 区别词
-    public static final PartOfSpeech B = new PartOfSpeech("b", "区别词");
-    //17. 语气词
-    public static final PartOfSpeech Y = new PartOfSpeech("y", "语气词");
-    //18. 状态词
-    public static final PartOfSpeech Z = new PartOfSpeech("z", "状态词");
-    //词组
-    public static final PartOfSpeech L = new PartOfSpeech("l", "词组");
     //未知词性
-    public static final PartOfSpeech X = new PartOfSpeech("x", "未知");
+    public static final PartOfSpeech I = new PartOfSpeech("i", "未知");
 
     public String getPos() {
         return pos;
@@ -141,11 +132,10 @@ public class PartOfSpeech {
     }
 
     public static void main(String[] args) {
-        System.out.println(PartOfSpeech.isBuildIn("n"));
-        System.out.println(PartOfSpeech.isBuildIn("ns"));
-        System.out.println(PartOfSpeech.isBuildIn("nn"));
-        System.out.println(PartOfSpeech.N.getPos()+" "+PartOfSpeech.N.getDes());
-        System.out.println(PartOfSpeech.M.getPos() + " " + PartOfSpeech.M.getDes());
+        System.out.println(PartOfSpeech.isPos("n"));
+        System.out.println(PartOfSpeech.isPos("ns"));
+        System.out.println(PartOfSpeech.isPos("nn"));
+        System.out.println(PartOfSpeech.I.getPos()+" "+PartOfSpeech.I.getDes());
         PartOfSpeech N_ANIMAL = new PartOfSpeech("n_animal", "动物");
         System.out.println(N_ANIMAL.getPos() + " " + N_ANIMAL.getDes());
     }
