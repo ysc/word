@@ -40,7 +40,7 @@ public class PartOfSpeech {
     private String pos;
     private String des;
     public PartOfSpeech(String pos, String des){
-        this.pos = pos.toLowerCase();
+        this.pos = pos;
         this.des = des;
     }
     private static class PartOfSpeechMap{
@@ -105,7 +105,7 @@ public class PartOfSpeech {
         PartOfSpeech partOfSpeech = PartOfSpeechMap.getPos().get(pos.toLowerCase());
         if(partOfSpeech==null){
             //未知词性
-            return I;
+            return new PartOfSpeech(pos, "");
         }
         return partOfSpeech;
     }
