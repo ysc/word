@@ -59,7 +59,7 @@ public class ChineseWordAnalyzerTest {
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
-            String expResult = "[杨尚川, apdplat, 应用级, 产品, 开发平台, 作者]";
+            String expResult = "[杨尚川, apdplat, 应用级, 产品开发, 平台, 作者]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
             fail("分词出错"+e.getMessage());
