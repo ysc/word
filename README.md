@@ -316,6 +316,7 @@
 	org.apdplat.word.lucene.ChineseWordAnalyzer 分词器
 
    已经集成好的Luke插件下载（适用于lucene4.0.0） ：[lukeall-4.0.0-ALPHA-with-word-1.0.jar](http://pan.baidu.com/s/1bn52ooR)
+   
    已经集成好的Luke插件下载（适用于lucene4.10.3）：[lukeall-4.10.3-with-word-1.2.jar](http://pan.baidu.com/s/1mgFt7ZU)
 	
 	
