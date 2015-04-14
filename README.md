@@ -6,6 +6,10 @@
 
 	
 
+###注意：word1.3需要JDK1.8
+
+
+
 ###API在线文档：
 
 
@@ -14,7 +18,7 @@
 
    [word 1.1 API](http://apdplat.org/word/apidocs/1.1/)
 
-   [word 1.2 API](http://apdplat.org/word/apidocs/1.1/)
+   [word 1.2 API](http://apdplat.org/word/apidocs/1.2/)
    
    
    
