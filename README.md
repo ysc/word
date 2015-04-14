@@ -314,6 +314,14 @@
 
  	5、在Plugins选项卡的Available analyzers found on the current classpath里面也可以选择 
 	org.apdplat.word.lucene.ChineseWordAnalyzer 分词器
+	
+	注意：如果你要自己集成word分词器的其他版本，在项目根目录下运行mvn install编译项目，然后运行命令
+	mvn dependency:copy-dependencies复制依赖的jar包，接着在target/dependency/目录下就会有所有
+	的依赖jar包。其中target/dependency/slf4j-api-1.6.4.jar是word分词器使用的日志框架，
+	target/dependency/logback-classic-0.9.28.jar和
+	target/dependency/logback-core-0.9.28.jar是word分词器推荐使用的日志实现，日志实现的配置文件
+	路径位于target/classes/logback.xml，target/word-1.3.jar是word分词器的主jar包，如果需要
+	自定义词典，则需要修改分词器配置文件target/classes/word.conf
 
    已经集成好的Luke插件下载（适用于lucene4.0.0） ：[lukeall-4.0.0-ALPHA-with-word-1.0.jar](http://pan.baidu.com/s/1bn52ooR)
    
