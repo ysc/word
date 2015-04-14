@@ -92,10 +92,18 @@ public final class DictionaryFactory {
                     LOGGER.info("将 "+count+" 个复姓加入词典");
                     Map<Integer, Integer> map = new HashMap<>();
                     for(String line : lines){
+                        //处理词性词典
+                        String word=line;
+                        if(word.length()>2 && word.contains(":")){
+                            String[] attr=word.split(":");
+                            if(attr!=null && attr.length>1 && attr[0].length()>1){
+                                word=attr[0];
+                            }
+                        }
                         //加入词典
-                        DIC.add(line);
+                        DIC.add(word);
                         //统计不同长度的词的数目
-                        int len = line.length();
+                        int len = word.length();
                         Integer value = map.get(len);
                         if(value==null){
                             value=1;
@@ -114,15 +122,35 @@ public final class DictionaryFactory {
 
                 @Override
                 public void add(String line) {
-                    DIC.add(line);
+                    //处理词性词典
+                    String word=line;
+                    if(word.length()>2 && word.contains(":")){
+                        String[] attr=word.split(":");
+                        if(attr!=null && attr.length>1 && attr[0].length()>1){
+                            word=attr[0];
+                        }
+                    }
+                    //加入词典
+                    DIC.add(word);
                 }
 
                 @Override
                 public void remove(String line) {
-                    DIC.remove(line);
+                    //处理词性词典
+                    String word=line;
+                    if(word.length()>2 && word.contains(":")){
+                        String[] attr=word.split(":");
+                        if(attr!=null && attr.length>1 && attr[0].length()>1){
+                            word=attr[0];
+                        }
+                    }
+                    //移除词
+                    DIC.remove(word);
                 }
 
-            }, WordConfTools.get("dic.path", "classpath:dic.txt")+","+WordConfTools.get("punctuation.path", "classpath:punctuation.txt"));
+            }, WordConfTools.get("dic.path", "classpath:dic.txt")
+                    +","+WordConfTools.get("punctuation.path", "classpath:punctuation.txt")
+                    +","+WordConfTools.get("part.of.speech.dic.path", "classpath:part_of_speech_dic.txt"));
         }
         private static void showStatistics(Map<Integer, Integer> map) {
             //统计词数
