@@ -260,36 +260,36 @@
     
 	
 	1、打开命令行并切换到elasticsearch的bin目录
-		cd elasticsearch-1.5.1/bin
+	cd elasticsearch-1.5.1/bin
 	
 	2、运行plugin脚本安装word分词插件：
-		./plugin -u http://apdplat.org/word/archive/v1.2.zip -i word
+	./plugin -u http://apdplat.org/word/archive/v1.2.zip -i word
 	
 	3、修改文件elasticsearch-1.5.1/config/elasticsearch.yml，新增如下配置：	
-		index.analysis.analyzer.default.type : "word"
-		index.analysis.tokenizer.default.type : "word"
+	index.analysis.analyzer.default.type : "word"
+	index.analysis.tokenizer.default.type : "word"
 	
 	4、启动ElasticSearch测试效果，在Chrome浏览器中访问：	
-		http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
+	http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
 		
 	5、自定义配置
-		修改配置文件elasticsearch-1.5.1/plugins/word/word.local.conf
+	修改配置文件elasticsearch-1.5.1/plugins/word/word.local.conf
 		
 	6、指定分词算法
-		修改文件elasticsearch-1.5.1/config/elasticsearch.yml，新增如下配置：
-		index.analysis.analyzer.default.segAlgorithm : "ReverseMinimumMatching"
-		index.analysis.tokenizer.default.segAlgorithm : "ReverseMinimumMatching"
-		
-		这里segAlgorithm可指定的值有：
-		正向最大匹配算法：MaximumMatching
-		逆向最大匹配算法：ReverseMaximumMatching
-		正向最小匹配算法：MinimumMatching
-		逆向最小匹配算法：ReverseMinimumMatching
-		双向最大匹配算法：BidirectionalMaximumMatching
-		双向最小匹配算法：BidirectionalMinimumMatching
-		双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
-		全切分算法：FullSegmentation
-		如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
+	修改文件elasticsearch-1.5.1/config/elasticsearch.yml，新增如下配置：
+	index.analysis.analyzer.default.segAlgorithm : "ReverseMinimumMatching"
+	index.analysis.tokenizer.default.segAlgorithm : "ReverseMinimumMatching"
+
+	这里segAlgorithm可指定的值有：
+	正向最大匹配算法：MaximumMatching
+	逆向最大匹配算法：ReverseMaximumMatching
+	正向最小匹配算法：MinimumMatching
+	逆向最小匹配算法：ReverseMinimumMatching
+	双向最大匹配算法：BidirectionalMaximumMatching
+	双向最小匹配算法：BidirectionalMinimumMatching
+	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
+	全切分算法：FullSegmentation
+	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
 
 
@@ -302,14 +302,14 @@
 	2、下载并解压Java中文分词组件word-1.0-bin.zip：http://pan.baidu.com/s/1dDziDFz
 
 	3、将解压后的 Java中文分词组件word-1.0-bin/word-1.0 文件夹里面的4个jar包解压到当前文件夹
-          用压缩解压工具如winrar打开lukeall-4.0.0-ALPHA.jar，将当前文件夹里面除了.jar、.bat、.html
-          文件外的其他所有文件拖到lukeall-4.0.0-ALPHA.jar里面
+	用压缩解压工具如winrar打开lukeall-4.0.0-ALPHA.jar，将当前文件夹里面除了META-INF文件夹、.jar、
+	.bat、.html文件外的其他所有文件拖到lukeall-4.0.0-ALPHA.jar里面
 
 	4、执行命令 java -jar lukeall-4.0.0-ALPHA.jar 启动luke，在Search选项卡的Analysis里面
-          就可以选择 org.apdplat.word.lucene.ChineseWordAnalyzer 分词器了
+	就可以选择 org.apdplat.word.lucene.ChineseWordAnalyzer 分词器了
 
  	5、在Plugins选项卡的Available analyzers found on the current classpath里面也可以选择 
-          org.apdplat.word.lucene.ChineseWordAnalyzer 分词器
+	org.apdplat.word.lucene.ChineseWordAnalyzer 分词器
 
    已经集成好的Luke插件下载：[lukeall-4.0.0-ALPHA-with-word-1.0.jar](http://pan.baidu.com/s/1bn52ooR)
 	
