@@ -94,6 +94,10 @@ public class WordConfTools {
         } catch (Exception ex) {
             LOGGER.error("强制覆盖默认配置失败：", ex);
         }
+        int i=1;
+        for(String key : conf.keySet()){
+            LOGGER.info((i++)+"、"+key+"="+conf.get(key));
+        }
     }
     /**
      * 加载配置文件
