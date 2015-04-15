@@ -22,6 +22,18 @@
    
    
    
+###编译好的jar包下载（包含依赖）：
+
+
+
+   [word 1.0](http://apdplat.org/word/archive/word-v1.0.zip)
+   
+   [word 1.1](http://apdplat.org/word/archive/word-v1.1.zip)
+   
+   [word 1.2](http://apdplat.org/word/archive/word-v1.2.zip)
+
+	
+      
 ###Maven依赖：
 
 
