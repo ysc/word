@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.GenericTrie;
 import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Trigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Trigram.class);
-    private static final GramTrie GRAM_TRIE = new GramTrie();
+    private static final GenericTrie<Integer> GENERIC_TRIE = new GenericTrie();
     static{
         reload();
     }
@@ -45,7 +46,7 @@ public class Trigram {
 
             @Override
             public void clear() {
-                GRAM_TRIE.clear();
+                GENERIC_TRIE.clear();
             }
 
             @Override
@@ -55,7 +56,7 @@ public class Trigram {
                 for(String line : lines){
                     try{
                         String[] attr = line.split("\\s+");
-                        GRAM_TRIE.put(attr[0], Integer.parseInt(attr[1]));
+                        GENERIC_TRIE.put(attr[0], Integer.parseInt(attr[1]));
                         count++;
                     }catch(Exception e){
                         LOGGER.error("错误的trigram数据："+line);
@@ -68,7 +69,7 @@ public class Trigram {
             public void add(String line) {
                 try{
                     String[] attr = line.split("\\s+");
-                    GRAM_TRIE.put(attr[0], Integer.parseInt(attr[1]));
+                    GENERIC_TRIE.put(attr[0], Integer.parseInt(attr[1]));
                 }catch(Exception e){
                     LOGGER.error("错误的trigram数据："+line);
                 }
@@ -78,7 +79,7 @@ public class Trigram {
             public void remove(String line) {
                 try{
                     String[] attr = line.split("\\s+");
-                    GRAM_TRIE.remove(attr[0]);
+                    GENERIC_TRIE.remove(attr[0]);
                 }catch(Exception e){
                     LOGGER.error("错误的trigram数据："+line);
                 }
@@ -140,11 +141,12 @@ public class Trigram {
      * @return 同时出现的分值
      */
     public static float getScore(String first, String second, String third) {
-        float value = GRAM_TRIE.get(first+":"+second+":"+third);
-        if(value > 0){
-            value = (float)Math.sqrt(value);
-            LOGGER.debug("三元模型 "+first+":"+second+":"+third+" 获得分值："+value);
+        Integer value = GENERIC_TRIE.get(first+":"+second+":"+third);
+        float score = 0;
+        if(value != null){
+            score = (float)Math.sqrt(value.intValue());
+            LOGGER.debug("三元模型 "+first+":"+second+":"+third+" 获得分值："+score);
         }
-        return value;
+        return score;
     }
 }
