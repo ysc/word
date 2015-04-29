@@ -18,7 +18,7 @@
  *
  */
 
-package org.apdplat.word.segmentation;
+package org.apdplat.word.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -23,6 +23,7 @@ package org.apdplat.word.segmentation;
 import org.apdplat.word.WordSegmenter;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.GenericTrie;
 import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
