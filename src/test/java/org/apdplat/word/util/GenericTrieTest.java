@@ -18,19 +18,19 @@
  * 
  */
 
-package org.apdplat.word.corpus;
+package org.apdplat.word.util;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author 杨尚川
  */
-public class GramTrieTest {
-    private final GramTrie trie = new GramTrie();
+public class GenericTrieTest {
+    private final GenericTrie<Integer> trie = new GenericTrie<>();
     @Before
     public void setUp() {
         trie.put("杨尚川", 100);
@@ -44,19 +44,19 @@ public class GramTrieTest {
     }
     @Test
     public void testClear() {
-        assertEquals(100, trie.get("杨尚川"), 0);
-        assertEquals(1, trie.get("中华人民共和国"), 0);
+        Assert.assertEquals(100, trie.get("杨尚川"), 0);
+        Assert.assertEquals(1, trie.get("中华人民共和国"), 0);
         trie.clear();
-        assertEquals(0, trie.get("杨尚川"), 0);
-        assertEquals(0, trie.get("中华人民共和国"), 0);
+        Assert.assertEquals(null, trie.get("杨尚川"));
+        Assert.assertEquals(null, trie.get("中华人民共和国"));
     }
     @Test
     public void testGet() {
-        assertEquals(100, trie.get("杨尚川"), 0);
-        assertEquals(99, trie.get("杨尚喜"), 0);
-        assertEquals(98, trie.get("杨尚丽"), 0);
-        assertEquals(1, trie.get("中华人民共和国"), 0);
-        assertEquals(0, trie.get("杨"), 0);
-        assertEquals(0, trie.get("杨尚"), 0);
+        Assert.assertEquals(100, trie.get("杨尚川"), 0);
+        Assert.assertEquals(99, trie.get("杨尚喜"), 0);
+        Assert.assertEquals(98, trie.get("杨尚丽"), 0);
+        Assert.assertEquals(1, trie.get("中华人民共和国"), 0);
+        Assert.assertEquals(null, trie.get("杨"));
+        Assert.assertEquals(null, trie.get("杨尚"));
     }
 }
