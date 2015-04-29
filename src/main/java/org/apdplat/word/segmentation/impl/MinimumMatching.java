@@ -69,6 +69,6 @@ public class MinimumMatching extends AbstractSegmentation{
             text = args[0];
         }
         MinimumMatching m = new MinimumMatching();
-        LOGGER.info(m.seg(text).toString());
+        System.out.println(m.seg(text).toString());
     }
 }

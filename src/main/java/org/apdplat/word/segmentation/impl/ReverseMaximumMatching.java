@@ -90,6 +90,6 @@ public class ReverseMaximumMatching extends AbstractSegmentation{
             text = args[0];
         }
         ReverseMaximumMatching m = new ReverseMaximumMatching();
-        LOGGER.info(m.seg(text).toString());
+        System.out.println(m.seg(text).toString());
     }
 }

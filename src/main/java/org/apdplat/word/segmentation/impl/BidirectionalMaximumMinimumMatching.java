@@ -105,6 +105,6 @@ public class BidirectionalMaximumMinimumMatching extends AbstractSegmentation{
             text = args[0];
         }
         BidirectionalMaximumMinimumMatching m = new BidirectionalMaximumMinimumMatching();
-        LOGGER.info(m.seg(text).toString());
+        System.out.println(m.seg(text).toString());
     }
 }

@@ -79,6 +79,6 @@ public class ReverseMinimumMatching extends AbstractSegmentation{
             text = args[0];
         }
         ReverseMinimumMatching m = new ReverseMinimumMatching();
-        LOGGER.info(m.seg(text).toString());
+        System.out.println(m.seg(text).toString());
     }
 }

@@ -71,6 +71,6 @@ public class MaximumMatching extends AbstractSegmentation{
             text = args[0];
         }
         MaximumMatching m = new MaximumMatching();
-        LOGGER.info(m.seg(text).toString());
+        System.out.println(m.seg(text).toString());
     }
 }

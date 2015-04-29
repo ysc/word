@@ -266,6 +266,6 @@ public class FullSegmentation extends AbstractSegmentation{
             text = args[0];
         }
         FullSegmentation m = new FullSegmentation();
-        LOGGER.info(m.seg(text).toString());
+        System.out.println(m.seg(text).toString());
     }
 }
