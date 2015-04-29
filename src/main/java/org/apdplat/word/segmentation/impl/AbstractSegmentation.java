@@ -54,6 +54,7 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected static final boolean KEEP_PUNCTUATION = "true".equals(WordConfTools.get("keep.punctuation", "false"));
     private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
     private static final String NGRAM = WordConfTools.get("ngram", "bigram");
+    private static final boolean refine = "true".equals(WordConfTools.get("refine", "false").trim());
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(WordConfTools.getInt("thread.pool.size", 4));
     public abstract List<Word> segImpl(String text);
     /**
@@ -122,12 +123,15 @@ public abstract class AbstractSegmentation  implements Segmentation{
             }
             futures.clear();
         }
-        //对分词结果进行refine
-        LOGGER.debug("对分词结果进行refine之前：{}",result);
-        List<Word> finalResult = refine(result);
-        LOGGER.debug("对分词结果进行refine之后：{}",finalResult);
-        result.clear();
-        return finalResult;
+        if(refine) {
+            LOGGER.debug("对分词结果进行refine之前：{}", result);
+            List<Word> finalResult = refine(result);
+            LOGGER.debug("对分词结果进行refine之后：{}", finalResult);
+            result.clear();
+            return finalResult;
+        }else{
+            return result;
+        }
     }
 
     /**
