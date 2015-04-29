@@ -38,7 +38,7 @@ public class PartOfSpeechTagging {
     private PartOfSpeechTagging(){}
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PartOfSpeechTagging.class);
-    private static final PartOfSpeechTrie PART_OF_SPEECH_TRIE = new PartOfSpeechTrie();
+    private static final GenericTrie<String> GENERIC_TRIE = new GenericTrie<>();
     static{
         reload();
     }
@@ -47,7 +47,7 @@ public class PartOfSpeechTagging {
 
             @Override
             public void clear() {
-                PART_OF_SPEECH_TRIE.clear();
+                GENERIC_TRIE.clear();
             }
 
             @Override
@@ -57,7 +57,7 @@ public class PartOfSpeechTagging {
                 for (String line : lines) {
                     try {
                         String[] attr = line.split(":");
-                        PART_OF_SPEECH_TRIE.put(attr[0], attr[1]);
+                        GENERIC_TRIE.put(attr[0], attr[1]);
                         count++;
                     } catch (Exception e) {
                         LOGGER.error("错误的词性数据：" + line);
@@ -70,7 +70,7 @@ public class PartOfSpeechTagging {
             public void add(String line) {
                 try {
                     String[] attr = line.split(":");
-                    PART_OF_SPEECH_TRIE.put(attr[0], attr[1]);
+                    GENERIC_TRIE.put(attr[0], attr[1]);
                 } catch (Exception e) {
                     LOGGER.error("错误的词性数据：" + line);
                 }
@@ -80,7 +80,7 @@ public class PartOfSpeechTagging {
             public void remove(String line) {
                 try {
                     String[] attr = line.split(":");
-                    PART_OF_SPEECH_TRIE.remove(attr[0]);
+                    GENERIC_TRIE.remove(attr[0]);
                 } catch (Exception e) {
                     LOGGER.error("错误的词性数据：" + line);
                 }
@@ -91,7 +91,7 @@ public class PartOfSpeechTagging {
     public static void process(List<Word> words){
         words.parallelStream().forEach(word->{
             String wordText = word.getText();
-            String pos = PART_OF_SPEECH_TRIE.get(wordText);
+            String pos = GENERIC_TRIE.get(wordText);
             if(pos == null){
                 //识别英文
                 if(RecognitionTool.isEnglish(wordText)){
