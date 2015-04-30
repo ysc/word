@@ -37,7 +37,6 @@ import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.recognition.Punctuation;
-import org.apdplat.word.segmentation.WordRefiner;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +53,6 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected static final boolean KEEP_PUNCTUATION = "true".equals(WordConfTools.get("keep.punctuation", "false"));
     private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
     private static final String NGRAM = WordConfTools.get("ngram", "bigram");
-    private static final boolean refine = "true".equals(WordConfTools.get("refine", "false").trim());
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(WordConfTools.getInt("thread.pool.size", 4));
     public abstract List<Word> segImpl(String text);
     /**
@@ -99,92 +97,30 @@ public abstract class AbstractSegmentation  implements Segmentation{
      */
     @Override
     public List<Word> seg(String text) {
-        List<Word> result = new ArrayList<>();
         List<String> sentences = Punctuation.seg(text, KEEP_PUNCTUATION);
         if(sentences.size() == 1){
-            result = segSentence(sentences.get(0));
-        }else {
-            //如果是多个句子，可以利用多线程提升分词速度
-            List<Future<List<Word>>> futures = new ArrayList<>(sentences.size());
-            for (String sentence : sentences) {
-                futures.add(submit(sentence));
-            }
-            sentences.clear();
-            for (Future<List<Word>> future : futures) {
-                List<Word> words;
-                try {
-                    words = future.get();
-                    if (words != null) {
-                        result.addAll(words);
-                    }
-                } catch (InterruptedException | ExecutionException ex) {
-                    LOGGER.error("获取分词结果失败", ex);
+            return segSentence(sentences.get(0));
+        }
+        //如果是多个句子，可以利用多线程提升分词速度
+        List<Future<List<Word>>> futures = new ArrayList<>(sentences.size());
+        for(String sentence : sentences){
+            futures.add(submit(sentence));
+        }
+        sentences.clear();
+        List<Word> result = new ArrayList<>();
+        for(Future<List<Word>> future : futures){
+            List<Word> words;
+            try {
+                words = future.get();
+                if(words != null){
+                    result.addAll(words);
                 }
-            }
-            futures.clear();
-        }
-        if(refine) {
-            LOGGER.debug("对分词结果进行refine之前：{}", result);
-            List<Word> finalResult = refine(result);
-            LOGGER.debug("对分词结果进行refine之后：{}", finalResult);
-            result.clear();
-            return finalResult;
-        }else{
-            return result;
-        }
-    }
-
-    /**
-     * 先拆词，再组词
-     * @param words
-     * @return
-     */
-    private List<Word> refine(List<Word> words){
-        List<Word> result = new ArrayList<>(words.size());
-        //一：拆词
-        for(Word word : words){
-            List<Word> splitWords = WordRefiner.split(word);
-            if(splitWords==null){
-                result.add(word);
-            }else{
-                LOGGER.debug("词： "+word.getText()+" 被拆分为："+splitWords);
-                result.addAll(splitWords);
+            } catch (InterruptedException | ExecutionException ex) {
+                LOGGER.error("获取分词结果失败", ex);
             }
         }
-        LOGGER.debug("对分词结果进行refine阶段的拆词之后：{}",result);
-        //二：组词
-        if(result.size()<2){
-            return result;
-        }
-        int combineMaxLength = WordConfTools.getInt("word.refine.combine.max.length", 3);
-        if(combineMaxLength < 2){
-            combineMaxLength = 2;
-        }
-        List<Word> finalResult = new ArrayList<>(result.size());
-        for(int i=0; i<result.size(); i++){
-            List<Word> toCombineWords = null;
-            Word combinedWord = null;
-            for(int j=2; j<=combineMaxLength; j++){
-                int to = i+j;
-                if(to > result.size()){
-                    to = result.size();
-                }
-                toCombineWords = result.subList(i, to);
-                combinedWord = WordRefiner.combine(toCombineWords);
-                if(combinedWord != null){
-                    i += j;
-                    i--;
-                    break;
-                }
-            }
-            if(combinedWord == null){
-                finalResult.add(result.get(i));
-            }else{
-                LOGGER.debug("词： "+toCombineWords+" 被合并为："+combinedWord);
-                finalResult.add(combinedWord);
-            }
-        }
-        return finalResult;
+        futures.clear();
+        return result;
     }
     private Future<List<Word>> submit(final String sentence){
         return EXECUTOR_SERVICE.submit(new Callable<List<Word>>(){

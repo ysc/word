@@ -129,4 +129,59 @@ public class WordRefiner {
         }
         return new Word(value);
     }
+
+    /**
+     * 先拆词，再组词
+     * @param words
+     * @return
+     */
+    public static List<Word> refine(List<Word> words){
+        LOGGER.debug("对分词结果进行refine之前：{}", words);
+        List<Word> result = new ArrayList<>(words.size());
+        //一：拆词
+        for(Word word : words){
+            List<Word> splitWords = WordRefiner.split(word);
+            if(splitWords==null){
+                result.add(word);
+            }else{
+                LOGGER.debug("词： "+word.getText()+" 被拆分为："+splitWords);
+                result.addAll(splitWords);
+            }
+        }
+        LOGGER.debug("对分词结果进行refine阶段的拆词之后：{}",result);
+        //二：组词
+        if(result.size()<2){
+            return result;
+        }
+        int combineMaxLength = WordConfTools.getInt("word.refine.combine.max.length", 3);
+        if(combineMaxLength < 2){
+            combineMaxLength = 2;
+        }
+        List<Word> finalResult = new ArrayList<>(result.size());
+        for(int i=0; i<result.size(); i++){
+            List<Word> toCombineWords = null;
+            Word combinedWord = null;
+            for(int j=2; j<=combineMaxLength; j++){
+                int to = i+j;
+                if(to > result.size()){
+                    to = result.size();
+                }
+                toCombineWords = result.subList(i, to);
+                combinedWord = WordRefiner.combine(toCombineWords);
+                if(combinedWord != null){
+                    i += j;
+                    i--;
+                    break;
+                }
+            }
+            if(combinedWord == null){
+                finalResult.add(result.get(i));
+            }else{
+                LOGGER.debug("词： "+toCombineWords+" 被合并为："+combinedWord);
+                finalResult.add(combinedWord);
+            }
+        }
+        LOGGER.debug("对分词结果进行refine阶段的组词之后：{}", finalResult);
+        return finalResult;
+    }
 }
