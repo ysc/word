@@ -227,7 +227,7 @@
     [速度 sd sudu, 与 y yu, 激情 jq jiqing, 7, 的 d de, 中国 zg zhongguo, 内地 nd neidi, 票房 pf piaofang, 自 z zi, 4月, 12日, 上映 sy shangying, 以来 yl yilai, 在 z zai, 短短 dd duanduan, 两周 lz liangzhou, 内 n nei, 突破 tp tupo, 20亿, 人民币 rmb renminbi]
 	以词“速度”为例：
 	可以通过Word的getFullPinYin()方法获取完整拼音如：sudu
-	可以通过Word的getAcronymPinYin方法获取首字母缩略拼音如：sd
+	可以通过Word的getAcronymPinYin()方法获取首字母缩略拼音如：sd
 	
     
 	
