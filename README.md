@@ -215,6 +215,20 @@
 	结果如下：
 	[手劲, 大, 的, 白叟, 老人, 每每, 经常, 常常, 往往, 更, 长命, 长寿, 龟龄]
 	
+	13、拼音标注
+	List<Word> words = WordSegmenter.segWithStopWords("《速度与激情7》的中国内地票房自4月12日上映以来，在短短两周内突破20亿人民币");
+	System.out.println(words);
+	结果如下：
+	[速度, 与, 激情, 7, 的, 中国, 内地, 票房, 自, 4月, 12日, 上映, 以来, 在, 短短, 两周, 内, 突破, 20亿, 人民币]
+	执行拼音标注：
+	PinyinTagging.process(words);
+	System.out.println(words);
+	结果如下：
+    [速度 sd sudu, 与 y yu, 激情 jq jiqing, 7, 的 d de, 中国 zg zhongguo, 内地 nd neidi, 票房 pf piaofang, 自 z zi, 4月, 12日, 上映 sy shangying, 以来 yl yilai, 在 z zai, 短短 dd duanduan, 两周 lz liangzhou, 内 n nei, 突破 tp tupo, 20亿, 人民币 rmb renminbi]
+	以词“速度”为例：
+	可以通过Word的getFullPinYin()方法获取完整拼音如：sudu
+	可以通过Word的getAcronymPinYin方法获取首字母缩略拼音如：sd
+	
     
 	
 ###分词算法效果评估：
