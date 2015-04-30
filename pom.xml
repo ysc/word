@@ -128,6 +128,7 @@
         <lucene.version>4.10.4</lucene.version>
         <elasticsearch.version>1.5.1</elasticsearch.version>
         <jedis.version>2.5.1</jedis.version>
+        <pinyin4j.version>2.5.0</pinyin4j.version>
   </properties>
 
   <dependencies>
@@ -217,6 +218,13 @@
         <groupId>redis.clients</groupId>
         <artifactId>jedis</artifactId>
         <version>${jedis.version}</version>
+    </dependency>
+    <!-- 拼音标注 -->
+    <dependency>
+        <groupId>com.belerweb</groupId>
+        <artifactId>pinyin4j</artifactId>
+        <version>${pinyin4j.version}</version>
+        <optional>true</optional>
     </dependency>
   </dependencies>
 </project>
