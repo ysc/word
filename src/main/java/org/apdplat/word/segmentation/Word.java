@@ -23,12 +23,14 @@ package org.apdplat.word.segmentation;
 import java.util.Objects;
 
 /**
- * 词、词性、词频
+ * 词、拼音、词性、词频
  * Word
  * @author 杨尚川
  */
 public class Word implements Comparable{
     private String text;
+    private String acronymPinYin;
+    private String fullPinYin;
     private PartOfSpeech partOfSpeech = null;
     private int frequency;
 
@@ -48,6 +50,22 @@ public class Word implements Comparable{
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getAcronymPinYin() {
+        return acronymPinYin;
+    }
+
+    public void setAcronymPinYin(String acronymPinYin) {
+        this.acronymPinYin = acronymPinYin;
+    }
+
+    public String getFullPinYin() {
+        return fullPinYin;
+    }
+
+    public void setFullPinYin(String fullPinYin) {
+        this.fullPinYin = fullPinYin;
     }
 
     public PartOfSpeech getPartOfSpeech() {
@@ -88,6 +106,12 @@ public class Word implements Comparable{
         StringBuilder str = new StringBuilder();
         if(text!=null){
             str.append(text);
+        }
+        if(acronymPinYin!=null){
+            str.append(" ").append(acronymPinYin);
+        }
+        if(fullPinYin!=null){
+            str.append(" ").append(fullPinYin);
         }
         if(partOfSpeech!=null){
             str.append("/").append(partOfSpeech.getPos());
