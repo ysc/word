@@ -194,6 +194,29 @@
 	这样，就能达到我们想要的效果：
 	[在, 实现, 两个一百年, 奋斗目标, 的, 伟大征程, 上, 再创, 新的, 业绩]
 	
+    12、同义处理
+    List<Word> words = WordSegmenter.segWithStopWords("楚离陌千方百计为无情找回记忆");
+    System.out.println(words);
+	结果如下：
+	[楚离陌, 千方百计, 为, 无情, 找回, 记忆]
+	做同义处理：
+	words = WordSynonymy.synonymy(words);
+	System.out.println(words);
+	结果如下：
+	[楚离陌, 费尽心机, 想方设法, 久有存心, 化尽心血, 千方百计, 为, 无情, 找回, 影象, 记忆]
+    
+    List<Word> words = WordSegmenter.segWithStopWords("手劲大的老人往往更长寿");
+	System.out.println(words);
+		结果如下：
+	[手劲, 大, 的, 老人, 往往, 更, 长寿]
+	做同义处理：
+	words = WordSynonymy.synonymy(words);
+	System.out.println(words);
+	结果如下：
+	[手劲, 大, 的, 白叟, 老人, 每每, 经常, 常常, 往往, 更, 长命, 长寿, 龟龄]
+	
+    
+	
 ###分词算法效果评估：
 
 
