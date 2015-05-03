@@ -203,6 +203,11 @@
 	SynonymyTagging.process(words);
 	System.out.println(words);
 	结果如下：
+	[楚离陌, 千方百计[久有存心, 化尽心血, 想方设法, 费尽心机], 为, 无情, 找回, 记忆[影象]]
+	如果启用间接同义词：
+	SynonymyTagging.process(words, false);
+	System.out.println(words);
+	结果如下：
 	[楚离陌, 千方百计[久有存心, 化尽心血, 想方设法, 费尽心机], 为, 无情, 找回, 记忆[影像, 影象]]
     
     List<Word> words = WordSegmenter.segWithStopWords("手劲大的老人往往更长寿");
@@ -213,6 +218,11 @@
 	SynonymyTagging.process(words);
 	System.out.println(words);
 	结果如下：
+	[手劲, 大, 的, 老人[白叟], 往往[常常, 每每, 经常], 更, 长寿[长命, 龟龄]]
+	如果启用间接同义词：
+	SynonymyTagging.process(words, false);
+	System.out.println(words);
+	结果如下：
 	[手劲, 大, 的, 老人[白叟], 往往[一样平常, 一般, 凡是, 寻常, 常常, 常日, 平凡, 平居, 平常, 平日, 平时, 往常, 日常, 日常平凡, 时常, 普通, 每每, 泛泛, 素日, 经常, 通俗, 通常], 更, 长寿[长命, 龟龄]]
 
 	以词“千方百计”为例：
@@ -221,6 +231,15 @@
 	结果如下：
 	[久有存心, 化尽心血, 想方设法, 费尽心机]
 	注意：如果没有同义词，则getSynonym()返回空集合：Collections.emptyList()
+	
+	间接同义词和直接同义词的区别如下：
+	假设：
+	A和B是同义词，A和C是同义词，B和D是同义词，C和E是同义词
+	则：
+	对于A来说，A B C是直接同义词
+	对于B来说，A B D是直接同义词
+	对于C来说，A C E是直接同义词
+	对于A B C来说，A B C D E是间接同义词
 	
 	13、拼音标注
 	List<Word> words = WordSegmenter.segWithStopWords("《速度与激情7》的中国内地票房自4月12日上映以来，在短短两周内突破20亿人民币");
