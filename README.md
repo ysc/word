@@ -194,26 +194,33 @@
 	这样，就能达到我们想要的效果：
 	[在, 实现, 两个一百年, 奋斗目标, 的, 伟大征程, 上, 再创, 新的, 业绩]
 	
-    12、同义处理
+    12、同义标注
     List<Word> words = WordSegmenter.segWithStopWords("楚离陌千方百计为无情找回记忆");
     System.out.println(words);
 	结果如下：
 	[楚离陌, 千方百计, 为, 无情, 找回, 记忆]
-	做同义处理：
-	words = WordSynonymy.synonymy(words);
+	做同义标注：
+	SynonymyTagging.process(words);
 	System.out.println(words);
 	结果如下：
-	[楚离陌, 费尽心机, 想方设法, 久有存心, 化尽心血, 千方百计, 为, 无情, 找回, 影象, 记忆]
+	[楚离陌, 千方百计[费尽心机, 想方设法, 久有存心, 化尽心血], 为, 无情, 找回, 记忆[影象]]
     
     List<Word> words = WordSegmenter.segWithStopWords("手劲大的老人往往更长寿");
 	System.out.println(words);
-		结果如下：
+	结果如下：
 	[手劲, 大, 的, 老人, 往往, 更, 长寿]
-	做同义处理：
-	words = WordSynonymy.synonymy(words);
+	做同义标注：
+	SynonymyTagging.process(words);
 	System.out.println(words);
 	结果如下：
-	[手劲, 大, 的, 白叟, 老人, 每每, 经常, 常常, 往往, 更, 长命, 长寿, 龟龄]
+	[手劲, 大, 的, 老人[白叟], 往往[每每, 经常, 常常], 更, 长寿[长命, 龟龄]]
+	
+	以词“千方百计”为例：
+	可以通过Word的getSynonym()方法获取同义词如：
+	System.out.println(word.getSynonym());
+	结果如下：
+	[费尽心机, 想方设法, 久有存心, 化尽心血]
+	注意：如果没有同义词，则getSynonym()返回空集合：Collections.emptyList()
 	
 	13、拼音标注
 	List<Word> words = WordSegmenter.segWithStopWords("《速度与激情7》的中国内地票房自4月12日上映以来，在短短两周内突破20亿人民币");
@@ -225,6 +232,7 @@
 	System.out.println(words);
 	结果如下：
     [速度 sd sudu, 与 y yu, 激情 jq jiqing, 7, 的 d de, 中国 zg zhongguo, 内地 nd neidi, 票房 pf piaofang, 自 z zi, 4月, 12日, 上映 sy shangying, 以来 yl yilai, 在 z zai, 短短 dd duanduan, 两周 lz liangzhou, 内 n nei, 突破 tp tupo, 20亿, 人民币 rmb renminbi]
+	
 	以词“速度”为例：
 	可以通过Word的getFullPinYin()方法获取完整拼音如：sudu
 	可以通过Word的getAcronymPinYin()方法获取首字母缩略拼音如：sd
