@@ -95,7 +95,10 @@ public class Word implements Comparable{
     }
 
     public void setSynonym(List<Word> synonym) {
-        this.synonym = synonym;
+        if(synonym!=null){
+            Collections.sort(synonym);
+            this.synonym = synonym;
+        }
     }
 
     @Override
