@@ -203,7 +203,7 @@
 	SynonymyTagging.process(words);
 	System.out.println(words);
 	结果如下：
-	[楚离陌, 千方百计[费尽心机, 想方设法, 久有存心, 化尽心血], 为, 无情, 找回, 记忆[影象]]
+	[楚离陌, 千方百计[久有存心, 化尽心血, 想方设法, 费尽心机], 为, 无情, 找回, 记忆[影象]]
     
     List<Word> words = WordSegmenter.segWithStopWords("手劲大的老人往往更长寿");
 	System.out.println(words);
@@ -213,13 +213,13 @@
 	SynonymyTagging.process(words);
 	System.out.println(words);
 	结果如下：
-	[手劲, 大, 的, 老人[白叟], 往往[每每, 经常, 常常], 更, 长寿[长命, 龟龄]]
+	[手劲, 大, 的, 老人[白叟], 往往[常常, 每每, 经常], 更, 长寿[长命, 龟龄]]
 	
 	以词“千方百计”为例：
 	可以通过Word的getSynonym()方法获取同义词如：
 	System.out.println(word.getSynonym());
 	结果如下：
-	[费尽心机, 想方设法, 久有存心, 化尽心血]
+	[久有存心, 化尽心血, 想方设法, 费尽心机]
 	注意：如果没有同义词，则getSynonym()返回空集合：Collections.emptyList()
 	
 	13、拼音标注
