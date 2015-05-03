@@ -18,8 +18,11 @@
  *
  */
 
-package org.apdplat.word.segmentation;
+package org.apdplat.word.tagging;
 
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
+import org.apdplat.word.segmentation.SegmentationFactory;
+import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.AutoDetector;
 import org.apdplat.word.util.GenericTrie;
 import org.apdplat.word.util.ResourceLoader;

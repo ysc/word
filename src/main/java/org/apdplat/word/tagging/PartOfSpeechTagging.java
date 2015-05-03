@@ -18,10 +18,12 @@
  *
  */
 
-package org.apdplat.word.segmentation;
+package org.apdplat.word.tagging;
 
 import org.apdplat.word.WordSegmenter;
 import org.apdplat.word.recognition.RecognitionTool;
+import org.apdplat.word.segmentation.PartOfSpeech;
+import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.AutoDetector;
 import org.apdplat.word.util.GenericTrie;
 import org.apdplat.word.util.ResourceLoader;

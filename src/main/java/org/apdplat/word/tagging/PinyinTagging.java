@@ -18,13 +18,16 @@
  *
  */
 
-package org.apdplat.word.segmentation;
+package org.apdplat.word.tagging;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
+import org.apdplat.word.segmentation.SegmentationFactory;
+import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
