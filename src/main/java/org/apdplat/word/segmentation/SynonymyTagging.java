@@ -27,8 +27,8 @@ import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * 同义标注
@@ -56,13 +56,11 @@ public class SynonymyTagging {
                 int count = 0;
                 for (String line : lines) {
                     try {
-                        String[] attr = line.split("\\s+");
-                        if(attr!=null && attr.length>1) {
-                            for(String item : attr) {
-                                GENERIC_TRIE.put(item.trim(), attr);
-                                count++;
-                            }
-                        }else{
+                        String[] words = line.split("\\s+");
+                        if (words != null && words.length > 1) {
+                            addWords(words);
+                            count++;
+                        } else {
                             LOGGER.error("错误的Synonymy数据：" + line);
                         }
                     } catch (Exception e) {
@@ -75,12 +73,10 @@ public class SynonymyTagging {
             @Override
             public void add(String line) {
                 try {
-                    String[] attr = line.split("\\s+");
-                    if(attr!=null && attr.length>1) {
-                        for(String item : attr) {
-                            GENERIC_TRIE.put(item.trim(), attr);
-                        }
-                    }else{
+                    String[] words = line.split("\\s+");
+                    if (words != null && words.length > 1) {
+                        addWords(words);
+                    } else {
                         LOGGER.error("错误的Synonymy数据：" + line);
                     }
                 } catch (Exception e) {
@@ -91,12 +87,12 @@ public class SynonymyTagging {
             @Override
             public void remove(String line) {
                 try {
-                    String[] attr = line.split("\\s+");
-                    if(attr!=null && attr.length>1) {
-                        for(String item : attr) {
-                            GENERIC_TRIE.remove(item.trim());
+                    String[] words = line.split("\\s+");
+                    if (words != null && words.length > 1) {
+                        for (String word : words) {
+                            GENERIC_TRIE.remove(word.trim());
                         }
-                    }else{
+                    } else {
                         LOGGER.error("错误的Synonymy数据：" + line);
                     }
                 } catch (Exception e) {
@@ -104,21 +100,63 @@ public class SynonymyTagging {
                 }
             }
 
+            private void addWords(String[] words) {
+                for (String word : words) {
+                    String[] exist = GENERIC_TRIE.get(word);
+                    if (exist != null) {
+                        LOGGER.info(word + " 已经有存在的同义词：");
+                        for (String e : exist) {
+                            LOGGER.info("\t" + e);
+                        }
+                        Set<String> set = new HashSet<>();
+                        set.addAll(Arrays.asList(exist));
+                        set.addAll(Arrays.asList(words));
+                        String[] merge = set.toArray(new String[0]);
+                        LOGGER.info("合并新的同义词：");
+                        for (String e : words) {
+                            LOGGER.info("\t" + e);
+                        }
+                        LOGGER.info("合并结果：");
+                        for (String e : merge) {
+                            LOGGER.info("\t" + e);
+                        }
+                        GENERIC_TRIE.put(word.trim(), merge);
+                    } else {
+                        GENERIC_TRIE.put(word.trim(), words);
+                    }
+                }
+            }
         }, WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt"));
     }
     public static void process(List<Word> words){
         LOGGER.debug("对分词结果进行同义标注之前：{}", words);
         //同义标注
         for(Word word : words){
-            String[] synonym = GENERIC_TRIE.get(word.getText());
-            if(synonym!=null && synonym.length>1){
-                //有同义词
-                List<Word> synonymList = toWord(synonym);
+            Set<Word> synonymList = new ConcurrentSkipListSet<>();
+            processSynonym(word, synonymList);
+            if(!synonymList.isEmpty()){
                 synonymList.remove(word);
-                word.setSynonym(synonymList);
+                word.setSynonym(new ArrayList<>(synonymList));
             }
         }
         LOGGER.debug("对分词结果进行同义标注之后：{}", words);
+    }
+    private static void processSynonym(Word word, Set<Word> allSynonym){
+        String[] synonym = GENERIC_TRIE.get(word.getText());
+        if(synonym!=null && synonym.length>1){
+            int len = allSynonym.size();
+            //有同义词
+            List<Word> synonymList = toWord(synonym);
+            allSynonym.addAll(synonymList);
+            //有新的同义词进入，就要接着检查是否有间接同义词
+            if(allSynonym.size()>len) {
+                //间接关系的同义词，A和B是同义词，A和C是同义词，B和D是同义词，C和E是同义词
+                //则A B C D E都是一组同义词
+                for (Word item : allSynonym) {
+                    processSynonym(item, allSynonym);
+                }
+            }
+        }
     }
     private static List<Word> toWord(String[] words){
         List<Word> result = new ArrayList<>(words.length);
