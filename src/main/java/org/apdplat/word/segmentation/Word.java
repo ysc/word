@@ -20,6 +20,7 @@
 
 package org.apdplat.word.segmentation;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,6 +88,9 @@ public class Word implements Comparable{
     }
 
     public List<Word> getSynonym() {
+        if(synonym==null){
+            return Collections.emptyList();
+        }
         return synonym;
     }
 
