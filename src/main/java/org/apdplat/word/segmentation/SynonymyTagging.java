@@ -31,13 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 同义处理
+ * 同义标注
  * @author 杨尚川
  */
-public class WordSynonymy {
-    private WordSynonymy(){}
+public class SynonymyTagging {
+    private SynonymyTagging(){}
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WordSynonymy.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SynonymyTagging.class);
     private static final GenericTrie<String[]> GENERIC_TRIE = new GenericTrie<>();
     static{
         reload();
@@ -52,7 +52,7 @@ public class WordSynonymy {
 
             @Override
             public void load(List<String> lines) {
-                LOGGER.info("初始化WordSynonymy");
+                LOGGER.info("初始化Synonymy");
                 int count = 0;
                 for (String line : lines) {
                     try {
@@ -63,13 +63,13 @@ public class WordSynonymy {
                                 count++;
                             }
                         }else{
-                            LOGGER.error("错误的WordSynonymy数据：" + line);
+                            LOGGER.error("错误的Synonymy数据：" + line);
                         }
                     } catch (Exception e) {
-                        LOGGER.error("错误的WordSynonymy数据：" + line);
+                        LOGGER.error("错误的Synonymy数据：" + line);
                     }
                 }
-                LOGGER.info("WordSynonymy初始化完毕，数据条数：" + count);
+                LOGGER.info("Synonymy初始化完毕，数据条数：" + count);
             }
 
             @Override
@@ -81,10 +81,10 @@ public class WordSynonymy {
                             GENERIC_TRIE.put(item.trim(), attr);
                         }
                     }else{
-                        LOGGER.error("错误的WordSynonymy数据：" + line);
+                        LOGGER.error("错误的Synonymy数据：" + line);
                     }
                 } catch (Exception e) {
-                    LOGGER.error("错误的WordSynonymy数据：" + line);
+                    LOGGER.error("错误的Synonymy数据：" + line);
                 }
             }
 
@@ -97,32 +97,28 @@ public class WordSynonymy {
                             GENERIC_TRIE.remove(item.trim());
                         }
                     }else{
-                        LOGGER.error("错误的WordSynonymy数据：" + line);
+                        LOGGER.error("错误的Synonymy数据：" + line);
                     }
                 } catch (Exception e) {
-                    LOGGER.error("错误的WordSynonymy数据：" + line);
+                    LOGGER.error("错误的Synonymy数据：" + line);
                 }
             }
 
         }, WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt"));
     }
-    public static List<Word> synonymy(List<Word> words){
-        LOGGER.debug("对分词结果进行synonymy之前：{}", words);
-        List<Word> result = new ArrayList<>(words.size()*2);
-        //同义处理
+    public static void process(List<Word> words){
+        LOGGER.debug("对分词结果进行同义标注之前：{}", words);
+        //同义标注
         for(Word word : words){
             String[] synonym = GENERIC_TRIE.get(word.getText());
-            if(synonym==null || synonym.length<2){
-                //没有同义词
-                result.add(word);
-            }else{
+            if(synonym!=null && synonym.length>1){
                 //有同义词
-                List<Word> wordList = toWord(synonym);
-                result.addAll(wordList);
+                List<Word> synonymList = toWord(synonym);
+                synonymList.remove(word);
+                word.setSynonym(synonymList);
             }
         }
-        LOGGER.debug("对分词结果进行synonymy之后：{}", result);
-        return result;
+        LOGGER.debug("对分词结果进行同义标注之后：{}", words);
     }
     private static List<Word> toWord(String[] words){
         List<Word> result = new ArrayList<>(words.length);
@@ -135,11 +131,11 @@ public class WordSynonymy {
     public static void main(String[] args) {
         List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg("楚离陌千方百计为无情找回记忆");
         System.out.println(words);
-        words = WordSynonymy.synonymy(words);
+        SynonymyTagging.process(words);
         System.out.println(words);
         words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg("手劲大的老人往往更长寿");
         System.out.println(words);
-        words = WordSynonymy.synonymy(words);
+        SynonymyTagging.process(words);
         System.out.println(words);
     }
 }
