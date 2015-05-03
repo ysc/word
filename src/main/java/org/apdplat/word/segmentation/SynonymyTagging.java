@@ -104,21 +104,21 @@ public class SynonymyTagging {
                 for (String word : words) {
                     String[] exist = GENERIC_TRIE.get(word);
                     if (exist != null) {
-                        LOGGER.info(word + " 已经有存在的同义词：");
+                        LOGGER.debug(word + " 已经有存在的同义词：");
                         for (String e : exist) {
-                            LOGGER.info("\t" + e);
+                            LOGGER.debug("\t" + e);
                         }
                         Set<String> set = new HashSet<>();
                         set.addAll(Arrays.asList(exist));
                         set.addAll(Arrays.asList(words));
                         String[] merge = set.toArray(new String[0]);
-                        LOGGER.info("合并新的同义词：");
+                        LOGGER.debug("合并新的同义词：");
                         for (String e : words) {
-                            LOGGER.info("\t" + e);
+                            LOGGER.debug("\t" + e);
                         }
-                        LOGGER.info("合并结果：");
+                        LOGGER.debug("合并结果：");
                         for (String e : merge) {
-                            LOGGER.info("\t" + e);
+                            LOGGER.debug("\t" + e);
                         }
                         GENERIC_TRIE.put(word.trim(), merge);
                     } else {
@@ -129,19 +129,40 @@ public class SynonymyTagging {
         }, WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt"));
     }
     public static void process(List<Word> words){
+        process(words, true);
+    }
+    public static void process(List<Word> words, boolean direct){
         LOGGER.debug("对分词结果进行同义标注之前：{}", words);
         //同义标注
         for(Word word : words){
-            Set<Word> synonymList = new ConcurrentSkipListSet<>();
-            processSynonym(word, synonymList);
-            if(!synonymList.isEmpty()){
-                synonymList.remove(word);
-                word.setSynonym(new ArrayList<>(synonymList));
+            if(direct){
+                LOGGER.debug("直接模式");
+                processDirectSynonym(word);
+            }else{
+                LOGGER.debug("间接接模式");
+                processIndirectSynonym(word);
             }
         }
         LOGGER.debug("对分词结果进行同义标注之后：{}", words);
     }
-    private static void processSynonym(Word word, Set<Word> allSynonym){
+    private static void processDirectSynonym(Word word){
+        String[] synonym = GENERIC_TRIE.get(word.getText());
+        if(synonym!=null && synonym.length>1){
+            //有同义词
+            List<Word> synonymList = toWord(synonym);
+            synonymList.remove(word);
+            word.setSynonym(synonymList);
+        }
+    }
+    private static void processIndirectSynonym(Word word){
+        Set<Word> synonymList = new ConcurrentSkipListSet<>();
+        indirectSynonym(word, synonymList);
+        if(!synonymList.isEmpty()){
+            synonymList.remove(word);
+            word.setSynonym(new ArrayList<>(synonymList));
+        }
+    }
+    private static void indirectSynonym(Word word, Set<Word> allSynonym){
         String[] synonym = GENERIC_TRIE.get(word.getText());
         if(synonym!=null && synonym.length>1){
             int len = allSynonym.size();
@@ -153,7 +174,7 @@ public class SynonymyTagging {
                 //间接关系的同义词，A和B是同义词，A和C是同义词，B和D是同义词，C和E是同义词
                 //则A B C D E都是一组同义词
                 for (Word item : allSynonym) {
-                    processSynonym(item, allSynonym);
+                    indirectSynonym(item, allSynonym);
                 }
             }
         }
@@ -171,9 +192,13 @@ public class SynonymyTagging {
         System.out.println(words);
         SynonymyTagging.process(words);
         System.out.println(words);
+        SynonymyTagging.process(words, false);
+        System.out.println(words);
         words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg("手劲大的老人往往更长寿");
         System.out.println(words);
         SynonymyTagging.process(words);
+        System.out.println(words);
+        SynonymyTagging.process(words, false);
         System.out.println(words);
     }
 }
