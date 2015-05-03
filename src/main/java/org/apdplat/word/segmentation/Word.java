@@ -20,6 +20,7 @@
 
 package org.apdplat.word.segmentation;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,6 +34,7 @@ public class Word implements Comparable{
     private String fullPinYin;
     private PartOfSpeech partOfSpeech = null;
     private int frequency;
+    private List<Word> synonym = null;
 
     public Word(String text){
         this.text = text;
@@ -84,6 +86,14 @@ public class Word implements Comparable{
         this.frequency = frequency;
     }
 
+    public List<Word> getSynonym() {
+        return synonym;
+    }
+
+    public void setSynonym(List<Word> synonym) {
+        this.synonym = synonym;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(this.text);
@@ -118,6 +128,9 @@ public class Word implements Comparable{
         }
         if(frequency>0){
             str.append("/").append(frequency);
+        }
+        if(synonym!=null){
+            str.append(synonym.toString());
         }
         return str.toString();
     }
