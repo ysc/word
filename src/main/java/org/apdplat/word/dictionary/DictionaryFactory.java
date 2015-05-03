@@ -20,9 +20,9 @@
 
 package org.apdplat.word.dictionary;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apdplat.word.dictionary.impl.DictionaryTrie;
 import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.util.AutoDetector;
@@ -90,27 +90,15 @@ public final class DictionaryFactory {
                         }
                     }
                     LOGGER.info("将 "+count+" 个复姓加入词典");
-                    Map<Integer, Integer> map = new HashMap<>();
+                    Map<Integer, AtomicInteger> map = new HashMap<>();
                     for(String line : lines){
-                        //处理词性词典
-                        String word=line;
-                        if(word.length()>2 && word.contains(":")){
-                            String[] attr=word.split(":");
-                            if(attr!=null && attr.length>1 && attr[0].length()>1){
-                                word=attr[0];
-                            }
-                        }
-                        //加入词典
-                        DIC.add(word);
-                        //统计不同长度的词的数目
-                        int len = word.length();
-                        Integer value = map.get(len);
-                        if(value==null){
-                            value=1;
-                        }else{
-                            value++;
-                        }
-                        map.put(len, value);
+                        getWords(line).forEach(word -> {
+                            //加入词典
+                            DIC.add(word);
+                            //统计不同长度的词的数目
+                            map.putIfAbsent(word.length(), new AtomicInteger());
+                            map.get(word.length()).incrementAndGet();
+                        });
                     }
                     showStatistics(map);
                     if(DIC instanceof DictionaryTrie){
@@ -122,44 +110,47 @@ public final class DictionaryFactory {
 
                 @Override
                 public void add(String line) {
-                    //处理词性词典
-                    String word=line;
-                    if(word.length()>2 && word.contains(":")){
-                        String[] attr=word.split(":");
-                        if(attr!=null && attr.length>1 && attr[0].length()>1){
-                            word=attr[0];
-                        }
-                    }
                     //加入词典
-                    DIC.add(word);
+                    getWords(line).forEach(DIC::add);
                 }
 
                 @Override
                 public void remove(String line) {
-                    //处理词性词典
-                    String word=line;
-                    if(word.length()>2 && word.contains(":")){
-                        String[] attr=word.split(":");
-                        if(attr!=null && attr.length>1 && attr[0].length()>1){
-                            word=attr[0];
-                        }
-                    }
                     //移除词
-                    DIC.remove(word);
+                    getWords(line).forEach(DIC::remove);
                 }
 
+                private List<String> getWords(String line){
+                    List<String> words = new ArrayList<>();
+                    //一行以空格分隔可以放多个词
+                    for(String word : line.split("\\s+")) {
+                        if(word.length()==1){
+                            System.out.println(word);
+                        }
+                        //处理词性词典
+                        if (word.length() > 2 && word.contains(":")) {
+                            String[] attr = word.split(":");
+                            if (attr != null && attr.length > 1 && attr[0].length() > 1) {
+                                word = attr[0];
+                            }
+                        }
+                        words.add(word);
+                    }
+                    return words;
+                }
             }, WordConfTools.get("dic.path", "classpath:dic.txt")
                     +","+WordConfTools.get("punctuation.path", "classpath:punctuation.txt")
-                    +","+WordConfTools.get("part.of.speech.dic.path", "classpath:part_of_speech_dic.txt"));
+                    +","+WordConfTools.get("part.of.speech.dic.path", "classpath:part_of_speech_dic.txt")
+                    +","+WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt"));
         }
-        private static void showStatistics(Map<Integer, Integer> map) {
+        private static void showStatistics(Map<Integer, AtomicInteger> map) {
             //统计词数
             int wordCount=0;
             //统计平均词长
             int totalLength=0;
             for(int len : map.keySet()){
-                totalLength += len * map.get(len);
-                wordCount += map.get(len);
+                totalLength += len * map.get(len).get();
+                wordCount += map.get(len).get();
             }
             LOGGER.info("词数目："+wordCount+"，词典最大词长："+DIC.getMaxLength());
             for(int len : map.keySet()){
