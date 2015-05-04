@@ -41,15 +41,21 @@ public class WordConfTools {
     public static void set(String key, String value){
         conf.put(key, value);
     }
+    public static boolean getBoolean(String key, boolean defaultValue){
+        String value = conf.get(key) == null ? Boolean.valueOf(defaultValue).toString() : conf.get(key);
+        LOGGER.debug("获取配置项："+key+"="+value);
+        return value.contains("true");
+    }
+    public static boolean getBoolean(String key){
+        return getBoolean(key, false);
+    }
     public static int getInt(String key, int defaultValue){
-        int value = conf.get(key) == null ? defaultValue : Integer.parseInt(conf.get(key));
+        int value = conf.get(key) == null ? defaultValue : Integer.parseInt(conf.get(key).trim());
         LOGGER.debug("获取配置项："+key+"="+value);
         return value;
     }
     public static int getInt(String key){
-        int value = Integer.parseInt(conf.get(key));
-        LOGGER.debug("获取配置项："+key+"="+value);
-        return value;
+        return getInt(key, -1);
     }
     public static String get(String key, String defaultValue){
         String value = conf.get(key) == null ? defaultValue : conf.get(key);
