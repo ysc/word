@@ -241,7 +241,35 @@
 	对于C来说，A C E是直接同义词
 	对于A B C来说，A B C D E是间接同义词
 	
-	13、拼音标注
+    13、反义标注
+    List<Word> words = WordSegmenter.segWithStopWords("5月初有哪些电影值得观看");
+    System.out.println(words);
+	结果如下：
+	[5, 月初, 有, 哪些, 电影, 值得, 观看]
+	做反义标注：
+	AntonymTagging.process(words);
+	System.out.println(words);
+	结果如下：
+	[5, 月初[月底, 月末, 月终], 有, 哪些, 电影, 值得, 观看]
+    
+    List<Word> words = WordSegmenter.segWithStopWords("由于工作不到位、服务不完善导致顾客在用餐时发生不愉快的事情,餐厅方面应该向顾客作出真诚的道歉,而不是敷衍了事。");
+	System.out.println(words);
+	结果如下：
+	[由于, 工作, 不到位, 服务, 不完善, 导致, 顾客, 在, 用餐, 时, 发生, 不愉快, 的, 事情, 餐厅, 方面, 应该, 向, 顾客, 作出, 真诚, 的, 道歉, 而不是, 敷衍了事]
+	做反义标注：
+	AntonymTagging.process(words);
+	System.out.println(words);
+	结果如下：
+	[由于, 工作, 不到位, 服务, 不完善, 导致, 顾客, 在, 用餐, 时, 发生, 不愉快, 的, 事情, 餐厅, 方面, 应该, 向, 顾客, 作出, 真诚[糊弄, 虚伪, 虚假, 险诈], 的, 道歉, 而不是, 敷衍了事[一丝不苟, 兢兢业业, 尽心竭力, 竭尽全力, 精益求精, 诚心诚意]]
+
+	以词“月初”为例：
+	可以通过Word的getAntonym()方法获取反义词如：
+	System.out.println(word.getAntonym());
+	结果如下：
+	[月底, 月末, 月终]
+	注意：如果没有反义词，getAntonym()返回空集合：Collections.emptyList()
+	
+	14、拼音标注
 	List<Word> words = WordSegmenter.segWithStopWords("《速度与激情7》的中国内地票房自4月12日上映以来，在短短两周内突破20亿人民币");
 	System.out.println(words);
 	结果如下：
