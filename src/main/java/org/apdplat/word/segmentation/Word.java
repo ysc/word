@@ -36,6 +36,7 @@ public class Word implements Comparable{
     private PartOfSpeech partOfSpeech = null;
     private int frequency;
     private List<Word> synonym = null;
+    private List<Word> antonym = null;
 
     public Word(String text){
         this.text = text;
@@ -101,6 +102,20 @@ public class Word implements Comparable{
         }
     }
 
+    public List<Word> getAntonym() {
+        if(antonym==null){
+            return Collections.emptyList();
+        }
+        return antonym;
+    }
+
+    public void setAntonym(List<Word> antonym) {
+        if(antonym!=null){
+            Collections.sort(antonym);
+            this.antonym = antonym;
+        }
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(this.text);
@@ -138,6 +153,9 @@ public class Word implements Comparable{
         }
         if(synonym!=null){
             str.append(synonym.toString());
+        }
+        if(antonym!=null){
+            str.append(antonym.toString());
         }
         return str.toString();
     }
