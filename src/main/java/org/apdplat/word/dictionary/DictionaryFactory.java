@@ -141,7 +141,8 @@ public final class DictionaryFactory {
             }, WordConfTools.get("dic.path", "classpath:dic.txt")
                     +","+WordConfTools.get("punctuation.path", "classpath:punctuation.txt")
                     +","+WordConfTools.get("part.of.speech.dic.path", "classpath:part_of_speech_dic.txt")
-                    +","+WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt"));
+                    +","+WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt")
+                    +","+WordConfTools.get("word.antonym.path", "classpath:word_antonym.txt"));
         }
         private static void showStatistics(Map<Integer, AtomicInteger> map) {
             //统计词数
