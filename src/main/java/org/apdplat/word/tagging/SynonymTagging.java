@@ -37,10 +37,10 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * 同义标注
  * @author 杨尚川
  */
-public class SynonymyTagging {
-    private SynonymyTagging(){}
+public class SynonymTagging {
+    private SynonymTagging(){}
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SynonymyTagging.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SynonymTagging.class);
     private static final GenericTrie<String[]> GENERIC_TRIE = new GenericTrie<>();
     static{
         reload();
@@ -193,15 +193,15 @@ public class SynonymyTagging {
     public static void main(String[] args) {
         List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg("楚离陌千方百计为无情找回记忆");
         System.out.println(words);
-        SynonymyTagging.process(words);
+        SynonymTagging.process(words);
         System.out.println(words);
-        SynonymyTagging.process(words, false);
+        SynonymTagging.process(words, false);
         System.out.println(words);
         words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg("手劲大的老人往往更长寿");
         System.out.println(words);
-        SynonymyTagging.process(words);
+        SynonymTagging.process(words);
         System.out.println(words);
-        SynonymyTagging.process(words, false);
+        SynonymTagging.process(words, false);
         System.out.println(words);
     }
 }
