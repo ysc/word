@@ -194,7 +194,7 @@
 	这样，就能达到我们想要的效果：
 	[在, 实现, 两个一百年, 奋斗目标, 的, 伟大征程, 上, 再创, 新的, 业绩]
 	
-    12、同义标注
+    13、同义标注
     List<Word> words = WordSegmenter.segWithStopWords("楚离陌千方百计为无情找回记忆");
     System.out.println(words);
 	结果如下：
@@ -241,7 +241,7 @@
 	对于C来说，A C E是直接同义词
 	对于A B C来说，A B C D E是间接同义词
 	
-    13、反义标注
+    14、反义标注
     List<Word> words = WordSegmenter.segWithStopWords("5月初有哪些电影值得观看");
     System.out.println(words);
 	结果如下：
@@ -269,7 +269,7 @@
 	[月底, 月末, 月终]
 	注意：如果没有反义词，getAntonym()返回空集合：Collections.emptyList()
 	
-	14、拼音标注
+	15、拼音标注
 	List<Word> words = WordSegmenter.segWithStopWords("《速度与激情7》的中国内地票房自4月12日上映以来，在短短两周内突破20亿人民币");
 	System.out.println(words);
 	结果如下：
