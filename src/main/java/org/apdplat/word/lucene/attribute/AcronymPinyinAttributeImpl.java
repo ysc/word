@@ -21,7 +21,6 @@
 package org.apdplat.word.lucene.attribute;
 
 import org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl;
-import org.apdplat.word.lucene.attribute.AcronymPinyinAttribute;
 
 /**
  * 首字母缩略拼音

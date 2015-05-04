@@ -21,6 +21,7 @@
 package org.apdplat.word.lucene.attribute;
 
 import org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl;
+
 /**
  * 同义词
  * @author 杨尚川
