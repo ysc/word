@@ -342,18 +342,38 @@
 	2、利用word分析器切分文本
 	TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
 	while(tokenStream.incrementToken()){
+		//词
 		CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
+		//词在文本中的起始位置
 		OffsetAttribute offsetAttribute = tokenStream.getAttribute(OffsetAttribute.class);
-		System.out.println(charTermAttribute.toString()+" "+offsetAttribute.startOffset());
+		//第几个词
+		PositionIncrementAttribute positionIncrementAttribute = tokenStream.getAttribute(PositionIncrementAttribute.class);
+		//词性
+		PartOfSpeechAttribute partOfSpeechAttribute = tokenStream.getAttribute(PartOfSpeechAttribute.class);
+		//首字母缩略拼音
+		AcronymPinyinAttribute acronymPinyinAttribute = tokenStream.getAttribute(AcronymPinyinAttribute.class);
+		//完整拼音
+		FullPinyinAttribute fullPinyinAttribute = tokenStream.getAttribute(FullPinyinAttribute.class);
+		//同义词
+		SynonymAttribute synonymAttribute = tokenStream.getAttribute(SynonymAttribute.class);
+		//反义词
+		AntonymAttribute antonymAttribute = tokenStream.getAttribute(AntonymAttribute.class);
+
+		LOGGER.info(charTermAttribute.toString()+" ("+offsetAttribute.startOffset()+" - "+offsetAttribute.endOffset()+") "+positionIncrementAttribute.getPositionIncrement());
+		LOGGER.info("PartOfSpeech:"+partOfSpeechAttribute.toString());
+		LOGGER.info("AcronymPinyin:"+acronymPinyinAttribute.toString());
+		LOGGER.info("FullPinyin:"+fullPinyinAttribute.toString());
+		LOGGER.info("Synonym:"+synonymAttribute.toString());
+		LOGGER.info("Antonym:"+antonymAttribute.toString());
 	}
 	
 	3、利用word分析器建立Lucene索引
 	Directory directory = new RAMDirectory();
-	IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_47, analyzer);
+	IndexWriterConfig config = new IndexWriterConfig(Version.LATEST, analyzer);
 	IndexWriter indexWriter = new IndexWriter(directory, config);
 	
 	4、利用word分析器查询Lucene索引
-	QueryParser queryParser = new QueryParser(Version.LUCENE_47, "text", analyzer);
+	QueryParser queryParser = new QueryParser("text", analyzer);
 	Query query = queryParser.parse("text:杨尚川");
 	TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
 	
