@@ -57,6 +57,9 @@ public class Word implements Comparable{
     }
 
     public String getAcronymPinYin() {
+        if(acronymPinYin==null){
+            return "";
+        }
         return acronymPinYin;
     }
 
@@ -65,6 +68,9 @@ public class Word implements Comparable{
     }
 
     public String getFullPinYin() {
+        if(fullPinYin==null){
+            return "";
+        }
         return fullPinYin;
     }
 
