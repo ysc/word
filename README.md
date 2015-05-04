@@ -200,12 +200,12 @@
 	结果如下：
 	[楚离陌, 千方百计, 为, 无情, 找回, 记忆]
 	做同义标注：
-	SynonymyTagging.process(words);
+	SynonymTagging.process(words);
 	System.out.println(words);
 	结果如下：
 	[楚离陌, 千方百计[久有存心, 化尽心血, 想方设法, 费尽心机], 为, 无情, 找回, 记忆[影象]]
 	如果启用间接同义词：
-	SynonymyTagging.process(words, false);
+	SynonymTagging.process(words, false);
 	System.out.println(words);
 	结果如下：
 	[楚离陌, 千方百计[久有存心, 化尽心血, 想方设法, 费尽心机], 为, 无情, 找回, 记忆[影像, 影象]]
@@ -215,12 +215,12 @@
 	结果如下：
 	[手劲, 大, 的, 老人, 往往, 更, 长寿]
 	做同义标注：
-	SynonymyTagging.process(words);
+	SynonymTagging.process(words);
 	System.out.println(words);
 	结果如下：
 	[手劲, 大, 的, 老人[白叟], 往往[常常, 每每, 经常], 更, 长寿[长命, 龟龄]]
 	如果启用间接同义词：
-	SynonymyTagging.process(words, false);
+	SynonymTagging.process(words, false);
 	System.out.println(words);
 	结果如下：
 	[手劲, 大, 的, 老人[白叟], 往往[一样平常, 一般, 凡是, 寻常, 常常, 常日, 平凡, 平居, 平常, 平日, 平时, 往常, 日常, 日常平凡, 时常, 普通, 每每, 泛泛, 素日, 经常, 通俗, 通常], 更, 长寿[长命, 龟龄]]
