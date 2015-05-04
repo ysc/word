@@ -256,6 +256,7 @@ public class WordSegmenter {
         sentences.add("中华人民共和国万岁万岁万万岁");
         sentences.add("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
         sentences.add("江阴毛纺厂成立了保持党员先进性爱国主义学习小组,在江阴道路管理局协助下,通过宝鸡巴士公司,与蒙牛酸酸乳房山分销点组成了开放性交互式的讨论组, 认为google退出中国事件赤裸裸体现了帝国主义的文化侵略,掀起了爱国主义的群众性高潮。");
+        sentences.add("工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作");
         int i=1;
         for(String sentence : sentences){
             List<Word> words = segWithStopWords(sentence);
