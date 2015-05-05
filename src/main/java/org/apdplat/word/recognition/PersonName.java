@@ -20,12 +20,14 @@
 
 package org.apdplat.word.recognition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import org.apdplat.word.segmentation.PartOfSpeech;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.tagging.PartOfSpeechTagging;
 import org.apdplat.word.util.AutoDetector;
 import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
@@ -38,57 +40,68 @@ import org.slf4j.LoggerFactory;
  */
 public class PersonName {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonName.class);
-    private static final Set<String> surname1=new HashSet<>();
-    private static final Set<String> surname2=new HashSet<>();
+    private static final Set<String> SURNAME_1 =new HashSet<>();
+    private static final Set<String> SURNAME_2 =new HashSet<>();
+    private static final Map<String, Integer> POS_SEQ=new HashMap<>();
     static{
         reload();
     }
     public static void reload(){
-        AutoDetector.loadAndWatch(new ResourceLoader(){
+        AutoDetector.loadAndWatch(new ResourceLoader() {
 
             @Override
             public void clear() {
-                surname1.clear();
-                surname2.clear();
+                SURNAME_1.clear();
+                SURNAME_2.clear();
+                POS_SEQ.clear();
             }
 
             @Override
             public void load(List<String> lines) {
                 LOGGER.info("初始化百家姓");
-                for(String line : lines){
-                    if(line.length()==1){
-                        surname1.add(line);
-                    }else if(line.length()==2){
-                        surname2.add(line);
-                    }else{
-                       LOGGER.error("错误的姓："+line);
+                for (String line : lines) {
+                    if (line.length() == 1) {
+                        SURNAME_1.add(line);
+                    } else if (line.length() == 2) {
+                        SURNAME_2.add(line);
+                    } else if(line.startsWith("pos_seq=")) {
+                        String[] attr = line.split("=");
+                        POS_SEQ.put(attr[1].trim().replaceAll("\\s", " "), Integer.parseInt(attr[2]));
+                    } else{
+                        LOGGER.error("错误的姓：" + line);
                     }
                 }
-                LOGGER.info("百家姓初始化完毕，单姓个数："+surname1.size()+"，复姓个数："+surname2.size());
+                LOGGER.info("百家姓初始化完毕，单姓个数：" + SURNAME_1.size() + "，复姓个数：" + SURNAME_2.size());
             }
 
             @Override
             public void add(String line) {
                 if (line.length() == 1) {
-                    surname1.add(line);
+                    SURNAME_1.add(line);
                 } else if (line.length() == 2) {
-                    surname2.add(line);
+                    SURNAME_2.add(line);
+                } else if(line.startsWith("pos_seq=")) {
+                    String[] attr = line.split("=");
+                    POS_SEQ.put(attr[1].trim().replaceAll("\\s", " "), Integer.parseInt(attr[2]));
                 } else {
                     LOGGER.error("错误的姓：" + line);
                 }
             }
 
             @Override
-            public void remove(String line) {                
+            public void remove(String line) {
                 if (line.length() == 1) {
-                    surname1.remove(line);
+                    SURNAME_1.remove(line);
                 } else if (line.length() == 2) {
-                    surname2.remove(line);
+                    SURNAME_2.remove(line);
+                } else if(line.startsWith("pos_seq=")) {
+                    String[] attr = line.split("=");
+                    POS_SEQ.remove(attr[1].trim().replaceAll("\\s", " "));
                 } else {
                     LOGGER.error("错误的姓：" + line);
                 }
             }
-        
+
         }, WordConfTools.get("surname.path", "classpath:surname.txt"));
     }
     /**
@@ -97,8 +110,8 @@ public class PersonName {
      */
     public static List<String> getSurnames(){
         List<String> result = new ArrayList<>();
-        result.addAll(surname1);
-        result.addAll(surname2);
+        result.addAll(SURNAME_1);
+        result.addAll(SURNAME_2);
         Collections.sort(result);
         return result;
     }
@@ -125,7 +138,7 @@ public class PersonName {
      * @return 是否
      */
     public static boolean isSurname(String text){
-        return surname1.contains(text) || surname2.contains(text);
+        return SURNAME_1.contains(text) || SURNAME_2.contains(text);
     }
     /**
      * 人名判定
@@ -142,17 +155,17 @@ public class PersonName {
         }
         if(len == 2){
             //如果长度为2，则第一个字符必须是姓
-            return surname1.contains(text.substring(0, 1));
+            return SURNAME_1.contains(text.substring(0, 1));
         }
         if(len == 3){
             //如果长度为3
             //要么是单姓
             //要么是复姓
-            return surname1.contains(text.substring(0, 1)) || surname2.contains(text.substring(0, 2));
+            return SURNAME_1.contains(text.substring(0, 1)) || SURNAME_2.contains(text.substring(0, 2));
         }
         if(len == 4){
             //如果长度为4，只能是复姓
-            return surname2.contains(text.substring(0, 2));
+            return SURNAME_2.contains(text.substring(0, 2));
         }
         return false;
     }
@@ -162,6 +175,69 @@ public class PersonName {
      * @return 识别后的分词结果
      */
     public static List<Word> recognize(List<Word> words){
+        int len = words.size();
+        if(len < 2){
+            return words;
+        }
+        LOGGER.debug("人名识别：" + words);
+        List<List<Word>> select = new ArrayList<>();
+        List<Word> result = new ArrayList<>();
+        for(int i=0; i<len-1; i++){
+            String word = words.get(i).getText();
+            if(isSurname(word)){
+                result.addAll(recognizePersonName(words.subList(i, words.size())));
+                select.add(result);
+                result = new ArrayList<>(words.subList(0, i+1));
+            }else{
+                result.add(new Word(word));
+            }
+        }
+        if(select.isEmpty()){
+            return words;
+        }
+        if(select.size()==1){
+            return select.get(0);
+        }
+        return selectBest(select);
+    }
+
+    /**
+     * 使用词性序列从多个人名中选择一个最佳的
+     * @param candidateWords
+     * @return
+     */
+    private static List<Word> selectBest(List<List<Word>> candidateWords){
+        LOGGER.debug("开始从多个识别结果中选择一个最佳的结果:{}", candidateWords);
+        Map<List<Word>, Integer> map = new ConcurrentHashMap<>();
+        AtomicInteger i = new AtomicInteger();
+        candidateWords.stream().forEach(candidateWord -> {
+            LOGGER.debug(i.incrementAndGet()+"、开始处理："+candidateWord);
+            //词性标注
+            PartOfSpeechTagging.process(candidateWord);
+            //根据词性标注的结果进行评分
+            StringBuilder seq = new StringBuilder();
+            candidateWord.forEach(word -> seq.append(word.getPartOfSpeech().getPos().charAt(0)).append(" "));
+            String seqStr = seq.toString();
+            AtomicInteger score = new AtomicInteger();
+            LOGGER.debug("词序列：{} 的词性序列：{}", candidateWord, seqStr);
+            POS_SEQ.keySet().parallelStream().forEach(pos_seq -> {
+                if (seqStr.contains(pos_seq)) {
+                    int sc = POS_SEQ.get(pos_seq);
+                    LOGGER.debug(pos_seq+"词序增加分值：" + sc);
+                    score.addAndGet(sc);
+                }
+            });
+            score.addAndGet(-candidateWord.size());
+            LOGGER.debug("长度的负值也作为分值：" + (-candidateWord.size()));
+            LOGGER.debug("评分结果："+score.get());
+            map.put(candidateWord, score.get());
+        });
+        //选择分值最高的
+        List<Word> result = map.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).map(e->e.getKey()).collect(Collectors.toList()).get(0);
+        LOGGER.debug("选择结果："+result);
+        return result;
+    }
+    private static List<Word> recognizePersonName(List<Word> words){
         int len = words.size();
         if(len < 2){
             return words;
@@ -186,8 +262,11 @@ public class PersonName {
                 }
                 String text = first+second+third;
                 if(is(text)){
-                    LOGGER.debug("识别到人名："+text);
-                    result.add(new Word(text));
+                    LOGGER.debug("识别到人名：" + text);
+                    Word word = new Word(text);
+                    //词性定义参见配置文件word.conf中的定义part.of.speech.des.path=classpath:part_of_speech_des.txt
+                    word.setPartOfSpeech(PartOfSpeech.valueOf("nr"));
+                    result.add(word);
                     i++;
                     if(!"".equals(third)){
                         i++;
@@ -206,10 +285,10 @@ public class PersonName {
     }
     public static void main(String[] args){
         int i=1;
-        for(String str : surname1){
+        for(String str : SURNAME_1){
             LOGGER.info((i++)+" : "+str);
         }
-        for(String str : surname2){
+        for(String str : SURNAME_2){
             LOGGER.info((i++)+" : "+str);
         }
         LOGGER.info("杨尚川："+is("杨尚川"));
