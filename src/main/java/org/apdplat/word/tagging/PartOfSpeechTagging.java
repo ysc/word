@@ -93,6 +93,10 @@ public class PartOfSpeechTagging {
     }
     public static void process(List<Word> words){
         words.parallelStream().forEach(word->{
+            if(word.getPartOfSpeech()!=null){
+                LOGGER.debug("忽略已经标注过的词：{}", word);
+                return;
+            }
             String wordText = word.getText();
             String pos = GENERIC_TRIE.get(wordText);
             if(pos == null){
@@ -143,7 +147,7 @@ public class PartOfSpeechTagging {
     }
 
     public static void main(String[] args) {
-        List<Word> words = WordSegmenter.segWithStopWords("我爱中国");
+        List<Word> words = WordSegmenter.segWithStopWords("我爱中国，我爱杨尚川");
         System.out.println("未标注词性："+words);
         //词性标注
         PartOfSpeechTagging.process(words);
