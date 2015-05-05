@@ -514,4 +514,10 @@
    
    [5、中文分词算法 之 基于词典的逆向最小匹配算法](http://yangshangchuan.iteye.com/blog/2040431)
    
-   [6、Java开源项目cws_evaluation：中文分词器分词效果评估](https://github.com/ysc/cws_evaluation/)
+   [6、一种利用ngram模型来消除歧义的中文分词方法](http://my.oschina.net/apdplat/blog/411112)
+   
+   [7、一种基于词性序列的人名识别方法](http://my.oschina.net/apdplat/blog/411032)
+   
+###相关项目：
+   
+[Java开源项目cws_evaluation：中文分词器分词效果评估](https://github.com/ysc/cws_evaluation/)
