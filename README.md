@@ -341,6 +341,9 @@
 	
 	2、利用word分析器切分文本
 	TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
+	//准备消费
+	tokenStream.reset();
+	//开始消费
 	while(tokenStream.incrementToken()){
 		//词
 		CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
@@ -366,10 +369,12 @@
 		LOGGER.info("Synonym:"+synonymAttribute.toString());
 		LOGGER.info("Antonym:"+antonymAttribute.toString());
 	}
+	//消费完毕
+	tokenStream.close();
 	
 	3、利用word分析器建立Lucene索引
 	Directory directory = new RAMDirectory();
-	IndexWriterConfig config = new IndexWriterConfig(Version.LATEST, analyzer);
+	IndexWriterConfig config = new IndexWriterConfig(analyzer);
 	IndexWriter indexWriter = new IndexWriter(directory, config);
 	
 	4、利用word分析器查询Lucene索引

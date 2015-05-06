@@ -125,7 +125,7 @@
         <randomizedtesting.version>2.1.11</randomizedtesting.version>
         <slf4j-api.version>1.6.4</slf4j-api.version>
         <logback-classic.version>0.9.28</logback-classic.version>
-        <lucene.version>4.10.4</lucene.version>
+        <lucene.version>5.1.0</lucene.version>
         <elasticsearch.version>1.5.1</elasticsearch.version>
         <jedis.version>2.5.1</jedis.version>
         <pinyin4j.version>2.5.0</pinyin4j.version>
@@ -198,12 +198,54 @@
         <version>${lucene.version}</version>
         <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-backward-codecs</artifactId>
+      <version>${lucene.version}</version>
+      <optional>true</optional>
+    </dependency>
+      <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-suggest</artifactId>
+          <version>${lucene.version}</version>
+          <optional>true</optional>
+      </dependency>
     <!-- 中文分词elasticsearch插件依赖库 -->
     <dependency>
         <groupId>org.elasticsearch</groupId>
         <artifactId>elasticsearch</artifactId>
         <version>${elasticsearch.version}</version>
         <optional>true</optional>
+        <exclusions>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-memory</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-highlighter</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-suggest</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-misc</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-join</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-grouping</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-spatial</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
     <!-- elasticsearch测试依赖 -->
     <dependency>
@@ -212,6 +254,36 @@
         <version>${elasticsearch.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-memory</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-highlighter</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-suggest</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-misc</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-join</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-grouping</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-spatial</artifactId>
+            </exclusion>
+        </exclusions>
     </dependency>
     <!-- redis客户端库 -->
     <dependency>
