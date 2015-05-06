@@ -57,6 +57,6 @@ public class ChineseWordTokenizerFactory extends AbstractTokenizerFactory {
     }
     @Override
     public Tokenizer create(Reader reader) {
-        return new ChineseWordTokenizer(reader, segmentation);
+        return new ChineseWordTokenizer(segmentation);
     }
 }

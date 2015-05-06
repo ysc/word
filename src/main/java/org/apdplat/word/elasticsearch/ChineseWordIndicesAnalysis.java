@@ -106,7 +106,7 @@ public class ChineseWordIndicesAnalysis extends AbstractComponent {
             }
             @Override
             public Tokenizer create(Reader reader) {
-                return new ChineseWordTokenizer(reader, tokenizerSegmentation);
+                return new ChineseWordTokenizer(tokenizerSegmentation);
             }
         }));        
     }

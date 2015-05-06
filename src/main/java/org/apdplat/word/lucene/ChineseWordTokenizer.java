@@ -22,7 +22,6 @@ package org.apdplat.word.lucene;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.LinkedTransferQueue;
@@ -30,7 +29,6 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttributeImpl;
 import org.apdplat.word.lucene.attribute.*;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
@@ -66,19 +64,18 @@ public class ChineseWordTokenizer extends Tokenizer {
     private final Queue<Word> words = new LinkedTransferQueue<>();
     private int startOffset=0;
         
-    public ChineseWordTokenizer(Reader input) {
-        super(input);
+    public ChineseWordTokenizer() {
         segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
-        reader = new BufferedReader(input);
-    }   
-    public ChineseWordTokenizer(Reader input, Segmentation segmentation) {
-        super(input);
+    }
+    public ChineseWordTokenizer(Segmentation segmentation) {
         this.segmentation = segmentation;
-        reader = new BufferedReader(input);
     }
     private Word getWord() throws IOException {
         Word word = words.poll();
         if(word == null){
+            if(reader==null){
+                reader = new BufferedReader(input);
+            }
             String line;
             while( (line = reader.readLine()) != null ){
                 words.addAll(segmentation.seg(line));

@@ -20,7 +20,9 @@
 
 package org.apdplat.word.solr;
 
+import java.io.BufferedReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Map;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
@@ -73,7 +75,7 @@ public class ChineseWordTokenizerFactory extends TokenizerFactory {
         }
     }
     @Override
-    public Tokenizer create(AttributeFactory af, Reader reader) {
-        return new ChineseWordTokenizer(reader, segmentation);
+    public Tokenizer create(AttributeFactory af) {
+        return new ChineseWordTokenizer(segmentation);
     }
 }

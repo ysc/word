@@ -39,7 +39,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
-import org.apache.lucene.util.Version;
 import org.apdplat.word.util.Utils;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -55,11 +54,13 @@ public class ChineseWordAnalyzerTest {
             Analyzer analyzer = new ChineseWordAnalyzer();
             TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
             List<String> words = new ArrayList<>();
+            tokenStream.reset();
             while(tokenStream.incrementToken()){
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
-            String expResult = "[杨尚川, apdplat, 应用级, 产品开发, 平台, 作者]";
+            tokenStream.close();
+            String expResult = "[杨尚川, apdplat, 应用级, 产品, 开发平台, 作者]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
             fail("分词出错"+e.getMessage());
@@ -71,10 +72,12 @@ public class ChineseWordAnalyzerTest {
             Analyzer analyzer = new ChineseWordAnalyzer();
             TokenStream tokenStream = analyzer.tokenStream("text", "叔叔亲了我妈妈也亲了我");
             List<String> words = new ArrayList<>();
+            tokenStream.reset();
             while(tokenStream.incrementToken()){
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
+            tokenStream.close();
             String expResult = "[叔叔, 亲了, 妈妈, 亲了]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
@@ -118,7 +121,7 @@ public class ChineseWordAnalyzerTest {
         sentences.add("反映了一个人的精神面貌");
         sentences.add("美国加州大学的科学家发现");
         sentences.add("我好不挺好");
-        sentences.add("木有"); 
+        sentences.add("木有");
         sentences.add("下雨天留客天天留我不留");
         sentences.add("叔叔亲了我妈妈也亲了我");
         sentences.add("白马非马");
@@ -127,11 +130,11 @@ public class ChineseWordAnalyzerTest {
         sentences.add("张掖市明乐县");
         sentences.add("中华人民共和国万岁万岁万万岁");
         sentences.add("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
-        IndexWriterConfig config = new IndexWriterConfig(Version.LATEST, analyzer);
+        IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setUseCompoundFile(false);
         File index = new File("target/indexes");
         Utils.deleteDir(index);
-        try (Directory directory = new SimpleFSDirectory(index);
+        try (Directory directory = new SimpleFSDirectory(index.toPath());
                 IndexWriter indexWriter = new IndexWriter(directory, config)) {
             for(String sentence : sentences){
                 Document doc = new Document();
@@ -141,9 +144,10 @@ public class ChineseWordAnalyzerTest {
             }
             indexWriter.commit();            
         } catch(Exception e){
+            e.printStackTrace();
             fail("索引失败"+e.getMessage());
         }
-        try (Directory directory = new SimpleFSDirectory(index);
+        try (Directory directory = new SimpleFSDirectory(index.toPath());
                 DirectoryReader directoryReader = DirectoryReader.open(directory)) {
                 IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
                 QueryParser queryParser = new QueryParser("text", analyzer);
