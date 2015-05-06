@@ -44,7 +44,20 @@ public class ChineseWordAnalyzer extends Analyzer {
     private Segmentation segmentation = null;
     
     public ChineseWordAnalyzer(){
-        segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
+        this.segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
+    }
+
+    public ChineseWordAnalyzer(String segmentationAlgorithm) {
+        try{
+            SegmentationAlgorithm sa = SegmentationAlgorithm.valueOf(segmentationAlgorithm);
+            this.segmentation = SegmentationFactory.getSegmentation(sa);
+        }catch(Exception e){
+            this.segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
+        }
+    }
+
+    public ChineseWordAnalyzer(SegmentationAlgorithm segmentationAlgorithm) {
+        this.segmentation = SegmentationFactory.getSegmentation(segmentationAlgorithm);
     }
     
     public ChineseWordAnalyzer(Segmentation segmentation) {
