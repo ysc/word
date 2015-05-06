@@ -388,13 +388,13 @@
 
     
 	
-	1、下载word-1.2.jar
-	下载地址：http://search.maven.org/remotecontent?filepath=org/apdplat/word/1.2/word-1.2.jar
+	1、下载word-1.3.jar
+	下载地址：http://search.maven.org/remotecontent?filepath=org/apdplat/word/1.3/word-1.3.jar
 	
-	2、创建目录solr-4.10.4/example/solr/lib，将word-1.2.jar复制到lib目录
+	2、创建目录solr-5.1.0/example/solr/lib，将word-1.3.jar复制到lib目录
 	
 	3、配置schema指定分词器
-	将solr-4.10.4/example/solr/collection1/conf/schema.xml文件中所有的
+	将solr-5.1.0/example/solr/collection1/conf/schema.xml文件中所有的
 	<tokenizer class="solr.WhitespaceTokenizerFactory"/>和
 	<tokenizer class="solr.StandardTokenizerFactory"/>全部替换为
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"/>
@@ -415,9 +415,9 @@
 	
 	5、如果需要指定特定的配置文件：
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"
-			conf="C:/solr-4.10.4/example/solr/nutch/conf/word.local.conf"/>
-	word.local.conf文件中可配置的内容见 word-1.2.jar 中的word.conf文件
-	如不指定，使用默认配置文件，位于 word-1.2.jar 中的word.conf文件
+			conf="solr-5.1.0/example/solr/nutch/conf/word.local.conf"/>
+	word.local.conf文件中可配置的内容见 word-1.3.jar 中的word.conf文件
+	如不指定，使用默认配置文件，位于 word-1.3.jar 中的word.conf文件
 
 	
 	
