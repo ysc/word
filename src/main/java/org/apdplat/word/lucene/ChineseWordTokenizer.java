@@ -59,6 +59,11 @@ public class ChineseWordTokenizer extends Tokenizer {
     private final SynonymAttribute synonymAttribute = addAttribute(SynonymAttribute.class);
     private final AntonymAttribute antonymAttribute = addAttribute(AntonymAttribute.class);
 
+    private static final boolean POS = WordConfTools.getBoolean("tagging.part.of.speech", false);
+    private static final boolean PINYIN = WordConfTools.getBoolean("tagging.pinyin", false);
+    private static final boolean SYNONYM = WordConfTools.getBoolean("tagging.synonym", false);
+    private static final boolean ANTONYM = WordConfTools.getBoolean("tagging.antonym", false);
+
     private Segmentation segmentation = null;
     private BufferedReader reader = null;
     private final Queue<Word> words = new LinkedTransferQueue<>();
@@ -105,25 +110,25 @@ public class ChineseWordTokenizer extends Tokenizer {
             positionIncrementAttribute.setPositionIncrement(positionIncrement);
             startOffset += word.getText().length();
             //词性标注
-            if(WordConfTools.getBoolean("tagging.part.of.speech", false)){
+            if(POS){
                 PartOfSpeechTagging.process(Arrays.asList(word));
                 partOfSpeechAttribute.setEmpty().append(word.getPartOfSpeech().getPos());
             }
             //拼音标注
-            if(WordConfTools.getBoolean("tagging.pinyin", false)){
+            if(PINYIN){
                 PinyinTagging.process(Arrays.asList(word));
                 acronymPinyinAttribute.setEmpty().append(word.getAcronymPinYin());
                 fullPinyinAttribute.setEmpty().append(word.getFullPinYin());
             }
             //同义标注
-            if(WordConfTools.getBoolean("tagging.synonym", false)){
+            if(SYNONYM){
                 SynonymTagging.process(Arrays.asList(word));
                 StringBuilder synonym = new StringBuilder();
                 word.getSynonym().forEach(w -> synonym.append(w.getText()).append(" "));
                 synonymAttribute.setEmpty().append(synonym.toString().trim());
             }
             //反义标注
-            if(WordConfTools.getBoolean("tagging.antonym", false)){
+            if(ANTONYM){
                 AntonymTagging.process(Arrays.asList(word));
                 StringBuilder antonym = new StringBuilder();
                 word.getAntonym().forEach(w -> antonym.append(w.getText()).append(" "));
