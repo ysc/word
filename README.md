@@ -338,6 +338,10 @@
 
 	1、构造一个word分析器ChineseWordAnalyzer
     Analyzer analyzer = new ChineseWordAnalyzer();
+    如果需要使用特定的分词算法，可通过构造函数来指定：
+    Analyzer analyzer = new ChineseWordAnalyzer(SegmentationAlgorithm.FullSegmentation);
+	如不指定，默认使用双向最大匹配算法：SegmentationAlgorithm.BidirectionalMaximumMatching
+	可用的分词算法参见枚举类：SegmentationAlgorithm
 	
 	2、利用word分析器切分文本
 	TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
