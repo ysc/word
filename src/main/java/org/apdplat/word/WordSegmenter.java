@@ -240,7 +240,11 @@ public class WordSegmenter {
         sentences.add("依靠群众才能做好工作");
         sentences.add("现在是施展才能的好机会");
         sentences.add("把手举起来");
+        sentences.add("请把手拿开");
+        sentences.add("这个门把手坏了");
         sentences.add("茶杯的把手断了");
+        sentences.add("将军任命了一名中将");
+        sentences.add("产量三年中将增长两倍");
         sentences.add("以新的姿态出现在世界东方");
         sentences.add("使节约粮食进一步形成风气");
         sentences.add("反映了一个人的精神面貌");
