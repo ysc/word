@@ -28,7 +28,6 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apdplat.word.lucene.attribute.*;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
@@ -98,18 +97,8 @@ public class ChineseWordAnalyzer extends Analyzer {
             CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
             OffsetAttribute offsetAttribute = tokenStream.getAttribute(OffsetAttribute.class);
             PositionIncrementAttribute positionIncrementAttribute = tokenStream.getAttribute(PositionIncrementAttribute.class);
-            PartOfSpeechAttribute partOfSpeechAttribute = tokenStream.getAttribute(PartOfSpeechAttribute.class);
-            AcronymPinyinAttribute acronymPinyinAttribute = tokenStream.getAttribute(AcronymPinyinAttribute.class);
-            FullPinyinAttribute fullPinyinAttribute = tokenStream.getAttribute(FullPinyinAttribute.class);
-            SynonymAttribute synonymAttribute = tokenStream.getAttribute(SynonymAttribute.class);
-            AntonymAttribute antonymAttribute = tokenStream.getAttribute(AntonymAttribute.class);
 
             LOGGER.info(charTermAttribute.toString()+" ("+offsetAttribute.startOffset()+" - "+offsetAttribute.endOffset()+") "+positionIncrementAttribute.getPositionIncrement());
-            LOGGER.info("PartOfSpeech:"+partOfSpeechAttribute.toString());
-            LOGGER.info("AcronymPinyin:"+acronymPinyinAttribute.toString());
-            LOGGER.info("FullPinyin:"+fullPinyinAttribute.toString());
-            LOGGER.info("Synonym:"+synonymAttribute.toString());
-            LOGGER.info("Antonym:"+antonymAttribute.toString());
         }
         tokenStream.close();
     }

@@ -29,14 +29,12 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apdplat.word.lucene.attribute.*;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.recognition.StopWord;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.tagging.AntonymTagging;
-import org.apdplat.word.tagging.PartOfSpeechTagging;
 import org.apdplat.word.tagging.PinyinTagging;
 import org.apdplat.word.tagging.SynonymTagging;
 import org.apdplat.word.util.WordConfTools;
@@ -53,20 +51,16 @@ public class ChineseWordTokenizer extends Tokenizer {
     private final CharTermAttribute charTermAttribute = addAttribute(CharTermAttribute.class);
     private final OffsetAttribute offsetAttribute = addAttribute(OffsetAttribute.class);
     private final PositionIncrementAttribute positionIncrementAttribute = addAttribute(PositionIncrementAttribute.class);
-    private final PartOfSpeechAttribute partOfSpeechAttribute = addAttribute(PartOfSpeechAttribute.class);
-    private final AcronymPinyinAttribute acronymPinyinAttribute = addAttribute(AcronymPinyinAttribute.class);
-    private final FullPinyinAttribute fullPinyinAttribute = addAttribute(FullPinyinAttribute.class);
-    private final SynonymAttribute synonymAttribute = addAttribute(SynonymAttribute.class);
-    private final AntonymAttribute antonymAttribute = addAttribute(AntonymAttribute.class);
 
-    private static final boolean POS = WordConfTools.getBoolean("tagging.part.of.speech", false);
-    private static final boolean PINYIN = WordConfTools.getBoolean("tagging.pinyin", false);
+    private static final boolean FULL_PINYIN = WordConfTools.getBoolean("tagging.pinyin.full", false);
+    private static final boolean ACRONYM_PINYIN = WordConfTools.getBoolean("tagging.pinyin.acronym", false);
     private static final boolean SYNONYM = WordConfTools.getBoolean("tagging.synonym", false);
     private static final boolean ANTONYM = WordConfTools.getBoolean("tagging.antonym", false);
 
     private Segmentation segmentation = null;
     private BufferedReader reader = null;
     private final Queue<Word> words = new LinkedTransferQueue<>();
+    private final Queue<String> tokens = new LinkedTransferQueue<>();
     private int startOffset=0;
         
     public ChineseWordTokenizer() {
@@ -90,50 +84,68 @@ public class ChineseWordTokenizer extends Tokenizer {
         }
         return word;
     }
+    private String getToken() throws IOException {
+        String token = tokens.poll();
+        if(token == null){
+            Word word = getWord();
+            if (word != null) {
+                int positionIncrement = 1;
+                //忽略停用词
+                while (StopWord.is(word.getText())) {
+                    positionIncrement++;
+                    startOffset += word.getText().length();
+                    LOGGER.debug("忽略停用词：" + word.getText());
+                    word = getWord();
+                    if (word == null) {
+                        return null;
+                    }
+                }
+                offsetAttribute.setOffset(startOffset, startOffset + word.getText().length());
+                positionIncrementAttribute.setPositionIncrement(positionIncrement);
+                startOffset += word.getText().length();
+                tokens.offer(word.getText());
+                //拼音标注
+                if (FULL_PINYIN || ACRONYM_PINYIN) {
+                    PinyinTagging.process(Arrays.asList(word));
+                    if(FULL_PINYIN && !"".equals(word.getFullPinYin())) {
+                        tokens.offer(word.getFullPinYin());
+                    }
+                    if(ACRONYM_PINYIN  && !"".equals(word.getAcronymPinYin())) {
+                        tokens.offer(word.getAcronymPinYin());
+                    }
+                }
+                //同义标注
+                if (SYNONYM) {
+                    SynonymTagging.process(Arrays.asList(word));
+                    StringBuilder synonym = new StringBuilder();
+                    word.getSynonym().forEach(w -> {
+                        if (!"".equals(w.getText())) {
+                            tokens.offer(w.getText());
+                        }
+                        synonym.append(w.getText()).append(" ");
+                    });
+                }
+                //反义标注
+                if (ANTONYM) {
+                    AntonymTagging.process(Arrays.asList(word));
+                    StringBuilder antonym = new StringBuilder();
+                    word.getAntonym().forEach(w -> {
+                        if (!"".equals(w.getText())) {
+                            tokens.offer(w.getText());
+                        }
+                        antonym.append(w.getText()).append(" ");
+                    });
+                }
+                token = tokens.poll();
+            }
+        }
+        return token;
+    }
     @Override
     public final boolean incrementToken() throws IOException {
-        Word word = getWord();
-        if (word != null) {
-            int positionIncrement = 1;
-            //忽略停用词
-            while(StopWord.is(word.getText())){
-                positionIncrement++;
-                startOffset += word.getText().length();
-                LOGGER.debug("忽略停用词："+word.getText());
-                word = getWord();
-                if(word == null){
-                    return false;
-                }
-            }
-            charTermAttribute.setEmpty().append(word.getText());
-            offsetAttribute.setOffset(startOffset, startOffset+word.getText().length());
-            positionIncrementAttribute.setPositionIncrement(positionIncrement);
-            startOffset += word.getText().length();
-            //词性标注
-            if(POS){
-                PartOfSpeechTagging.process(Arrays.asList(word));
-                partOfSpeechAttribute.setEmpty().append(word.getPartOfSpeech().getPos());
-            }
-            //拼音标注
-            if(PINYIN){
-                PinyinTagging.process(Arrays.asList(word));
-                acronymPinyinAttribute.setEmpty().append(word.getAcronymPinYin());
-                fullPinyinAttribute.setEmpty().append(word.getFullPinYin());
-            }
-            //同义标注
-            if(SYNONYM){
-                SynonymTagging.process(Arrays.asList(word));
-                StringBuilder synonym = new StringBuilder();
-                word.getSynonym().forEach(w -> synonym.append(w.getText()).append(" "));
-                synonymAttribute.setEmpty().append(synonym.toString().trim());
-            }
-            //反义标注
-            if(ANTONYM){
-                AntonymTagging.process(Arrays.asList(word));
-                StringBuilder antonym = new StringBuilder();
-                word.getAntonym().forEach(w -> antonym.append(w.getText()).append(" "));
-                antonymAttribute.setEmpty().append(antonym.toString().trim());
-            }
+        String token = getToken();
+        if (token != null) {
+            charTermAttribute.setEmpty().append(token);
             return true;
         }
         return false;
