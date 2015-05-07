@@ -199,7 +199,9 @@ public class AutoDetector {
         }
         @Override
         public void onMessage(String channel, String message) {
-            LOGGER.debug("onMessage channel:" + channel + " and message:" + message);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("onMessage channel:" + channel + " and message:" + message);
+            }
             if(channel.endsWith(".add")){
                 this.resourceLoader.add(message);
             }else if(channel.endsWith(".remove")){
@@ -209,28 +211,38 @@ public class AutoDetector {
 
         @Override
         public void onPMessage(String pattern, String channel, String message) {
-            LOGGER.debug("pattern:" + pattern + " and channel:" + channel + " and message:" + message);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("pattern:" + pattern + " and channel:" + channel + " and message:" + message);
+            }
             onMessage(channel, message);
         }
 
         @Override
         public void onPSubscribe(String pattern, int subscribedChannels) {
-            LOGGER.debug("psubscribe pattern:" + pattern + " and subscribedChannels:" + subscribedChannels);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("psubscribe pattern:" + pattern + " and subscribedChannels:" + subscribedChannels);
+            }
         }
 
         @Override
         public void onPUnsubscribe(String pattern, int subscribedChannels) {
-            LOGGER.debug("punsubscribe pattern:" + pattern + " and subscribedChannels:" + subscribedChannels);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("punsubscribe pattern:" + pattern + " and subscribedChannels:" + subscribedChannels);
+            }
         }
 
         @Override
         public void onSubscribe(String channel, int subscribedChannels) {
-            LOGGER.debug("subscribe channel:" + channel + " and subscribedChannels:" + subscribedChannels);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("subscribe channel:" + channel + " and subscribedChannels:" + subscribedChannels);
+            }
         }
 
         @Override
         public void onUnsubscribe(String channel, int subscribedChannels) {
-            LOGGER.debug("unsubscribe channel:" + channel + " and subscribedChannels:" + subscribedChannels);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("unsubscribe channel:" + channel + " and subscribedChannels:" + subscribedChannels);
+            }
         }
     }
     /**

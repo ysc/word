@@ -64,10 +64,10 @@ public class PersonName {
                         SURNAME_1.add(line);
                     } else if (line.length() == 2) {
                         SURNAME_2.add(line);
-                    } else if(line.startsWith("pos_seq=")) {
+                    } else if (line.startsWith("pos_seq=")) {
                         String[] attr = line.split("=");
                         POS_SEQ.put(attr[1].trim().replaceAll("\\s", " "), Integer.parseInt(attr[2]));
-                    } else{
+                    } else {
                         LOGGER.error("错误的姓：" + line);
                     }
                 }
@@ -80,7 +80,7 @@ public class PersonName {
                     SURNAME_1.add(line);
                 } else if (line.length() == 2) {
                     SURNAME_2.add(line);
-                } else if(line.startsWith("pos_seq=")) {
+                } else if (line.startsWith("pos_seq=")) {
                     String[] attr = line.split("=");
                     POS_SEQ.put(attr[1].trim().replaceAll("\\s", " "), Integer.parseInt(attr[2]));
                 } else {
@@ -94,7 +94,7 @@ public class PersonName {
                     SURNAME_1.remove(line);
                 } else if (line.length() == 2) {
                     SURNAME_2.remove(line);
-                } else if(line.startsWith("pos_seq=")) {
+                } else if (line.startsWith("pos_seq=")) {
                     String[] attr = line.split("=");
                     POS_SEQ.remove(attr[1].trim().replaceAll("\\s", " "));
                 } else {
@@ -179,7 +179,9 @@ public class PersonName {
         if(len < 2){
             return words;
         }
-        LOGGER.debug("人名识别：" + words);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("人名识别：" + words);
+        }
         List<List<Word>> select = new ArrayList<>();
         List<Word> result = new ArrayList<>();
         for(int i=0; i<len-1; i++){
@@ -207,11 +209,15 @@ public class PersonName {
      * @return
      */
     private static List<Word> selectBest(List<List<Word>> candidateWords){
-        LOGGER.debug("开始从多个识别结果中选择一个最佳的结果:{}", candidateWords);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("开始从多个识别结果中选择一个最佳的结果:{}", candidateWords);
+        }
         Map<List<Word>, Integer> map = new ConcurrentHashMap<>();
         AtomicInteger i = new AtomicInteger();
         candidateWords.stream().forEach(candidateWord -> {
-            LOGGER.debug(i.incrementAndGet()+"、开始处理："+candidateWord);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug(i.incrementAndGet() + "、开始处理：" + candidateWord);
+            }
             //词性标注
             PartOfSpeechTagging.process(candidateWord);
             //根据词性标注的结果进行评分
@@ -219,22 +225,30 @@ public class PersonName {
             candidateWord.forEach(word -> seq.append(word.getPartOfSpeech().getPos().charAt(0)).append(" "));
             String seqStr = seq.toString();
             AtomicInteger score = new AtomicInteger();
-            LOGGER.debug("词序列：{} 的词性序列：{}", candidateWord, seqStr);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("词序列：{} 的词性序列：{}", candidateWord, seqStr);
+            }
             POS_SEQ.keySet().parallelStream().forEach(pos_seq -> {
                 if (seqStr.contains(pos_seq)) {
                     int sc = POS_SEQ.get(pos_seq);
-                    LOGGER.debug(pos_seq+"词序增加分值：" + sc);
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug(pos_seq + "词序增加分值：" + sc);
+                    }
                     score.addAndGet(sc);
                 }
             });
             score.addAndGet(-candidateWord.size());
-            LOGGER.debug("长度的负值也作为分值：" + (-candidateWord.size()));
-            LOGGER.debug("评分结果："+score.get());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("长度的负值也作为分值：" + (-candidateWord.size()));
+                LOGGER.debug("评分结果：" + score.get());
+            }
             map.put(candidateWord, score.get());
         });
         //选择分值最高的
         List<Word> result = map.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).map(e->e.getKey()).collect(Collectors.toList()).get(0);
-        LOGGER.debug("选择结果："+result);
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("选择结果："+result);
+        }
         return result;
     }
     private static List<Word> recognizePersonName(List<Word> words){
@@ -262,7 +276,9 @@ public class PersonName {
                 }
                 String text = first+second+third;
                 if(is(text)){
-                    LOGGER.debug("识别到人名：" + text);
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("识别到人名：" + text);
+                    }
                     Word word = new Word(text);
                     //词性定义参见配置文件word.conf中的定义part.of.speech.des.path=classpath:part_of_speech_des.txt
                     word.setPartOfSpeech(PartOfSpeech.valueOf("nr"));

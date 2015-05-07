@@ -171,13 +171,17 @@ public class GenericTrie<V> {
         if(item == null || item.isEmpty()){
             return;
         }
-        LOGGER.debug("移除词性："+item);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("移除词性：" + item);
+        }
         //从根节点开始查找
         //获取根节点
         TrieNode<V> node = getRootNode(item.charAt(0));
         if(node == null){
             //不存在根节点，结束查找
-            LOGGER.debug("词性不存在："+item);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("词性不存在：" + item);
+            }
             return;
         }
         int length = item.length();
@@ -187,7 +191,9 @@ public class GenericTrie<V> {
             TrieNode<V> child = node.getChild(character);
             if(child == null){
                 //未找到匹配节点
-                LOGGER.debug("词性不存在："+item);
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("词性不存在：" + item);
+                }
                 return;
             }else{
                 //找到节点，继续往下找
@@ -198,9 +204,13 @@ public class GenericTrie<V> {
             //设置为非叶子节点，效果相当于移除词性
             node.setTerminal(false);
             node.setValue(null);
-            LOGGER.debug("成功移除词性："+item);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("成功移除词性：" + item);
+            }
         }else{
-            LOGGER.debug("词性不存在："+item);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("词性不存在：" + item);
+            }
         }
     }
     

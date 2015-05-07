@@ -136,7 +136,9 @@ public class WordRefiner {
      * @return
      */
     public static List<Word> refine(List<Word> words){
-        LOGGER.debug("对分词结果进行refine之前：{}", words);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("对分词结果进行refine之前：{}", words);
+        }
         List<Word> result = new ArrayList<>(words.size());
         //一：拆词
         for(Word word : words){
@@ -144,11 +146,15 @@ public class WordRefiner {
             if(splitWords==null){
                 result.add(word);
             }else{
-                LOGGER.debug("词： "+word.getText()+" 被拆分为："+splitWords);
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("词： " + word.getText() + " 被拆分为：" + splitWords);
+                }
                 result.addAll(splitWords);
             }
         }
-        LOGGER.debug("对分词结果进行refine阶段的拆词之后：{}",result);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("对分词结果进行refine阶段的拆词之后：{}", result);
+        }
         //二：组词
         if(result.size()<2){
             return result;
@@ -177,11 +183,15 @@ public class WordRefiner {
             if(combinedWord == null){
                 finalResult.add(result.get(i));
             }else{
-                LOGGER.debug("词： "+toCombineWords+" 被合并为："+combinedWord);
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("词： " + toCombineWords + " 被合并为：" + combinedWord);
+                }
                 finalResult.add(combinedWord);
             }
         }
-        LOGGER.debug("对分词结果进行refine阶段的组词之后：{}", finalResult);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("对分词结果进行refine阶段的组词之后：{}", finalResult);
+        }
         return finalResult;
     }
 

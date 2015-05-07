@@ -93,8 +93,10 @@ public class Distance {
     }
     
     private static List<String> distance(Map<String, String> map, String words, int limit){
-        LOGGER.debug("计算词向量："+words);
-        LOGGER.debug("限制结果数目："+limit);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("计算词向量：" + words);
+            LOGGER.debug("限制结果数目：" + limit);
+        }
         Map<String, Float> wordVec = new HashMap<>();
         String[] ws = words.split(", ");
         for(String w : ws){
@@ -138,11 +140,15 @@ public class Distance {
             }
         }
         if(max == 0){
-            LOGGER.debug("没有相似词");
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("没有相似词");
+            }
             return Collections.emptyList();
         }
-        LOGGER.debug("最大分值："+max);
-        LOGGER.debug("相似词数："+result.size());
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("最大分值：" + max);
+            LOGGER.debug("相似词数：" + result.size());
+        }
         //分值归一化
         for(String key : result.keySet()){
             float value = result.get(key);

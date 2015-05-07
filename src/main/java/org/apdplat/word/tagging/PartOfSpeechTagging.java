@@ -94,7 +94,9 @@ public class PartOfSpeechTagging {
     public static void process(List<Word> words){
         words.parallelStream().forEach(word->{
             if(word.getPartOfSpeech()!=null){
-                LOGGER.debug("忽略已经标注过的词：{}", word);
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("忽略已经标注过的词：{}", word);
+                }
                 return;
             }
             String wordText = word.getText();

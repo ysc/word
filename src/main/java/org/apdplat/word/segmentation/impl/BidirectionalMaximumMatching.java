@@ -54,21 +54,27 @@ public class BidirectionalMaximumMatching extends AbstractSegmentation{
       
         //如果分值都一样，则选择逆向最大匹配
         float score = words.get(wordsRMM);
-        LOGGER.debug("逆向最大匹配："+wordsRMM.toString()+" : ngram分值="+score);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("逆向最大匹配：" + wordsRMM.toString() + " : ngram分值=" + score);
+        }
         //最终结果
         List<Word> result = wordsRMM;
         //最大分值
         float max = score;
         
         score = words.get(wordsMM);
-        LOGGER.debug("正向最大匹配："+wordsMM.toString()+" : ngram分值="+score);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("正向最大匹配：" + wordsMM.toString() + " : ngram分值=" + score);
+        }
         //只有正向最大匹配的分值大于逆向最大匹配，才会被选择
         if(score > max){
             result = wordsMM;
             max = score;
         }
-        
-        LOGGER.debug("最大分值："+max+", 消歧结果："+result);
+
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("最大分值：" + max + ", 消歧结果：" + result);
+        }
         return result;
     }
     public static void main(String[] args){

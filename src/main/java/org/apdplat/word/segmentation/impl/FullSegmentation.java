@@ -166,13 +166,13 @@ public class FullSegmentation extends AbstractSegmentation{
         }
         while(len > 1){
             if(DIC.contains(text, start, len) || RecognitionTool.recog(text, start, len)){
-                result.add(text.substring(start, start+len));
+                result.add(text.substring(start, start + len));
             }
             len--;
         }
         if(textLen <= CHAR_IS_WORD_LENGTH_LESS_THAN || result.isEmpty()){
             //增加单字词
-            result.add(text.substring(start, start+1));
+            result.add(text.substring(start, start + 1));
         }
         return result;
     }
@@ -203,10 +203,14 @@ public class FullSegmentation extends AbstractSegmentation{
     private List<Word>[] toWords(List<Node> leaf){
         List<Word>[] result = new ArrayList[leaf.size()];
         int i = 0;
-        LOGGER.debug("全切分结果：");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("全切分结果：");
+        }
         for(Node node : leaf){
             result[i++] = toWords(node);
-            LOGGER.debug("\t"+i+"："+result[i-1]);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("\t" + i + "：" + result[i - 1]);
+            }
         }
         return result;
     }

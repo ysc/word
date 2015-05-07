@@ -145,7 +145,9 @@ public class Trigram {
         float score = 0;
         if(value != null){
             score = (float)Math.sqrt(value.intValue());
-            LOGGER.debug("三元模型 "+first+":"+second+":"+third+" 获得分值："+score);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("三元模型 " + first + ":" + second + ":" + third + " 获得分值：" + score);
+            }
         }
         return score;
     }

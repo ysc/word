@@ -43,7 +43,9 @@ public class WordConfTools {
     }
     public static boolean getBoolean(String key, boolean defaultValue){
         String value = conf.get(key) == null ? Boolean.valueOf(defaultValue).toString() : conf.get(key);
-        LOGGER.debug("获取配置项："+key+"="+value);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("获取配置项：" + key + "=" + value);
+        }
         return value.contains("true");
     }
     public static boolean getBoolean(String key){
@@ -51,7 +53,9 @@ public class WordConfTools {
     }
     public static int getInt(String key, int defaultValue){
         int value = conf.get(key) == null ? defaultValue : Integer.parseInt(conf.get(key).trim());
-        LOGGER.debug("获取配置项："+key+"="+value);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("获取配置项：" + key + "=" + value);
+        }
         return value;
     }
     public static int getInt(String key){
@@ -59,12 +63,16 @@ public class WordConfTools {
     }
     public static String get(String key, String defaultValue){
         String value = conf.get(key) == null ? defaultValue : conf.get(key);
-        LOGGER.debug("获取配置项："+key+"="+value);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("获取配置项：" + key + "=" + value);
+        }
         return value;
     }
     public static String get(String key){
         String value = conf.get(key);
-        LOGGER.debug("获取配置项："+key+"="+value);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("获取配置项：" + key + "=" + value);
+        }
         return value;
     }
     static{

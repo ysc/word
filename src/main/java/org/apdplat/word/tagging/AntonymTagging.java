@@ -116,21 +116,25 @@ public class AntonymTagging {
             private void addAntonym(String word, String... words) {
                 String[] exist = GENERIC_TRIE.get(word);
                 if (exist != null) {
-                    LOGGER.debug(word + " 已经有存在的反义词：");
-                    for (String e : exist) {
-                        LOGGER.debug("\t" + e);
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug(word + " 已经有存在的反义词：");
+                        for (String e : exist) {
+                            LOGGER.debug("\t" + e);
+                        }
                     }
                     Set<String> set = new HashSet<>();
                     set.addAll(Arrays.asList(exist));
                     set.addAll(Arrays.asList(words));
                     String[] merge = set.toArray(new String[0]);
-                    LOGGER.debug("合并新的反义词：");
-                    for (String e : words) {
-                        LOGGER.debug("\t" + e);
-                    }
-                    LOGGER.debug("合并结果：");
-                    for (String e : merge) {
-                        LOGGER.debug("\t" + e);
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("合并新的反义词：");
+                        for (String e : words) {
+                            LOGGER.debug("\t" + e);
+                        }
+                        LOGGER.debug("合并结果：");
+                        for (String e : merge) {
+                            LOGGER.debug("\t" + e);
+                        }
                     }
                     GENERIC_TRIE.put(word.trim(), merge);
                 } else {
@@ -140,10 +144,14 @@ public class AntonymTagging {
         }, WordConfTools.get("word.antonym.path", "classpath:word_antonym.txt"));
     }
     public static void process(List<Word> words){
-        LOGGER.debug("对分词结果进行反义标注之前：{}", words);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("对分词结果进行反义标注之前：{}", words);
+        }
         //反义并行标注
         words.parallelStream().forEach(word -> process(word));
-        LOGGER.debug("对分词结果进行反义标注之后：{}", words);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("对分词结果进行反义标注之后：{}", words);
+        }
     }
     private static void process(Word word){
         String[] antonym = GENERIC_TRIE.get(word.getText());

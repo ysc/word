@@ -107,21 +107,25 @@ public class SynonymTagging {
                 for (String word : words) {
                     String[] exist = GENERIC_TRIE.get(word);
                     if (exist != null) {
-                        LOGGER.debug(word + " 已经有存在的同义词：");
-                        for (String e : exist) {
-                            LOGGER.debug("\t" + e);
+                        if(LOGGER.isDebugEnabled()) {
+                            LOGGER.debug(word + " 已经有存在的同义词：");
+                            for (String e : exist) {
+                                LOGGER.debug("\t" + e);
+                            }
                         }
                         Set<String> set = new HashSet<>();
                         set.addAll(Arrays.asList(exist));
                         set.addAll(Arrays.asList(words));
                         String[] merge = set.toArray(new String[0]);
-                        LOGGER.debug("合并新的同义词：");
-                        for (String e : words) {
-                            LOGGER.debug("\t" + e);
-                        }
-                        LOGGER.debug("合并结果：");
-                        for (String e : merge) {
-                            LOGGER.debug("\t" + e);
+                        if(LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("合并新的同义词：");
+                            for (String e : words) {
+                                LOGGER.debug("\t" + e);
+                            }
+                            LOGGER.debug("合并结果：");
+                            for (String e : merge) {
+                                LOGGER.debug("\t" + e);
+                            }
                         }
                         GENERIC_TRIE.put(word.trim(), merge);
                     } else {
@@ -135,18 +139,26 @@ public class SynonymTagging {
         process(words, true);
     }
     public static void process(List<Word> words, boolean direct){
-        LOGGER.debug("对分词结果进行同义标注之前：{}", words);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("对分词结果进行同义标注之前：{}", words);
+        }
         //同义标注
         for(Word word : words){
             if(direct){
-                LOGGER.debug("直接模式");
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("直接模式");
+                }
                 processDirectSynonym(word);
             }else{
-                LOGGER.debug("间接接模式");
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("间接接模式");
+                }
                 processIndirectSynonym(word);
             }
         }
-        LOGGER.debug("对分词结果进行同义标注之后：{}", words);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("对分词结果进行同义标注之后：{}", words);
+        }
     }
     private static void processDirectSynonym(Word word){
         String[] synonym = GENERIC_TRIE.get(word.getText());

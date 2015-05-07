@@ -115,7 +115,9 @@ public class RecognitionTool {
                 return false;
             }
         }
-        LOGGER.debug("识别出英文字母和数字混合串："+text.substring(start, start+len));
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("识别出英文字母和数字混合串：" + text.substring(start, start + len));
+        }
         return true;
     }
     /**
@@ -156,7 +158,9 @@ public class RecognitionTool {
                 return false;
             }
         }
-        LOGGER.debug("识别出英文单词："+text.substring(start, start+len));
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("识别出英文单词：" + text.substring(start, start + len));
+        }
         return true;
     }
     /**
@@ -215,7 +219,9 @@ public class RecognitionTool {
                 (isNumber(text, start, len-1) || 
                 isChineseNumber(text, start, len-1) || 
                 isFraction(text, start, len-1)) ){
-            LOGGER.debug("识别数量词："+text.substring(start, start+len));
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("识别数量词：" + text.substring(start, start + len));
+            }
             return true;
         }
         return false;
@@ -258,7 +264,9 @@ public class RecognitionTool {
                 return false;
             }
         }
-        LOGGER.debug("识别出数字："+text.substring(start, start+len));
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("识别出数字：" + text.substring(start, start + len));
+        }
         return true;
     }
     /**
@@ -328,7 +336,9 @@ public class RecognitionTool {
                 }
             }
         }
-        LOGGER.debug("识别出中文数字："+text.substring(start, start+len));
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("识别出中文数字：" + text.substring(start, start + len));
+        }
         return true;
     }    
     public static void main(String[] args){

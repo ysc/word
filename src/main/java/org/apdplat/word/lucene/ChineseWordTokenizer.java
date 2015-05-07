@@ -94,7 +94,9 @@ public class ChineseWordTokenizer extends Tokenizer {
                 while (StopWord.is(word.getText())) {
                     positionIncrement++;
                     startOffset += word.getText().length();
-                    LOGGER.debug("忽略停用词：" + word.getText());
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("忽略停用词：" + word.getText());
+                    }
                     word = getWord();
                     if (word == null) {
                         return null;

@@ -99,7 +99,9 @@ public class WordSegmenter {
             Word word = iter.next();
             if(StopWord.is(word.getText())){
                 //去除停用词
-                LOGGER.debug("去除停用词："+word.getText());
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("去除停用词：" + word.getText());
+                }
                 iter.remove();
             }
         }
@@ -265,6 +267,8 @@ public class WordSegmenter {
         sentences.add("结婚的和尚未结婚的");
         sentences.add("买水果然后来世博园");
         sentences.add("中国的首都是北京");
+        sentences.add("老师说明天下午休息");
+        sentences.add("今天下雨");
         int i=1;
         for(String sentence : sentences){
             List<Word> words = segWithStopWords(sentence);

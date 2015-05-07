@@ -140,7 +140,9 @@ public class Bigram {
                     Float[] array = {bigramScore, twoBigramScore};
                     for(Float score : array){
                         if(score !=null && score > 0){
-                            LOGGER.debug(word.getText()+" 获得分值："+score);
+                            if(LOGGER.isDebugEnabled()) {
+                                LOGGER.debug(word.getText() + " 获得分值：" + score);
+                            }
                             float value = map.get(sentence);
                             value += score;
                             map.put(sentence, value);
@@ -178,7 +180,9 @@ public class Bigram {
         float score = 0;
         if(value != null){
             score = (float)Math.sqrt(value.intValue());
-            LOGGER.debug("二元模型 "+first+":"+second+" 获得分值："+score);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("二元模型 " + first + ":" + second + " 获得分值：" + score);
+            }
         }
         return score;
     }
