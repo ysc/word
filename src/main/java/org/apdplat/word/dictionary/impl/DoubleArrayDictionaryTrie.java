@@ -181,7 +181,7 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         this.words = words;
         progress = 0;
 
-        resize(65536 * 32);
+        resize(words.size() * 32);
 
         base[0] = 1;
         nextCheckPos = 0;
