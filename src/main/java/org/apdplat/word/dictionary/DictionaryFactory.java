@@ -20,9 +20,8 @@
 
 package org.apdplat.word.dictionary;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -106,29 +105,29 @@ public final class DictionaryFactory {
                         dictionaryTrie.showConflict();
                     }
                     System.gc();
-                    LOGGER.info("词典初始化完毕，耗时："+(System.currentTimeMillis()-start)+" 毫秒");
+                    LOGGER.info("词典初始化完毕，耗时：" + (System.currentTimeMillis() - start) + " 毫秒");
                 }
 
                 private void showStatistics(List<String> words) {
                     Map<Integer, AtomicInteger> map = new HashMap<Integer, AtomicInteger>();
-                    words.forEach(word->{
+                    words.forEach(word -> {
                         map.putIfAbsent(word.length(), new AtomicInteger());
                         map.get(word.length()).incrementAndGet();
                     });
                     //统计词数
-                    int wordCount=0;
+                    int wordCount = 0;
                     //统计平均词长
-                    int totalLength=0;
-                    for(int len : map.keySet()){
+                    int totalLength = 0;
+                    for (int len : map.keySet()) {
                         totalLength += len * map.get(len).get();
                         wordCount += map.get(len).get();
                     }
                     LOGGER.info("词数目：" + wordCount + "，词典最大词长：" + DIC.getMaxLength());
-                    for(int len : map.keySet()){
-                        if(len<10){
-                            LOGGER.info("词长  "+len+" 的词数为："+map.get(len));
-                        }else{
-                            LOGGER.info("词长 "+len+" 的词数为："+map.get(len));
+                    for (int len : map.keySet()) {
+                        if (len < 10) {
+                            LOGGER.info("词长  " + len + " 的词数为：" + map.get(len));
+                        } else {
+                            LOGGER.info("词长 " + len + " 的词数为：" + map.get(len));
                         }
                     }
                     LOGGER.info("词典平均词长：" + (float) totalLength / wordCount);
@@ -154,17 +153,21 @@ public final class DictionaryFactory {
                     List<String> words = new ArrayList<>();
                     //一行以空格分隔可以放多个词
                     for (String word : line.split("\\s+")) {
-                        if (word.length() == 1) {
-                            System.out.println(word);
-                        }
                         //处理词性词典
                         if (word.length() > 2 && word.contains(":")) {
                             String[] attr = word.split(":");
-                            if (attr != null && attr.length > 1 && attr[0].length() > 1) {
-                                word = attr[0];
+                            if (attr != null && attr.length > 1) {
+                                //忽略单字
+                                if (attr[0].length() > 1) {
+                                    word = attr[0];
+                                } else {
+                                    word = null;
+                                }
                             }
                         }
-                        words.add(word);
+                        if (word != null) {
+                            words.add(word);
+                        }
                     }
                     return words;
                 }
@@ -178,29 +181,33 @@ public final class DictionaryFactory {
 
     private static void test(String dicClass) throws Exception{
         WordConfTools.set("dic.class", dicClass);
+        System.gc();
         Thread.sleep(60000);
         Dictionary dictionary = DictionaryFactory.getDictionary();
+        System.gc();
         Thread.sleep(60000);
         AtomicInteger h = new AtomicInteger();
         AtomicInteger e = new AtomicInteger();
+        List<String> words = Files.readAllLines(Paths.get("src/test/resources/dic.txt"));
+        System.gc();
+        Thread.sleep(60000);
         long start = System.currentTimeMillis();
-        int times = 1000;
-        for(int i=0; i<times; i++){
-            try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/dic.txt")))) {
-                String line = null;
-                while((line=bufferedReader.readLine())!=null){
-                    if(dictionary.contains(line)){
-                        h.incrementAndGet();
-                    }else{
-                        e.incrementAndGet();
+        for(int i=0; i<100; i++){
+            words.forEach(word -> {
+                for (int j = 0; j < word.length(); j++) {
+                    String sw = word.substring(0, j + 1);
+                    for (int k = 0; k < sw.length(); k++) {
+                        if (dictionary.contains(sw, k, sw.length() - k)) {
+                            h.incrementAndGet();
+                        } else {
+                            e.incrementAndGet();
+                        }
                     }
                 }
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
+            });
         }
         long cost = System.currentTimeMillis() - start;
-        LOGGER.info(dicClass + " 查询次数：" + h.get() * times + " 耗时：" + cost + " 毫秒");
+        LOGGER.info(dicClass + " 未查询到的次数："+ e.get() + "， 查询到的次数：" +  h.get() + " 耗时：" + cost + " 毫秒");
         System.gc();
         Thread.sleep(60000);
         LOGGER.info("test finish");
@@ -210,7 +217,7 @@ public final class DictionaryFactory {
         //速度和内存测试
         //打开 jvisualvm 后分别运行测试，不同测试位于不同进程中，避免相互影响
         //通过 jvisualvm 可以查看内存使用情况
-        test("org.apdplat.word.dictionary.impl.DictionaryTrie");
-        //test("org.apdplat.word.dictionary.impl.DoubleArrayDictionaryTrie");
+        //test("org.apdplat.word.dictionary.impl.DictionaryTrie");
+        test("org.apdplat.word.dictionary.impl.DoubleArrayDictionaryTrie");
     }
 }
