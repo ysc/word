@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 前缀树的Java实现
  * 为前缀树的一级节点建立索引（比二分查找要快）
- * 用于查找一个指定的字符串是否在字典中
+ * 用于查找一个指定的字符串是否在词典中
  * @author 杨尚川
  */
 public class DictionaryTrie implements Dictionary{
