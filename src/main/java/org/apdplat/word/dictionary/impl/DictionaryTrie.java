@@ -42,6 +42,9 @@ public class DictionaryTrie implements Dictionary{
     private static final int INDEX_LENGTH = 24000;
     private final TrieNode[] ROOT_NODES_INDEX = new TrieNode[INDEX_LENGTH];
     private int maxLength;
+    public DictionaryTrie(){
+        LOGGER.info("初始化词典："+this.getClass().getName());
+    }
     @Override
     public void clear() {
         for(int i=0; i<INDEX_LENGTH; i++){
@@ -178,7 +181,9 @@ public class DictionaryTrie implements Dictionary{
         if(item == null || item.length() < length){
             return false;
         }
-        LOGGER.debug("开始查词典："+item.substring(start, start+length));
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("开始查词典：{}", item.substring(start, start + length));
+        }
         //从根节点开始查找
         //获取根节点
         TrieNode node = getRootNode(item.charAt(start));
@@ -199,7 +204,9 @@ public class DictionaryTrie implements Dictionary{
             }
         }
         if(node.isTerminal()){
-            LOGGER.debug("在词典中查到词："+item.substring(start, start+length));
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("在词典中查到词：{}", item.substring(start, start + length));
+            }
             return true;
         }
         return false;
@@ -217,13 +224,17 @@ public class DictionaryTrie implements Dictionary{
         if(item == null || item.isEmpty()){
             return;
         }
-        LOGGER.debug("从词典中移除词："+item);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("从词典中移除词：{}", item);
+        }
         //从根节点开始查找
         //获取根节点
         TrieNode node = getRootNode(item.charAt(0));
         if(node == null){
             //不存在根节点，结束查找
-            LOGGER.debug("词不存在："+item);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("词不存在：{}", item);
+            }
             return;
         }
         int length = item.length();
@@ -233,7 +244,9 @@ public class DictionaryTrie implements Dictionary{
             TrieNode child = node.getChild(character);
             if(child == null){
                 //未找到匹配节点
-                LOGGER.debug("词不存在："+item);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("词不存在：{}", item);
+                }
                 return;
             }else{
                 //找到节点，继续往下找
@@ -243,9 +256,13 @@ public class DictionaryTrie implements Dictionary{
         if(node.isTerminal()){
             //设置为非叶子节点，效果相当于从词典中移除词
             node.setTerminal(false);
-            LOGGER.debug("成功从词典中移除词："+item);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("成功从词典中移除词：{}", item);
+            }
         }else{
-            LOGGER.debug("词不存在："+item);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("词不存在：{}", item);
+            }
         }
     }
     
