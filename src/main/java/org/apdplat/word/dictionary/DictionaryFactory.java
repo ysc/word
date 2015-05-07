@@ -20,6 +20,9 @@
 
 package org.apdplat.word.dictionary;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -83,6 +86,7 @@ public final class DictionaryFactory {
                 @Override
                 public void load(List<String> lines) {
                     LOGGER.info("初始化词典");
+                    long start = System.currentTimeMillis();
                     int count = 0;
                     for (String surname : PersonName.getSurnames()) {
                         if (surname.length() == 2) {
@@ -92,6 +96,7 @@ public final class DictionaryFactory {
                     }
                     LOGGER.info("将 " + count + " 个复姓加入词典");
                     List<String> words = getAllWords(lines);
+                    lines.clear();
                     //构造词典
                     DIC.addAll(words);
                     //输出统计信息
@@ -100,7 +105,8 @@ public final class DictionaryFactory {
                         DictionaryTrie dictionaryTrie = (DictionaryTrie) DIC;
                         dictionaryTrie.showConflict();
                     }
-                    LOGGER.info("词典初始化完毕");
+                    System.gc();
+                    LOGGER.info("词典初始化完毕，耗时："+(System.currentTimeMillis()-start)+" 毫秒");
                 }
 
                 private void showStatistics(List<String> words) {
@@ -168,5 +174,43 @@ public final class DictionaryFactory {
                     + "," + WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt")
                     + "," + WordConfTools.get("word.antonym.path", "classpath:word_antonym.txt"));
         }
+    }
+
+    private static void test(String dicClass) throws Exception{
+        WordConfTools.set("dic.class", dicClass);
+        Thread.sleep(60000);
+        Dictionary dictionary = DictionaryFactory.getDictionary();
+        Thread.sleep(60000);
+        AtomicInteger h = new AtomicInteger();
+        AtomicInteger e = new AtomicInteger();
+        long start = System.currentTimeMillis();
+        int times = 1000;
+        for(int i=0; i<times; i++){
+            try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/dic.txt")))) {
+                String line = null;
+                while((line=bufferedReader.readLine())!=null){
+                    if(dictionary.contains(line)){
+                        h.incrementAndGet();
+                    }else{
+                        e.incrementAndGet();
+                    }
+                }
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+        long cost = System.currentTimeMillis() - start;
+        LOGGER.info(dicClass + " 查询次数：" + h.get() * times + " 耗时：" + cost + " 毫秒");
+        System.gc();
+        Thread.sleep(60000);
+        LOGGER.info("test finish");
+        System.exit(0);
+    }
+    public static void main(String[] args) throws Exception{
+        //速度和内存测试
+        //打开 jvisualvm 后分别运行测试，不同测试位于不同进程中，避免相互影响
+        //通过 jvisualvm 可以查看内存使用情况
+        test("org.apdplat.word.dictionary.impl.DictionaryTrie");
+        //test("org.apdplat.word.dictionary.impl.DoubleArrayDictionaryTrie");
     }
 }
