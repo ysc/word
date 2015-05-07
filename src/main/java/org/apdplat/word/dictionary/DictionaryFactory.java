@@ -22,6 +22,7 @@ package org.apdplat.word.dictionary;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apdplat.word.dictionary.impl.DictionaryTrie;
 import org.apdplat.word.recognition.PersonName;
@@ -72,7 +73,7 @@ public final class DictionaryFactory {
             reload();
         }
         public static void reload(){
-            AutoDetector.loadAndWatch(new ResourceLoader(){
+            AutoDetector.loadAndWatch(new ResourceLoader() {
 
                 @Override
                 public void clear() {
@@ -82,30 +83,49 @@ public final class DictionaryFactory {
                 @Override
                 public void load(List<String> lines) {
                     LOGGER.info("初始化词典");
-                    int count=0;
-                    for(String surname : PersonName.getSurnames()){
-                        if(surname.length() == 2){
+                    int count = 0;
+                    for (String surname : PersonName.getSurnames()) {
+                        if (surname.length() == 2) {
                             count++;
                             lines.add(surname);
                         }
                     }
-                    LOGGER.info("将 "+count+" 个复姓加入词典");
-                    Map<Integer, AtomicInteger> map = new HashMap<>();
-                    for(String line : lines){
-                        getWords(line).forEach(word -> {
-                            //加入词典
-                            DIC.add(word);
-                            //统计不同长度的词的数目
-                            map.putIfAbsent(word.length(), new AtomicInteger());
-                            map.get(word.length()).incrementAndGet();
-                        });
-                    }
-                    showStatistics(map);
-                    if(DIC instanceof DictionaryTrie){
-                        DictionaryTrie dictionaryTrie = (DictionaryTrie)DIC;
+                    LOGGER.info("将 " + count + " 个复姓加入词典");
+                    List<String> words = getAllWords(lines);
+                    //构造词典
+                    DIC.addAll(words);
+                    //输出统计信息
+                    showStatistics(words);
+                    if (DIC instanceof DictionaryTrie) {
+                        DictionaryTrie dictionaryTrie = (DictionaryTrie) DIC;
                         dictionaryTrie.showConflict();
-                    }                    
+                    }
                     LOGGER.info("词典初始化完毕");
+                }
+
+                private void showStatistics(List<String> words) {
+                    Map<Integer, AtomicInteger> map = new HashMap<Integer, AtomicInteger>();
+                    words.forEach(word->{
+                        map.putIfAbsent(word.length(), new AtomicInteger());
+                        map.get(word.length()).incrementAndGet();
+                    });
+                    //统计词数
+                    int wordCount=0;
+                    //统计平均词长
+                    int totalLength=0;
+                    for(int len : map.keySet()){
+                        totalLength += len * map.get(len).get();
+                        wordCount += map.get(len).get();
+                    }
+                    LOGGER.info("词数目：" + wordCount + "，词典最大词长：" + DIC.getMaxLength());
+                    for(int len : map.keySet()){
+                        if(len<10){
+                            LOGGER.info("词长  "+len+" 的词数为："+map.get(len));
+                        }else{
+                            LOGGER.info("词长 "+len+" 的词数为："+map.get(len));
+                        }
+                    }
+                    LOGGER.info("词典平均词长：" + (float) totalLength / wordCount);
                 }
 
                 @Override
@@ -120,11 +140,15 @@ public final class DictionaryFactory {
                     getWords(line).forEach(DIC::remove);
                 }
 
-                private List<String> getWords(String line){
+                private List<String> getAllWords(List<String> lines) {
+                    return lines.stream().flatMap(line -> getWords(line).stream()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+                }
+
+                private List<String> getWords(String line) {
                     List<String> words = new ArrayList<>();
                     //一行以空格分隔可以放多个词
-                    for(String word : line.split("\\s+")) {
-                        if(word.length()==1){
+                    for (String word : line.split("\\s+")) {
+                        if (word.length() == 1) {
                             System.out.println(word);
                         }
                         //处理词性词典
@@ -139,29 +163,10 @@ public final class DictionaryFactory {
                     return words;
                 }
             }, WordConfTools.get("dic.path", "classpath:dic.txt")
-                    +","+WordConfTools.get("punctuation.path", "classpath:punctuation.txt")
-                    +","+WordConfTools.get("part.of.speech.dic.path", "classpath:part_of_speech_dic.txt")
-                    +","+WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt")
-                    +","+WordConfTools.get("word.antonym.path", "classpath:word_antonym.txt"));
-        }
-        private static void showStatistics(Map<Integer, AtomicInteger> map) {
-            //统计词数
-            int wordCount=0;
-            //统计平均词长
-            int totalLength=0;
-            for(int len : map.keySet()){
-                totalLength += len * map.get(len).get();
-                wordCount += map.get(len).get();
-            }
-            LOGGER.info("词数目："+wordCount+"，词典最大词长："+DIC.getMaxLength());
-            for(int len : map.keySet()){
-                if(len<10){
-                    LOGGER.info("词长  "+len+" 的词数为："+map.get(len));
-                }else{
-                    LOGGER.info("词长 "+len+" 的词数为："+map.get(len));
-                }
-            }
-            LOGGER.info("词典平均词长："+(float)totalLength/wordCount);
+                    + "," + WordConfTools.get("punctuation.path", "classpath:punctuation.txt")
+                    + "," + WordConfTools.get("part.of.speech.dic.path", "classpath:part_of_speech_dic.txt")
+                    + "," + WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt")
+                    + "," + WordConfTools.get("word.antonym.path", "classpath:word_antonym.txt"));
         }
     }
 }
