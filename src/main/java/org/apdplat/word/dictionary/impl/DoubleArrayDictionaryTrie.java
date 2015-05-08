@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -49,29 +50,11 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
     private int[] check;
     private int[] base;
     private boolean[] used;
-    private int size;
-    private int allocSize;
     private List<String> words;
-    private int progress;
     private int nextCheckPos;
 
     public DoubleArrayDictionaryTrie(){
-        LOGGER.info("初始化词典："+this.getClass().getName());
-    }
-
-    private int resize(int newSize) {
-        int[] base2 = new int[newSize];
-        int[] check2 = new int[newSize];
-        used = new boolean[newSize];
-        if (allocSize > 0) {
-            System.arraycopy(base, 0, base2, 0, allocSize);
-            System.arraycopy(check, 0, check2, 0, allocSize);
-        }
-
-        base = base2;
-        check = check2;
-
-        return allocSize = newSize;
+        LOGGER.info("初始化词典：" + this.getClass().getName());
     }
 
     private int prepare(Node parent, List<Node> siblings) {
@@ -115,14 +98,8 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         int nonzero_num = 0;
         int first = 0;
 
-        if (allocSize <= pos)
-            resize(pos + 1);
-
         outer: while (true) {
             pos++;
-
-            if (allocSize <= pos)
-                resize(pos + 1);
 
             if (check[pos] != 0) {
                 nonzero_num++;
@@ -133,12 +110,6 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
             }
 
             begin = pos - siblings.get(0).code;
-            int wordSize = words.size();
-            if (allocSize <= (begin + siblings.get(siblings.size() - 1).code)) {
-                double l = (1.05 > 1.0 * wordSize / (progress + 1)) ? 1.05 : 1.0
-                        * wordSize / (progress + 1);
-                resize((int) (allocSize * l));
-            }
 
             if (used[begin])
                 continue;
@@ -154,8 +125,6 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
             nextCheckPos = pos;
 
         used[begin] = true;
-        size = (size > begin + siblings.get(siblings.size() - 1).code + 1) ? size
-                : begin + siblings.get(siblings.size() - 1).code + 1;
 
         for (int i = 0; i < siblings.size(); i++)
             check[begin + siblings.get(i).code] = begin;
@@ -165,7 +134,6 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
             if (prepare(siblings.get(i), new_siblings) == 0) {
                 base[begin + siblings.get(i).code] = -siblings.get(i).left - 1;
-                progress++;
             } else {
                 int h = insert(new_siblings);
                 base[begin + siblings.get(i).code] = h;
@@ -179,9 +147,19 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
             return ;
 
         this.words = words;
-        progress = 0;
 
-        resize(words.size() * 32);
+        AtomicInteger max = new AtomicInteger();
+        words.forEach(word->{
+            for(int ch : word.toCharArray()){
+                if(ch > max.get()){
+                    max.set(ch);
+                }
+            }
+        });
+        int size = max.get()*2;
+        base = new int[size];
+        check = new int[size];
+        used = new boolean[size];
 
         base[0] = 1;
         nextCheckPos = 0;
@@ -281,8 +259,7 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         check = null;
         base = null;
         used = null;
-        allocSize = 0;
-        size = 0;
+        nextCheckPos = 0;
         maxLength = 0;
     }
 
