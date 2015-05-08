@@ -201,6 +201,7 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
             assertEquals(3010699, e.get());
             assertEquals(1383728, h.get());
         }catch (Exception e){
+            e.printStackTrace();
             fail();
         }
     }
