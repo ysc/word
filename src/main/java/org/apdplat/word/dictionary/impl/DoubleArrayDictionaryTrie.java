@@ -38,7 +38,9 @@ import java.util.stream.Collectors;
  */
 public class DoubleArrayDictionaryTrie implements Dictionary{
     private static final Logger LOGGER = LoggerFactory.getLogger(DoubleArrayDictionaryTrie.class);
-    private int maxLength;
+
+    private static final int SIZE = 3000000;
+    private AtomicInteger maxLength = new AtomicInteger();
 
     private static class Node {
         private int code;
@@ -148,18 +150,9 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
         this.words = words;
 
-        AtomicInteger max = new AtomicInteger();
-        words.forEach(word->{
-            for(int ch : word.toCharArray()){
-                if(ch > max.get()){
-                    max.set(ch);
-                }
-            }
-        });
-        int size = max.get()*2;
-        base = new int[size];
-        check = new int[size];
-        used = new boolean[size];
+        base = new int[SIZE];
+        check = new int[SIZE];
+        used = new boolean[SIZE];
 
         base[0] = 1;
         nextCheckPos = 0;
@@ -180,7 +173,7 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
     @Override
     public int getMaxLength() {
-        return maxLength;
+        return maxLength.get();
     }
 
     @Override
@@ -222,15 +215,14 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         if(check!=null){
             throw new RuntimeException("addAll method can just be used once after clear method!");
         }
-        //清理数据
         items=items
-                .parallelStream()
+                .stream()
                 .map(item -> item.trim())
                 .filter(item -> {
                     //统计最大词长
                     int len = item.length();
-                    if(len > maxLength){
-                        maxLength = len;
+                    if(len > maxLength.get()){
+                        maxLength.set(len);
                     }
                     return len > 0;
                 })
@@ -260,7 +252,7 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         base = null;
         used = null;
         nextCheckPos = 0;
-        maxLength = 0;
+        maxLength.set(0);
     }
 
     public static void main(String[] args) {
