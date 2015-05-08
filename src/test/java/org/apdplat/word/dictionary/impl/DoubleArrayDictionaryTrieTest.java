@@ -24,9 +24,12 @@ import junit.framework.TestCase;
 import org.apdplat.word.dictionary.Dictionary;
 import org.junit.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 双数组前缀树单元测试
@@ -122,6 +125,8 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
         dictionary.addAll(words);
 
         assertEquals(3, dictionary.getMaxLength());
+        assertEquals(false, dictionary.contains("杨"));
+        assertEquals(false, dictionary.contains("杨尚"));
         assertEquals(true, dictionary.contains("杨尚川"));
         assertEquals(true, dictionary.contains("章子怡"));
         assertEquals(true, dictionary.contains("刘"));
@@ -172,5 +177,31 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
         assertEquals(true, dictionary.contains("白掌"));
         assertEquals(true, dictionary.contains("红掌"));
         assertEquals(false, dictionary.contains("金钱树"));
+    }
+    @Test
+    public void testWhole2(){
+        try {
+            AtomicInteger h = new AtomicInteger();
+            AtomicInteger e = new AtomicInteger();
+            List<String> words = Files.readAllLines(Paths.get("src/test/resources/dic.txt"));
+            Dictionary dictionary = new DoubleArrayDictionaryTrie();
+            dictionary.addAll(words);
+            words.forEach(word -> {
+                for (int j = 0; j < word.length(); j++) {
+                    String sw = word.substring(0, j + 1);
+                    for (int k = 0; k < sw.length(); k++) {
+                        if (dictionary.contains(sw, k, sw.length() - k)) {
+                            h.incrementAndGet();
+                        } else {
+                            e.incrementAndGet();
+                        }
+                    }
+                }
+            });
+            assertEquals(3010699, e.get());
+            assertEquals(1383728, h.get());
+        }catch (Exception e){
+            fail();
+        }
     }
 }
