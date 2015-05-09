@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class DictionaryFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryFactory.class);
+    private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
     private DictionaryFactory(){}
     public static final Dictionary getDictionary(){
         return DictionaryHolder.DIC;
@@ -136,7 +137,7 @@ public final class DictionaryFactory {
                 @Override
                 public void add(String line) {
                     //加入词典
-                    getWords(line).forEach(DIC::add);
+                    getWords(line).stream().filter(w -> w.length() <= INTERCEPT_LENGTH).forEach(DIC::add);
                 }
 
                 @Override
@@ -146,7 +147,7 @@ public final class DictionaryFactory {
                 }
 
                 private List<String> getAllWords(List<String> lines) {
-                    return lines.stream().flatMap(line -> getWords(line).stream()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+                    return lines.stream().flatMap(line -> getWords(line).stream()).filter(w -> w.length()<=INTERCEPT_LENGTH).collect(Collectors.toSet()).stream().collect(Collectors.toList());
                 }
 
                 private List<String> getWords(String line) {
