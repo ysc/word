@@ -64,11 +64,26 @@ public class ChineseWordTokenizer extends Tokenizer {
     private int startOffset=0;
         
     public ChineseWordTokenizer() {
-        segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
+        segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMinimumMatching);
     }
+
+    public ChineseWordTokenizer(String segmentationAlgorithm) {
+        try{
+            SegmentationAlgorithm sa = SegmentationAlgorithm.valueOf(segmentationAlgorithm);
+            this.segmentation = SegmentationFactory.getSegmentation(sa);
+        }catch(Exception e){
+            this.segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMinimumMatching);
+        }
+    }
+
+    public ChineseWordTokenizer(SegmentationAlgorithm segmentationAlgorithm) {
+        this.segmentation = SegmentationFactory.getSegmentation(segmentationAlgorithm);
+    }
+
     public ChineseWordTokenizer(Segmentation segmentation) {
         this.segmentation = segmentation;
     }
+
     private Word getWord() throws IOException {
         Word word = words.poll();
         if(word == null){
@@ -84,6 +99,7 @@ public class ChineseWordTokenizer extends Tokenizer {
         }
         return word;
     }
+
     private String getToken() throws IOException {
         String token = tokens.poll();
         if(token == null){
@@ -143,6 +159,7 @@ public class ChineseWordTokenizer extends Tokenizer {
         }
         return token;
     }
+
     @Override
     public final boolean incrementToken() throws IOException {
         String token = getToken();
