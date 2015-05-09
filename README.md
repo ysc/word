@@ -509,7 +509,7 @@
 	
 
 	
-###分词算法文章：
+###相关文章：
 
 
     
@@ -528,6 +528,8 @@
    [7、一种基于词性序列的人名识别方法](http://my.oschina.net/apdplat/blog/411032)
    
    [8、中文分词算法 之 基于词典的全切分算法](http://my.oschina.net/apdplat/blog/412785)
+   
+   [9、9大Java开源中文分词器的使用方法和分词效果对比](http://my.oschina.net/apdplat/blog/412921)
    
 ###相关项目：
    
