@@ -527,6 +527,8 @@
    
    [7、一种基于词性序列的人名识别方法](http://my.oschina.net/apdplat/blog/411032)
    
+   [8、中文分词算法 之 基于词典的全切分算法](http://my.oschina.net/apdplat/blog/412785)
+   
 ###相关项目：
    
 [Java开源项目cws_evaluation：中文分词器分词效果评估](https://github.com/ysc/cws_evaluation/)
