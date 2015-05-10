@@ -531,6 +531,10 @@
    
    [9、9大Java开源中文分词器的使用方法和分词效果对比](http://my.oschina.net/apdplat/blog/412921)
    
+   [10、中文分词之11946组同义词](http://my.oschina.net/apdplat/blog/408779)
+   
+   [11、中文分词之9271组反义词](http://my.oschina.net/apdplat/blog/411301)
+   
 ###相关项目：
    
 [Java开源项目cws_evaluation：中文分词器分词效果评估](https://github.com/ysc/cws_evaluation/)
