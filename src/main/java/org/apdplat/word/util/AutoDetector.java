@@ -57,11 +57,11 @@ import redis.clients.jedis.JedisPubSub;
 public class AutoDetector {
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoDetector.class);
     //已经被监控的文件
-    private static final Set<String> fileWatchers = new HashSet<>();    
-    private static final Set<String> httpWatchers = new HashSet<>();
-    private static final Map<DirectoryWatcher, String> resources = new HashMap<>();
-    private static final Map<DirectoryWatcher, ResourceLoader> resourceLoaders = new HashMap<>();
-    private static final Map<DirectoryWatcher.WatcherCallback, DirectoryWatcher> watcherCallbacks = new HashMap<>();
+    private static final Set<String> FILE_WATCHERS = new HashSet<>();
+    private static final Set<String> HTTP_WATCHERS = new HashSet<>();
+    private static final Map<DirectoryWatcher, String> RESOURCES = new HashMap<>();
+    private static final Map<DirectoryWatcher, ResourceLoader> RESOURCE_LOADERS = new HashMap<>();
+    private static final Map<DirectoryWatcher.WatcherCallback, DirectoryWatcher> WATCHER_CALLBACKS = new HashMap<>();
     
     /**
      * 加载资源并自动检测资源变化
@@ -70,6 +70,11 @@ public class AutoDetector {
      * @param resourcePaths 多个资源路径，用逗号分隔
      */
     public static void loadAndWatch(ResourceLoader resourceLoader, String resourcePaths) {
+        resourcePaths = resourcePaths.trim();
+        if("".equals(resourcePaths)){
+            LOGGER.info("没有资源可以加载");
+            return;
+        }
         LOGGER.info("开始加载资源");
         LOGGER.info(resourcePaths);
         long start = System.currentTimeMillis();
@@ -156,10 +161,10 @@ public class AutoDetector {
     private static void watchHttp(String resource, final ResourceLoader resourceLoader){
         String[] attrs = resource.split("/");
         final String channel = attrs[attrs.length-1];
-        if(httpWatchers.contains(channel)){
+        if(HTTP_WATCHERS.contains(channel)){
             return;
         }
-        httpWatchers.add(channel);
+        HTTP_WATCHERS.add(channel);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -296,11 +301,11 @@ public class AutoDetector {
             LOGGER.error("加载资源失败："+path, ex);
         }
         
-        if(fileWatchers.contains(path.toString())){
+        if(FILE_WATCHERS.contains(path.toString())){
             //之前已经注册过监控服务，此次忽略
             return result;
         }
-        fileWatchers.add(path.toString());
+        FILE_WATCHERS.add(path.toString());
         DirectoryWatcher.WatcherCallback watcherCallback = new DirectoryWatcher.WatcherCallback(){
 
             private long lastExecute = System.currentTimeMillis();
@@ -311,9 +316,9 @@ public class AutoDetector {
                     lastExecute = System.currentTimeMillis();
                     LOGGER.info("事件："+kind.name()+" ,路径："+path);
                     synchronized(AutoDetector.class){
-                        DirectoryWatcher dw = watcherCallbacks.get(this);
-                        String paths = resources.get(dw);
-                        ResourceLoader loader = resourceLoaders.get(dw);
+                        DirectoryWatcher dw = WATCHER_CALLBACKS.get(this);
+                        String paths = RESOURCES.get(dw);
+                        ResourceLoader loader = RESOURCE_LOADERS.get(dw);
                         LOGGER.info("重新加载数据");
                         loadAndWatch(loader, paths);
                     }
@@ -327,9 +332,9 @@ public class AutoDetector {
                     StandardWatchEventKinds.ENTRY_DELETE);
         directoryWatcher.watchDirectoryTree(path);
         
-        watcherCallbacks.put(watcherCallback, directoryWatcher);
-        resources.put(directoryWatcher, resourcePaths);
-        resourceLoaders.put(directoryWatcher, resourceLoader);
+        WATCHER_CALLBACKS.put(watcherCallback, directoryWatcher);
+        RESOURCES.put(directoryWatcher, resourcePaths);
+        RESOURCE_LOADERS.put(directoryWatcher, resourceLoader);
         
         return result;
     }
@@ -368,11 +373,11 @@ public class AutoDetector {
      * @param file 文件
      */
     private static void watchFile(final File file, ResourceLoader resourceLoader, String resourcePaths) {
-        if(fileWatchers.contains(file.toString())){
+        if(FILE_WATCHERS.contains(file.toString())){
             //之前已经注册过监控服务，此次忽略
             return;
         }
-        fileWatchers.add(file.toString());
+        FILE_WATCHERS.add(file.toString());
         LOGGER.info("监控文件："+file.toString());
         DirectoryWatcher.WatcherCallback watcherCallback = new DirectoryWatcher.WatcherCallback(){
             private long lastExecute = System.currentTimeMillis();
@@ -385,9 +390,9 @@ public class AutoDetector {
                     }
                     LOGGER.info("事件："+kind.name()+" ,路径："+path);
                     synchronized(AutoDetector.class){
-                        DirectoryWatcher dw = watcherCallbacks.get(this);
-                        String paths = resources.get(dw);
-                        ResourceLoader loader = resourceLoaders.get(dw);
+                        DirectoryWatcher dw = WATCHER_CALLBACKS.get(this);
+                        String paths = RESOURCES.get(dw);
+                        ResourceLoader loader = RESOURCE_LOADERS.get(dw);
                         LOGGER.info("重新加载数据");
                         loadAndWatch(loader, paths);
                     }
@@ -399,9 +404,9 @@ public class AutoDetector {
                 StandardWatchEventKinds.ENTRY_MODIFY,
                     StandardWatchEventKinds.ENTRY_DELETE);
         fileWatcher.watchDirectory(file.getParent());        
-        watcherCallbacks.put(watcherCallback, fileWatcher);
-        resources.put(fileWatcher, resourcePaths);
-        resourceLoaders.put(fileWatcher, resourceLoader);
+        WATCHER_CALLBACKS.put(watcherCallback, fileWatcher);
+        RESOURCES.put(fileWatcher, resourcePaths);
+        RESOURCE_LOADERS.put(fileWatcher, resourceLoader);
     }
     public static void main(String[] args){
         AutoDetector.loadAndWatch(new ResourceLoader(){
