@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,10 +93,10 @@ public class WordConfTools {
         long cost = System.currentTimeMillis() - start;
         LOGGER.info("配置文件加载完毕，耗时"+cost+" 毫秒，配置项数目："+conf.size());
         LOGGER.info("配置信息：");
-        int i=1;
-        for(String key : conf.keySet()){
-            LOGGER.info((i++)+"、"+key+"="+conf.get(key));
-        }
+        AtomicInteger i = new AtomicInteger();
+        conf.keySet().stream().sorted().forEach(key -> {
+            LOGGER.info(i.incrementAndGet()+"、"+key+"="+conf.get(key));
+        });
     }
     /**
      * 强制覆盖默认配置
@@ -138,9 +140,23 @@ public class WordConfTools {
                 if("".equals(line) || line.startsWith("#")){
                     continue;
                 }
-                String[] attr = line.split("=");
-                if(attr != null && attr.length == 2){
-                    conf.put(attr[0].trim(), attr[1].trim());
+                int index = line.indexOf("=");
+                if(index==-1){
+                    LOGGER.error("错误的配置："+line);
+                    continue;
+                }
+                //有K V
+                if(index>0 && line.length()>index+1) {
+                    String key = line.substring(0, index).trim();
+                    String value = line.substring(index + 1, line.length()).trim();
+                    conf.put(key, value);
+                }
+                //有K无V
+                else if(index>0 && line.length()==index+1) {
+                    String key = line.substring(0, index).trim();
+                    conf.put(key, "");
+                }else{
+                    LOGGER.error("错误的配置："+line);
                 }
             }
         } catch (IOException ex) {
