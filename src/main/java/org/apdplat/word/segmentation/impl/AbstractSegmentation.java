@@ -21,6 +21,7 @@
 package org.apdplat.word.segmentation.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apdplat.word.corpus.Bigram;
@@ -119,6 +120,10 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
         if(sentences.size() == 1){
             return segSentence(sentences.get(0));
         }
+        if(!PARALLEL_SEG){
+            //串行顺序处理，不能利用多核优势
+            return sentences.stream().flatMap(sentence->segSentence(sentence).stream()).collect(Collectors.toList());
+        }
         //如果是多个句子，可以利用多核提升分词速度
         Map<Integer, String> sentenceMap = new HashMap<>();
         int len = sentences.size();
@@ -129,13 +134,7 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
         //用数组收集句子分词结果
         List<Word>[] results = new List[sentences.size()];
         //使用Java8中内置的并行处理机制
-        Stream<Map.Entry<Integer, String>> stream = null;
-        if(PARALLEL_SEG){
-            stream = sentenceMap.entrySet().parallelStream();
-        }else{
-            stream = sentenceMap.entrySet().stream();
-        }
-        stream.forEach(entry -> {
+        sentenceMap.entrySet().parallelStream().forEach(entry -> {
             int index = entry.getKey();
             String sentence = entry.getValue();
             results[index] = segSentence(sentence);
