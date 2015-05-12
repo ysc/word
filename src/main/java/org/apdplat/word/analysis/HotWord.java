@@ -24,23 +24,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.apdplat.word.recognition.Punctuation;
 import org.apdplat.word.recognition.RecognitionTool;
-import org.apdplat.word.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 利用NGRAM做热词分析
  * @author 杨尚川
  */
 public class HotWord {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HotWord.class);
     public static Map<String, Integer> get(String text, int ngram){
         Map<String, Integer> map = new HashMap<>();
         //根据标点符号对文本进行分割
         //根据英文单词对文本进行分割
         List<String> sentences = new ArrayList<>();
         for(String sentence : Punctuation.seg(text, false)){
-            System.out.println("判断句子是否有英文单词："+sentence);
+            LOGGER.debug("判断句子是否有英文单词：{}", sentence);
             int start=0;
             for(int i=0; i<sentence.length(); i++){
                 if(RecognitionTool.isEnglish(sentence.charAt(i))){
@@ -57,7 +58,7 @@ public class HotWord {
             }
         }
         for(String sentence : sentences){
-            System.out.println("分析文本："+sentence);
+            LOGGER.debug("\n\n分析文本：{}", sentence);
             int len = sentence.length()-ngram+1;
             for(int i=0; i<len; i++){
                 String word = sentence.substring(i, i+ngram);
@@ -71,14 +72,13 @@ public class HotWord {
                 map.put(word, count);
             }
         }
-        System.out.println();
         return map;
     }
     public static void main(String[] args){
         Map<String, Integer> map = get("目前在南京论之语有限责任公司，开发一部二组实习生，小孔同学，小孔同学是一名IT男。", 4);
-       
-        for(Entry<String, Integer> entry : Utils.getSortedMapByValue(map)){
-            System.out.println(entry.getKey()+"\t"+entry.getValue());
-        }
+
+        map.entrySet().stream().sorted((a,b)->b.getValue().compareTo(a.getValue())).forEach(e->
+                        LOGGER.info(e.getKey()+"\t"+e.getValue())
+        );
     }
 }
