@@ -535,6 +535,8 @@
    
    [11、中文分词之9271组反义词](http://my.oschina.net/apdplat/blog/411301)
    
+   [12、如何利用多核提升分词速度](http://my.oschina.net/apdplat/blog/414076)
+   
 ###相关项目：
    
 [Java开源项目cws_evaluation：中文分词器分词效果评估](https://github.com/ysc/cws_evaluation/)
