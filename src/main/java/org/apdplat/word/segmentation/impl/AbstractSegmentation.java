@@ -20,10 +20,7 @@
 
 package org.apdplat.word.segmentation.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -34,6 +31,7 @@ import org.apdplat.word.corpus.Trigram;
 import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.PersonName;
+import org.apdplat.word.segmentation.DictionaryBasedSegmentation;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.recognition.Punctuation;
@@ -42,18 +40,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 分词算法抽象类
+ * 基于词典的分词算法抽象类
  * @author 杨尚川
  */
-public abstract class AbstractSegmentation  implements Segmentation{
+public abstract class AbstractSegmentation  implements DictionaryBasedSegmentation {
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
-    protected static final Dictionary DIC = DictionaryFactory.getDictionary();
+
     protected static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
     protected static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
     protected static final boolean KEEP_PUNCTUATION = "true".equals(WordConfTools.get("keep.punctuation", "false"));
+    //允许动态更改词典操作接口实现
+    private static Dictionary dictionary = DictionaryFactory.getDictionary();
     private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
     private static final String NGRAM = WordConfTools.get("ngram", "bigram");
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(WordConfTools.getInt("thread.pool.size", 4));
+
+    /**
+     * 为基于词典的中文分词接口指定词典操作接口
+     * @param dictionary 词典操作接口
+     */
+    public void setDictionary(Dictionary dictionary){
+        this.dictionary.clear();
+        this.dictionary = dictionary;
+    }
+    /**
+     * 获取词典操作接口
+     * @return 词典操作接口
+     */
+    public Dictionary getDictionary(){
+        return dictionary;
+    }
+    /**
+     * 具体的分词实现，留待子类实现
+     * @param text 文本
+     * @return 分词结果
+     */
     public abstract List<Word> segImpl(String text);
     /**
      * 是否启用ngram
@@ -82,8 +103,8 @@ public abstract class AbstractSegmentation  implements Segmentation{
      * @return 
      */
     public int getInterceptLength(){
-        if(DIC.getMaxLength() > INTERCEPT_LENGTH){
-            return DIC.getMaxLength();
+        if(getDictionary().getMaxLength() > INTERCEPT_LENGTH){
+            return getDictionary().getMaxLength();
         }
         return INTERCEPT_LENGTH;
     }
@@ -122,6 +143,11 @@ public abstract class AbstractSegmentation  implements Segmentation{
         futures.clear();
         return result;
     }
+    /**
+     * 将切分句子的任务提交给线程池来运行
+     * @param sentence 句子
+     * @return 切分结果
+     */
     private Future<List<Word>> submit(final String sentence){
         return EXECUTOR_SERVICE.submit(new Callable<List<Word>>(){
             @Override
@@ -130,6 +156,11 @@ public abstract class AbstractSegmentation  implements Segmentation{
             }
         });
     }
+    /**
+     * 将句子切分为词
+     * @param sentence 句子
+     * @return 词集合
+     */
     private List<Word> segSentence(final String sentence){
         if(sentence.length() == 1){
             if(KEEP_WHITESPACE){
@@ -231,7 +262,18 @@ public abstract class AbstractSegmentation  implements Segmentation{
     protected boolean isWhiteSpace(char c){
         return c == ' ' || c == '　' || c == '\t' || c == '\n';
     }
-    public static void main(String[] args){
 
+    public static void main(String[] args){
+        Segmentation englishSegmentation = new AbstractSegmentation() {
+            @Override
+            public List<Word> segImpl(String text) {
+                List<Word> words = new ArrayList<>();
+                for(String word : text.split("\\s+")){
+                    words.add(new Word(word));
+                }
+                return words;
+            }
+        };
+        System.out.println(englishSegmentation.seg("i love programming"));
     }
 }

@@ -165,7 +165,7 @@ public class FullSegmentation extends AbstractSegmentation{
             len = interceptLength;
         }
         while(len > 1){
-            if(DIC.contains(text, start, len) || RecognitionTool.recog(text, start, len)){
+            if(getDictionary().contains(text, start, len) || RecognitionTool.recog(text, start, len)){
                 result.add(text.substring(start, start + len));
             }
             len--;
@@ -265,7 +265,7 @@ public class FullSegmentation extends AbstractSegmentation{
         }
     }
     public static void main(String[] args){
-        String text = "今日青春少女，明日成功女人！";
+        String text = "中国人民共和国";
         if(args !=null && args.length == 1){
             text = args[0];
         }

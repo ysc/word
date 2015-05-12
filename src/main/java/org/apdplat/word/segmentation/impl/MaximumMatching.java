@@ -48,7 +48,7 @@ public class MaximumMatching extends AbstractSegmentation{
                 len=textLen-start;
             }
             //用长为len的字符串查词典，并做特殊情况识别
-            while(!DIC.contains(text, start, len) && !RecognitionTool.recog(text, start, len)){
+            while(!getDictionary().contains(text, start, len) && !RecognitionTool.recog(text, start, len)){
                 //如果长度为一且在词典中未找到匹配
                 //则按长度为一切分
                 if(len==1){

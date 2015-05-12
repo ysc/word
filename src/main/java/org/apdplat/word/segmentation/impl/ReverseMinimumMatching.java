@@ -44,7 +44,7 @@ public class ReverseMinimumMatching extends AbstractSegmentation{
         //只要有词未切分完就一直继续
         while(start>=0){
             //用长为len的字符串查词典
-            while(!DIC.contains(text, start, len) && !RecognitionTool.recog(text, start, len)){
+            while(!getDictionary().contains(text, start, len) && !RecognitionTool.recog(text, start, len)){
                 //如果查不到，则长度加一后继续
                 //索引向前移动一个字，然后继续
                 len++;
