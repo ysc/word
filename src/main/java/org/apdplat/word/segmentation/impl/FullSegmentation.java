@@ -20,18 +20,11 @@
 
 package org.apdplat.word.segmentation.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Stack;
+import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.recognition.RecognitionTool;
-import org.apdplat.word.segmentation.SegmentationAlgorithm;
-import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.util.Utils;
+
+import java.util.*;
 
 /**
  * 基于词典的全切分算法
@@ -41,121 +34,71 @@ import org.apdplat.word.util.Utils;
  * @author 杨尚川
  */
 public class FullSegmentation extends AbstractSegmentation{
-    private static final AbstractSegmentation RMM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
-    //在评估采用的测试文本253 3709行2837 4490个字符中,行长度小于等于50的占了99.932465%
-    //大于50的行长度文本采用逆向最大匹配算法切分文本
-    private static final int PROCESS_TEXT_LENGTH_LESS_THAN = 50;
-    //长度小于等于18的文本单字成词，大于18的文本只有无词时才单字成词
-    private static final int CHAR_IS_WORD_LENGTH_LESS_THAN = 18;    
     @Override
     public List<Word> segImpl(String text) {
-        if(text.length() > PROCESS_TEXT_LENGTH_LESS_THAN){
-            return RMM.segImpl(text);
-        }
-        //获取全切分结果
-        List<Word>[] array = fullSeg(text);
-        //利用ngram计算分值
-        Map<List<Word>, Float> words = ngram(array);
-        //歧义消解（ngram分值优先、词个数少优先）
-        List<Word> result = disambiguity(words);
-        return result;        
-    }
-    private List<Word> disambiguity(Map<List<Word>, Float> words){
-        //按分值排序
-        List<Entry<List<Word>, Float>> entrys = Utils.getSortedMapByValue(words);        
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("ngram分值：");
-            int i=1;
-            for(Entry<List<Word>, Float> entry : entrys){
-                LOGGER.debug("\t"+(i++)+"、"+"词个数="+entry.getKey().size()+"\tngram分值="+entry.getValue()+"\t"+entry.getKey());
-            }
-        }
-        //移除小于最大分值的切分结果
-        float maxScore=entrys.get(0).getValue();
-        Iterator<Entry<List<Word>, Float>> iter = entrys.iterator();
-        while(iter.hasNext()){
-            Entry<List<Word>, Float> entry = iter.next();
-            if(entry.getValue() < maxScore){
-                entry.getKey().clear();
-                iter.remove();
-            }
-        }
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("只保留最大分值：");
-            int i=1;
-            for(Entry<List<Word>, Float> entry : entrys){
-                LOGGER.debug("\t"+(i++)+"、"+"词个数="+entry.getKey().size()+"\tngram分值="+entry.getValue()+"\t"+entry.getKey());
-            }
-        }
-        //如果有多个分值一样的切分结果，则选择词个数最少的（最少分词原则）
-        int minSize=Integer.MAX_VALUE;
-        List<Word> minSizeList = null;
-        iter = entrys.iterator();
-        while(iter.hasNext()){
-            Entry<List<Word>, Float> entry = iter.next();
-            if(entry.getKey().size() < minSize){
-                minSize = entry.getKey().size();
-                if(minSizeList != null){
-                    minSizeList.clear();
-                }
-                minSizeList = entry.getKey();
-            }else{
-                entry.getKey().clear();
-                iter.remove();
-            }
-        }
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("最大分值："+maxScore+", 消歧结果："+minSizeList+"，词个数："+minSize);
-        }
-        return minSizeList;
-    }
-    /**
-     * 获取文本的所有可能切分结果
-     * @param text 文本
-     * @return 全切分结果
-     */
-    private List<Word>[] fullSeg(String text){        
         //文本长度
         final int textLen = text.length();
-        //以每一个字作为词的开始，所能切分的词
-        List<String>[] sequence = new LinkedList[textLen];
-        for(int start=0; start<textLen; start++){
-            sequence[start] = fullSeg(text, start);
+        //开始虚拟节点，注意值的长度只能为1
+        Node start = new Node("S", 0);
+        start.score = 1F;
+        //结束虚拟节点
+        Node end = new Node("END", textLen+1);
+        //以文本中每一个字的位置（从1开始）作为二维数组的横坐标
+        //以每一个字开始所能切分出来的所有的词的顺序作为纵坐标（从0开始）
+        Node[][] dag = new Node[textLen+2][0];
+        dag[0] = new Node[] { start };
+        dag[textLen+1] = new Node[] { end };
+        for(int i=0; i<textLen; i++){
+            dag[i+1] = fullSeg(text, i);
         }
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("全切分中间结果：");
-            int i=1;
-            for(List<String> list : sequence){
-                LOGGER.debug("\t"+(i++)+"、"+list);
+        dump(dag);
+        //标注路径
+        int following = 0;
+        Node node = null;
+        for (int i = 0; i < dag.length - 1; i++) {
+            for (int j = 0; j < dag[i].length; j++) {
+                node = dag[i][j];
+                following = node.getFollowing();
+                for (int k = 0; k < dag[following].length; k++) {
+                    dag[following][k].setPrevious(node);
+                }
             }
         }
-        //树叶
-        List<Node> leaf = new LinkedList<>();
-        for(String word : sequence[0]){
-            //树根
-            Node node = new Node(word);
-            //把全切分中间结果（二维数组）转换为合理切分
-            buildNode(node, sequence, word.length(), leaf);            
-        }
-        //清理无用数据
-        for(int j=0; j<sequence.length; j++){
-            sequence[j].clear();
-            sequence[j] = null;
-        }
-        sequence = null;
-        //从所有树叶开始反向遍历出全切分结果
-        List<Word>[] res = toWords(leaf);
-        leaf.clear();
-        return res;
+        dump(dag);
+        return toWords(end);
     }
+
+    /**
+     * 反向遍历生成全切分结果
+     * @param node 结束虚拟节点
+     * @return 全切分结果
+     */
+    private List<Word> toWords(Node node){
+        Stack<String> stack = new Stack<>();
+        while ((node = node.getPrevious()) != null) {
+            if(!"S".equals(node.getText())) {
+                stack.push(node.getText());
+            }
+        }
+        int len = stack.size();
+        List<Word> list = new ArrayList<>(len);
+        for(int i=0; i<len; i++){
+            list.add(new Word(stack.pop()));
+        }
+        return list;
+    }
+
     /**
      * 获取以某个字符开始的小于截取长度的所有词
      * @param text 文本
      * @param start 起始字符索引
      * @return 所有符合要求的词
      */
-    private List<String> fullSeg(final String text, final int start) {
-        List<String> result = new LinkedList<>();
+    private Node[] fullSeg(final String text, final int start) {
+        List<Node> result = new LinkedList<>();
+        //增加单字词
+        result.add(new Node(text.substring(start, start + 1), start+1));
+        //文本长度
         final int textLen = text.length();
         //剩下文本长度
         int len = textLen - start;
@@ -166,110 +109,110 @@ public class FullSegmentation extends AbstractSegmentation{
         }
         while(len > 1){
             if(getDictionary().contains(text, start, len) || RecognitionTool.recog(text, start, len)){
-                result.add(text.substring(start, start + len));
+                result.add(new Node(text.substring(start, start + len), start+1));
             }
             len--;
         }
-        if(textLen <= CHAR_IS_WORD_LENGTH_LESS_THAN || result.isEmpty()){
-            //增加单字词
-            result.add(text.substring(start, start + 1));
-        }
-        return result;
+        return result.toArray(new Node[0]);
     }
+
     /**
-     * 根据全切分中间结果构造切分树
-     * @param parent 父节点
-     * @param sequence 全切分中间结果
-     * @param from 全切分中间结果数组下标索引
-     * @param leaf 叶子节点集合
+     * 输出有向无环图的结构
+     * @param dag
      */
-    private void buildNode(Node parent, List<String>[] sequence, int from, List<Node> leaf){
-        //递归退出条件：二维数组遍历完毕
-        if(from >= sequence.length){
-            //记住叶子节点
-            leaf.add(parent);
-            return;
-        }
-        for(String item : sequence[from]){
-            Node child = new Node(item, parent);
-            buildNode(child, sequence, from+item.length(), leaf);
-        }
-    }
-    /**
-     * 从树叶开始反向遍历生成全切分结果
-     * @param leaf 树叶节点集合
-     * @return 全切分结果集合
-     */
-    private List<Word>[] toWords(List<Node> leaf){
-        List<Word>[] result = new ArrayList[leaf.size()];
-        int i = 0;
+    private void dump(Node[][] dag){
         if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("全切分结果：");
-        }
-        for(Node node : leaf){
-            result[i++] = toWords(node);
-            if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug("\t" + i + "：" + result[i - 1]);
+            LOGGER.debug("全切分有向无环图：");
+            for (Node[] nodes : dag) {
+                StringBuilder line = new StringBuilder();
+                for (Node node : nodes) {
+                    line.append("【")
+                            .append(node.getText())
+                            .append("(").append(node.getScore()).append(")")
+                            .append("<-").append(node.getPrevious()==null?"":node.getPrevious().getText())
+                            .append("】\t");
+                }
+                LOGGER.debug(line.toString());
             }
         }
-        return result;
     }
+
     /**
-     * 从树叶开始反向遍历生成全切分结果
-     * @param node 树叶节点
-     * @return 全切分结果
+     * 有向无环图 的 图节点
      */
-    private List<Word> toWords(Node node){
-        Stack<String> stack = new Stack<>();
-        while(node != null){
-            stack.push(node.getText());
-            node = node.getParent();
-        }
-        int len = stack.size();
-        List<Word> list = new ArrayList<>(len);
-        for(int i=0; i<len; i++){
-            list.add(new Word(stack.pop()));
-        }
-        return list;
-    }
-    /**
-     * 树节点
-     * 只需要反向遍历
-     * 不需要记住子节点，知道父节点即可
-     */
-    private static class Node{
+    private static class Node {
         private String text;
-        private Node parent;
-        public Node(String text) {
+        private Node previous;
+        private int offset;
+        private Float score;
+
+        public Node(String text, int offset) {
             this.text = text;
+            this.offset = offset;
         }
-        public Node(String text, Node parent) {
-            this.text = text;
-            this.parent = parent;
-        }
+
         public String getText() {
             return text;
         }
+
         public void setText(String text) {
             this.text = text;
         }
-        public Node getParent() {
-            return parent;
+
+        public int getOffset() {
+            return offset;
         }
-        public void setParent(Node parent) {
-            this.parent = parent;
+
+        public void setOffset(int offset) {
+            this.offset = offset;
         }
+
+        public Float getScore() {
+            return score;
+        }
+
+        public void setScore(Float score) {
+            this.score = score;
+        }
+
+        public Node getPrevious() {
+            return previous;
+        }
+
+        public void setPrevious(Node previous) {
+            float distance = 1 - Bigram.getScore(previous.getText(), this.getText());
+            if (this.score == null) {
+                this.score = previous.score + distance;
+                this.previous = previous;
+            } else if (previous.score + distance < this.score) {
+                //发现更短的路径
+                this.score = previous.score + distance;
+                this.previous = previous;
+            }
+        }
+
+        public int getFollowing() {
+            return this.offset + text.length();
+        }
+
         @Override
         public String toString() {
-            return this.text;
+            return "Node{" +
+                    "text='" + text + '\'' +
+                    ", previous=" + previous +
+                    ", offset=" + offset +
+                    ", score=" + score +
+                    '}';
         }
     }
+
     public static void main(String[] args){
-        String text = "中国人民共和国";
-        if(args !=null && args.length == 1){
-            text = args[0];
-        }
         FullSegmentation m = new FullSegmentation();
-        System.out.println(m.seg(text).toString());
+        if(args !=null && args.length > 0){
+            System.out.println(m.seg(Arrays.asList(args).toString()));
+            return;
+        }
+        String text = "蝶舞打扮得漂漂亮亮出现在张公公面前";
+        System.out.println(m.seg(text));
     }
 }
