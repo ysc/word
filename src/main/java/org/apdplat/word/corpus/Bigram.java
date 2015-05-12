@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 public class Bigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bigram.class);
     private static final GenericTrie<Integer> GENERIC_TRIE = new GenericTrie<>();
+    private static int maxFrequency = 0;
     static{
         reload();
     }
@@ -55,24 +56,31 @@ public class Bigram {
                 int count=0;
                 for(String line : lines){
                     try{
-                        String[] attr = line.split("\\s+");
-                        GENERIC_TRIE.put(attr[0], Integer.parseInt(attr[1]));
+                        addLine(line);
                         count++;
                     }catch(Exception e){
                         LOGGER.error("错误的bigram数据："+line);
                     }
                 }
-                LOGGER.info("bigram初始化完毕，bigram数据条数："+count);
+                LOGGER.info("bigram初始化完毕，bigram数据条数：" + count);
             }
 
             @Override
             public void add(String line) {
                 try{
-                    String[] attr = line.split("\\s+");
-                    GENERIC_TRIE.put(attr[0], Integer.parseInt(attr[1]));
+                    addLine(line);
                 }catch(Exception e){
                     LOGGER.error("错误的bigram数据："+line);
                 }
+            }
+
+            private void addLine(String line){
+                String[] attr = line.split("\\s+");
+                int frequency = Integer.parseInt(attr[1]);
+                if(frequency > maxFrequency){
+                    maxFrequency = frequency;
+                }
+                GENERIC_TRIE.put(attr[0], frequency);
             }
 
             @Override
@@ -87,6 +95,11 @@ public class Bigram {
         
         }, WordConfTools.get("bigram.path", "classpath:bigram.txt"));
     }
+
+    public static int getMaxFrequency() {
+        return maxFrequency;
+    }
+
     /**
      * 含有语境的二元模型分值算法
      * 计算多种分词结果的分值
@@ -171,19 +184,29 @@ public class Bigram {
     }
     /**
      * 获取两个词一前一后紧挨着同时出现在语料库中的分值
+     * 分值被归一化了：
+     * 完全没有出现分值为0
+     * 出现频率最高的分值为1
      * @param first 前一个词
      * @param second 后一个词
      * @return 同时出现的分值
      */
     public static float getScore(String first, String second) {
-        Integer value = GENERIC_TRIE.get(first+":"+second);
-        float score = 0;
-        if(value != null){
-            score = (float)Math.sqrt(value.intValue());
-            if(LOGGER.isDebugEnabled()) {
+        int frequency = getFrequency(first, second);
+        float score = frequency/(float)maxFrequency;
+        if(LOGGER.isDebugEnabled()) {
+            if(score>0) {
                 LOGGER.debug("二元模型 " + first + ":" + second + " 获得分值：" + score);
             }
         }
         return score;
+    }
+
+    public static int getFrequency(String first, String second) {
+        Integer value = GENERIC_TRIE.get(first+":"+second);
+        if(value == null){
+            return 0;
+        }
+        return value;
     }
 }

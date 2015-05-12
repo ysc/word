@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 public class Trigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Trigram.class);
     private static final GenericTrie<Integer> GENERIC_TRIE = new GenericTrie();
+    private static int maxFrequency = 0;
     static{
         reload();
     }
@@ -55,24 +56,31 @@ public class Trigram {
                 int count=0;
                 for(String line : lines){
                     try{
-                        String[] attr = line.split("\\s+");
-                        GENERIC_TRIE.put(attr[0], Integer.parseInt(attr[1]));
+                        addLine(line);
                         count++;
                     }catch(Exception e){
                         LOGGER.error("错误的trigram数据："+line);
                     }
                 }
-                LOGGER.info("trigram初始化完毕，trigram数据条数："+count);
+                LOGGER.info("trigram初始化完毕，trigram数据条数：" + count);
             }
 
             @Override
             public void add(String line) {
                 try{
-                    String[] attr = line.split("\\s+");
-                    GENERIC_TRIE.put(attr[0], Integer.parseInt(attr[1]));
+                    addLine(line);
                 }catch(Exception e){
                     LOGGER.error("错误的trigram数据："+line);
                 }
+            }
+
+            private void addLine(String line){
+                String[] attr = line.split("\\s+");
+                int frequency = Integer.parseInt(attr[1]);
+                if(frequency > maxFrequency){
+                    maxFrequency = frequency;
+                }
+                GENERIC_TRIE.put(attr[0], frequency);
             }
 
             @Override
@@ -87,6 +95,11 @@ public class Trigram {
         
         }, WordConfTools.get("trigram.path", "classpath:trigram.txt"));
     }
+
+    public static int getMaxFrequency() {
+        return maxFrequency;
+    }
+
     /**
      * 一次性计算多种分词结果的三元模型分值
      * @param sentences 多种分词结果
@@ -135,20 +148,30 @@ public class Trigram {
     }
     /**
      * 获取三个词前后紧挨着同时出现在语料库中的分值
+     * 分值被归一化了：
+     * 完全没有出现分值为0
+     * 出现频率最高的分值为1
      * @param first 第一个词
      * @param second 第二个词
      * @param third 第三个词
      * @return 同时出现的分值
      */
     public static float getScore(String first, String second, String third) {
-        Integer value = GENERIC_TRIE.get(first+":"+second+":"+third);
-        float score = 0;
-        if(value != null){
-            score = (float)Math.sqrt(value.intValue());
-            if(LOGGER.isDebugEnabled()) {
+        int frequency = getFrequency(first, second, third);
+        float score = frequency/(float)maxFrequency;
+        if(LOGGER.isDebugEnabled()) {
+            if(score>0) {
                 LOGGER.debug("三元模型 " + first + ":" + second + ":" + third + " 获得分值：" + score);
             }
         }
         return score;
+    }
+
+    public static int getFrequency(String first, String second, String third) {
+        Integer value = GENERIC_TRIE.get(first+":"+second+":"+third);
+        if(value == null){
+            return 0;
+        }
+        return value;
     }
 }
