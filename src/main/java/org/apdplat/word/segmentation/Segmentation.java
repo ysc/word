@@ -23,10 +23,15 @@ package org.apdplat.word.segmentation;
 import java.util.List;
 
 /**
- * 分词接口
- * Word Segmentation Interface
+ * 中文分词接口
+ * Chinese Word Segmentation Interface
  * @author 杨尚川
  */
 public interface Segmentation {
+    /**
+     * 将文本切分为词
+     * @param text 文本
+     * @return 词
+     */
     public List<Word> seg(String text);
 }
