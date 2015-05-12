@@ -21,11 +21,8 @@
 package org.apdplat.word.segmentation.impl;
 
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.stream.Stream;
+
 import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.corpus.Trigram;
 import org.apdplat.word.dictionary.Dictionary;
@@ -46,14 +43,14 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractSegmentation  implements DictionaryBasedSegmentation {
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    protected static final boolean PERSON_NAME_RECOGNIZE = "true".equals(WordConfTools.get("person.name.recognize", "true"));
-    protected static final boolean KEEP_WHITESPACE = "true".equals(WordConfTools.get("keep.whitespace", "false"));
-    protected static final boolean KEEP_PUNCTUATION = "true".equals(WordConfTools.get("keep.punctuation", "false"));
-    //允许动态更改词典操作接口实现
-    private static Dictionary dictionary = DictionaryFactory.getDictionary();
+    private static final boolean PERSON_NAME_RECOGNIZE = WordConfTools.getBoolean("person.name.recognize", true);
+    private static final boolean KEEP_WHITESPACE = WordConfTools.getBoolean("keep.whitespace", false);
+    private static final boolean KEEP_PUNCTUATION = WordConfTools.getBoolean("keep.punctuation", false);
+    private static final boolean PARALLEL_SEG = WordConfTools.getBoolean("parallel.seg", true);
     private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
     private static final String NGRAM = WordConfTools.get("ngram", "bigram");
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(WordConfTools.getInt("thread.pool.size", 4));
+    //允许动态更改词典操作接口实现
+    private static Dictionary dictionary = DictionaryFactory.getDictionary();
 
     /**
      * 为基于词典的中文分词接口指定词典操作接口
@@ -122,39 +119,36 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
         if(sentences.size() == 1){
             return segSentence(sentences.get(0));
         }
-        //如果是多个句子，可以利用多线程提升分词速度
-        List<Future<List<Word>>> futures = new ArrayList<>(sentences.size());
-        for(String sentence : sentences){
-            futures.add(submit(sentence));
+        //如果是多个句子，可以利用多核提升分词速度
+        Map<Integer, String> sentenceMap = new HashMap<>();
+        int len = sentences.size();
+        for(int i=0; i<len; i++){
+            //记住句子的先后顺序，因为后面的parallelStream方法不保证顺序
+            sentenceMap.put(i, sentences.get(i));
         }
-        sentences.clear();
-        List<Word> result = new ArrayList<>();
-        for(Future<List<Word>> future : futures){
-            List<Word> words;
-            try {
-                words = future.get();
-                if(words != null){
-                    result.addAll(words);
-                }
-            } catch (InterruptedException | ExecutionException ex) {
-                LOGGER.error("获取分词结果失败", ex);
-            }
+        //用数组收集句子分词结果
+        List<Word>[] results = new List[sentences.size()];
+        //使用Java8中内置的并行处理机制
+        Stream<Map.Entry<Integer, String>> stream = null;
+        if(PARALLEL_SEG){
+            stream = sentenceMap.entrySet().parallelStream();
+        }else{
+            stream = sentenceMap.entrySet().stream();
         }
-        futures.clear();
-        return result;
-    }
-    /**
-     * 将切分句子的任务提交给线程池来运行
-     * @param sentence 句子
-     * @return 切分结果
-     */
-    private Future<List<Word>> submit(final String sentence){
-        return EXECUTOR_SERVICE.submit(new Callable<List<Word>>(){
-            @Override
-            public List<Word> call() {
-                return segSentence(sentence);
-            }
+        stream.forEach(entry -> {
+            int index = entry.getKey();
+            String sentence = entry.getValue();
+            results[index] = segSentence(sentence);
         });
+        sentences.clear();
+        sentences = null;
+        sentenceMap.clear();
+        sentenceMap = null;
+        List<Word> resultList = new ArrayList<>();
+        for(List<Word> result : results){
+            resultList.addAll(result);
+        }
+        return resultList;
     }
     /**
      * 将句子切分为词
