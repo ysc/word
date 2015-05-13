@@ -57,7 +57,13 @@ public enum SegmentationAlgorithm {
     /**
      * 全切分算法
      */
-    FullSegmentation("全切分算法");
+    FullSegmentation("全切分算法"),
+
+    /**
+     * 最少分词算法
+     */
+    MinimalWordCount("最少分词算法");
+
     private SegmentationAlgorithm(String des){
         this.des = des;
     }
