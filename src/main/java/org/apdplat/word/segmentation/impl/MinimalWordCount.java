@@ -44,6 +44,8 @@ public class MinimalWordCount extends AbstractSegmentation{
         final int textLen = text.length();
         //开始虚拟节点，注意值的长度只能为1
         Node start = new Node("S", 0);
+        //首节点分值为1，每两个词之间的距离都为1
+        //求最短路径也就是求最少词数
         start.score = 1F;
         //结束虚拟节点
         Node end = new Node("END", textLen+1);
@@ -73,9 +75,9 @@ public class MinimalWordCount extends AbstractSegmentation{
     }
 
     /**
-     * 反向遍历生成最少词数结果
+     * 反向遍历生成分词结果
      * @param node 结束虚拟节点
-     * @return 最少词数结果
+     * @return 分词结果
      */
     private List<Word> toWords(Node node){
         Stack<String> stack = new Stack<>();
@@ -121,12 +123,12 @@ public class MinimalWordCount extends AbstractSegmentation{
     }
 
     /**
-     * 输出有向无环图的最短路径
+     * 输出有向无环图的最佳路径
      * @param dag
      */
     private void dumpShortestPath(Node[][] dag){
         if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("有向无环图的最短路径：");
+            LOGGER.debug("有向无环图的最佳路径：");
             for (Node[] nodes : dag) {
                 StringBuilder line = new StringBuilder();
                 for (Node node : nodes) {
@@ -210,6 +212,14 @@ public class MinimalWordCount extends AbstractSegmentation{
             return previous;
         }
 
+        /**
+         * 求最短路径
+         * 前一个节点到当前节点的距离默认为1
+         * 如果前一个节点到当前节点有ngram分值
+         * 则缩短前一个节点到当前节点的距离
+         * 可以放心的是前一个节点到当前节点的ngram分值大小区间为[0,1]
+         * @param previous 前一个节点
+         */
         public void setPrevious(Node previous) {
             float distance = 1 - Bigram.getScore(previous.getText(), this.getText());
             if (this.score == null) {
