@@ -177,8 +177,6 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
     @Override
     public boolean contains(String item, int start, int length) {
-        char[] wordChars = item.toCharArray();
-
         if(base==null){
             return false;
         }
@@ -186,17 +184,17 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         int b = base[0];
         int p;
 
+        char[] wordChars = item.toCharArray();
         for (int i = start; i < start+length; i++) {
             p = b + (int) (wordChars[i]) + 1;
-            if (b == check[p])
+            if (b == check[p]) {
                 b = base[p];
-            else
+            }else {
                 return false;
+            }
         }
 
-        p = b;
-        int n = base[p];
-        if (b == check[p] && n < 0) {
+        if (base[b] < 0 && b == check[b]) {
             return true;
         }
         return false;
