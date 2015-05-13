@@ -97,6 +97,15 @@ public final class DictionaryFactory {
                     LOGGER.info("将 " + count + " 个复姓加入词典");
                     List<String> words = getAllWords(lines);
                     lines.clear();
+                    //dic dump
+                    String dicDumpPath = WordConfTools.get("dic.dump.path");
+                    if (dicDumpPath != null && dicDumpPath.length() > 0) {
+                        try {
+                            Files.write(Paths.get(dicDumpPath), words);
+                        }catch (Exception e){
+                            LOGGER.error("dic dump error!", e);
+                        }
+                    }
                     //构造词典
                     DIC.addAll(words);
                     //输出统计信息
@@ -147,7 +156,7 @@ public final class DictionaryFactory {
                 }
 
                 private List<String> getAllWords(List<String> lines) {
-                    return lines.stream().flatMap(line -> getWords(line).stream()).filter(w -> w.length()<=INTERCEPT_LENGTH).collect(Collectors.toSet()).stream().collect(Collectors.toList());
+                    return lines.stream().flatMap(line -> getWords(line).stream()).filter(w -> w.length() <= INTERCEPT_LENGTH).collect(Collectors.toSet()).stream().sorted().collect(Collectors.toList());
                 }
 
                 private List<String> getWords(String line) {
