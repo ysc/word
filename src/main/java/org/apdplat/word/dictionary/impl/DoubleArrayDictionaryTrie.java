@@ -70,25 +70,26 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
             int cur = 0;
             if (word.length() != parent.depth) {
-                cur = (int) word.charAt(parent.depth) + 1;
+                cur = (int) word.charAt(parent.depth);
             }
 
-            if (cur != prev || siblings.size() == 0) {
+            if (cur != prev || siblings.isEmpty()) {
                 Node node = new Node();
                 node.depth = parent.depth + 1;
                 node.code = cur;
                 node.left = i;
-                if (siblings.size() != 0)
+                if (!siblings.isEmpty()) {
                     siblings.get(siblings.size() - 1).right = i;
-
+                }
                 siblings.add(node);
             }
 
             prev = cur;
         }
 
-        if (siblings.size() != 0)
+        if (!siblings.isEmpty()) {
             siblings.get(siblings.size() - 1).right = parent.right;
+        }
 
         return siblings;
     }
@@ -157,6 +158,7 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         base[0] = 1;
         nextCheckPos = 0;
 
+        //前缀树的虚拟根节点
         Node rootNode = new Node();
         rootNode.left = 0;
         rootNode.right = words.size();
@@ -186,7 +188,7 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
         char[] wordChars = item.toCharArray();
         for (int i = start; i < start+length; i++) {
-            p = b + (int) (wordChars[i]) + 1;
+            p = b + (int) (wordChars[i]);
             if (b == check[p]) {
                 b = base[p];
             }else {
