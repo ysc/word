@@ -52,36 +52,36 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
     private int[] check;
     private int[] base;
     private boolean[] used;
-    private List<String> words;
     private int nextCheckPos;
 
     public DoubleArrayDictionaryTrie(){
         LOGGER.info("初始化词典：" + this.getClass().getName());
     }
 
-    private int prepare(Node parent, List<Node> siblings) {
+    private List<Node> toTree(Node parent, List<String> words) {
+        List<Node> siblings = new ArrayList<>();
         int prev = 0;
 
         for (int i = parent.left; i < parent.right; i++) {
             if (words.get(i).length() < parent.depth)
                 continue;
 
-            String tmp = words.get(i);
+            String word = words.get(i);
 
             int cur = 0;
-            if (tmp.length() != parent.depth) {
-                cur = (int) tmp.charAt(parent.depth) + 1;
+            if (word.length() != parent.depth) {
+                cur = (int) word.charAt(parent.depth) + 1;
             }
 
             if (cur != prev || siblings.size() == 0) {
-                Node tmpNode = new Node();
-                tmpNode.depth = parent.depth + 1;
-                tmpNode.code = cur;
-                tmpNode.left = i;
+                Node node = new Node();
+                node.depth = parent.depth + 1;
+                node.code = cur;
+                node.left = i;
                 if (siblings.size() != 0)
                     siblings.get(siblings.size() - 1).right = i;
 
-                siblings.add(tmpNode);
+                siblings.add(node);
             }
 
             prev = cur;
@@ -90,13 +90,12 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         if (siblings.size() != 0)
             siblings.get(siblings.size() - 1).right = parent.right;
 
-        return siblings.size();
+        return siblings;
     }
 
-    private int insert(List<Node> siblings) {
+    private int toDoubleArray(List<Node> siblings, List<String> words) {
         int begin = 0;
-        int pos = ((siblings.get(0).code + 1 > nextCheckPos) ? siblings.get(0).code + 1
-                : nextCheckPos) - 1;
+        int pos = (siblings.get(0).code > nextCheckPos) ? siblings.get(0).code : nextCheckPos;
         int nonzero_num = 0;
         int first = 0;
 
@@ -113,12 +112,15 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
             begin = pos - siblings.get(0).code;
 
-            if (used[begin])
+            if (used[begin]) {
                 continue;
+            }
 
-            for (int i = 1; i < siblings.size(); i++)
-                if (check[begin + siblings.get(i).code] != 0)
+            for (int i = 1; i < siblings.size(); i++) {
+                if (check[begin + siblings.get(i).code] != 0) {
                     continue outer;
+                }
+            }
 
             break;
         }
@@ -132,12 +134,12 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
             check[begin + siblings.get(i).code] = begin;
 
         for (int i = 0; i < siblings.size(); i++) {
-            List<Node> new_siblings = new ArrayList<>();
+            List<Node> newSiblings = toTree(siblings.get(i), words);
 
-            if (prepare(siblings.get(i), new_siblings) == 0) {
+            if (newSiblings.isEmpty()) {
                 base[begin + siblings.get(i).code] = -siblings.get(i).left - 1;
             } else {
-                int h = insert(new_siblings);
+                int h = toDoubleArray(newSiblings, words);
                 base[begin + siblings.get(i).code] = h;
             }
         }
@@ -147,8 +149,6 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
     private void init(List<String> words) {
         if (words == null || words.isEmpty())
             return ;
-
-        this.words = words;
 
         base = new int[SIZE];
         check = new int[SIZE];
@@ -162,9 +162,8 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         rootNode.right = words.size();
         rootNode.depth = 0;
 
-        List<Node> siblings = new ArrayList<>();
-        prepare(rootNode, siblings);
-        insert(siblings);
+        List<Node> siblings = toTree(rootNode, words);
+        toDoubleArray(siblings, words);
 
         words.clear();
         words = null;
@@ -213,6 +212,7 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         if(check!=null){
             throw new RuntimeException("addAll method can just be used once after clear method!");
         }
+
         items=items
                 .stream()
                 .map(item -> item.trim())
