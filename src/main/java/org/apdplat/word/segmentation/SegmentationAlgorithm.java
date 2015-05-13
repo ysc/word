@@ -62,7 +62,12 @@ public enum SegmentationAlgorithm {
     /**
      * 最少分词算法
      */
-    MinimalWordCount("最少分词算法");
+    MinimalWordCount("最少分词算法"),
+
+    /**
+     * 最大Ngram分值算法
+     */
+    MaxNgramScore("最大Ngram分值算法");
 
     private SegmentationAlgorithm(String des){
         this.des = des;
