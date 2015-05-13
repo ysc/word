@@ -1,8 +1,6 @@
 ###Java分布式中文分词组件 - word分词
 
-####word分词是一个Java实现的分布式的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。能通过自定义配置文件来改变组件行为，能自定义用户词库、自动检测词库变化、支持大规模分布式环境，能灵活指定多种分词算法，能使用refine功能灵活控制分词结果，还能使用词性标注、同义标注、反义标注、拼音标注等功能。同时还无缝和Lucene、Solr、ElasticSearch、Luke集成。
-
-####注意：word1.3需要JDK1.8
+####word分词是一个Java实现的分布式的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。能通过自定义配置文件来改变组件行为，能自定义用户词库、自动检测词库变化、支持大规模分布式环境，能灵活指定多种分词算法，能使用refine功能灵活控制分词结果，还能使用词性标注、同义标注、反义标注、拼音标注等功能。同时还无缝和Lucene、Solr、ElasticSearch、Luke集成。注意：word1.3需要JDK1.8
 
 ###API在线文档：
 
@@ -281,7 +279,7 @@
 	可以通过Word的getFullPinYin()方法获取完整拼音如：sudu
 	可以通过Word的getAcronymPinYin()方法获取首字母缩略拼音如：sd
 	
-###16、Lucene插件：
+####16、Lucene插件：
 
 	1、构造一个word分析器ChineseWordAnalyzer
     Analyzer analyzer = new ChineseWordAnalyzer();
@@ -333,7 +331,7 @@
 	Query query = queryParser.parse("text:杨尚川");
 	TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
 
-###17、Solr插件：
+####17、Solr插件：
 	
 	1、下载word-1.3.jar
 	下载地址：http://search.maven.org/remotecontent?filepath=org/apdplat/word/1.3/word-1.3.jar
@@ -368,7 +366,7 @@
 	word.local.conf文件中可配置的内容见 word-1.3.jar 中的word.conf文件
 	如不指定，使用默认配置文件，位于 word-1.3.jar 中的word.conf文件
 	
-###18、ElasticSearch插件：
+####18、ElasticSearch插件：
 
 	1、打开命令行并切换到elasticsearch的bin目录
 	cd elasticsearch-1.5.1/bin
@@ -404,7 +402,7 @@
 	最大Ngram分值算法：MaxNgramScore
 	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
-###19、Luke插件：
+####19、Luke插件：
 
 	1、下载http://luke.googlecode.com/files/lukeall-4.0.0-ALPHA.jar（国内不能访问）
 
@@ -432,7 +430,7 @@
    
    已经集成好的Luke插件下载（适用于lucene4.10.3）：[lukeall-4.10.3-with-word-1.2.jar](http://pan.baidu.com/s/1mgFt7ZU)
 	
-###20、词向量：
+####20、词向量：
 
 	从大规模语料中统计一个词的上下文相关词，并用这些上下文相关词组成的向量来表达这个词。
 	通过计算词向量的相似性，即可得到词的相似性。
