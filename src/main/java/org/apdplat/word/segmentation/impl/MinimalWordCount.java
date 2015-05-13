@@ -248,11 +248,12 @@ public class MinimalWordCount extends AbstractSegmentation{
     }
 
     public static void main(String[] args){
-        Segmentation m = new MinimalWordCount();
+        Segmentation segmentation = new MinimalWordCount();
         if(args !=null && args.length > 0){
-            System.out.println(m.seg(Arrays.asList(args).toString()));
+            System.out.println(segmentation.seg(Arrays.asList(args).toString()));
             return;
         }
-        System.out.println(m.seg("独立自主和平等互利的原则"));
+        System.out.println(segmentation.seg("独立自主和平等互利的原则"));
+        System.out.println(segmentation.seg("我爱楚离陌"));
     }
 }
