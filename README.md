@@ -54,7 +54,8 @@
 
 
 
-	1、快速体验
+####1、快速体验
+	
 	运行项目根目录下的脚本demo-word.bat可以快速体验分词效果
 	用法: command [text] [input] [output]
 	命令command的可选值为：demo、text、file
@@ -63,7 +64,8 @@
 	file d:/text.txt d:/word.txt
 	exit
 	
-	2、对文本进行分词
+####2、对文本进行分词
+
 	移除停用词：List<Word> words = WordSegmenter.seg("杨尚川是APDPlat应用级产品开发平台的作者");
 	保留停用词：List<Word> words = WordSegmenter.segWithStopWords("杨尚川是APDPlat应用级产品开发平台的作者");
 				System.out.println(words);
@@ -72,19 +74,22 @@
 	移除停用词：[杨尚川, apdplat, 应用级, 产品, 开发平台, 作者]
 	保留停用词：[杨尚川, 是, apdplat, 应用级, 产品, 开发平台, 的, 作者]
 
-	3、对文件进行分词
+####3、对文件进行分词
+
 	String input = "d:/text.txt";
 	String output = "d:/word.txt";
 	移除停用词：WordSegmenter.seg(new File(input), new File(output));
 	保留停用词：WordSegmenter.segWithStopWords(new File(input), new File(output));
 	
-	4、自定义配置文件
+####4、自定义配置文件
+
 	默认配置文件为类路径下的word.conf，打包在word-x.x.jar中
 	自定义配置文件为类路径下的word.local.conf，需要用户自己提供
 	如果自定义配置和默认配置相同，自定义配置会覆盖默认配置
 	配置文件编码为UTF-8
 		
-	5、自定义用户词库
+####5、自定义用户词库
+
 	自定义用户词库为一个或多个文件夹或文件，可以使用绝对路径或相对路径
 	用户词库由多个词典文件组成，文件编码为UTF-8
 	词典文件的格式为文本文件，一行代表一个词
@@ -103,11 +108,13 @@
  	
 	如未指定，则默认使用类路径下的dic.txt词典文件
 	
-	6、自定义停用词词库
+####6、自定义停用词词库
+
 	使用方式和自定义用户词库类似，配置项为：
 	stopwords.path=classpath:stopwords.txt，d:/custom_stopwords_dic
 		
-	7、自动检测词库变化
+####7、自动检测词库变化
+
 	可以自动检测自定义用户词库和自定义停用词词库的变化
 	包含类路径下的文件和文件夹、非类路径下的绝对路径和相对路径
 	如：
@@ -117,7 +124,8 @@
 	classpath:stopwords.txt，classpath:custom_stopwords_dic_dir，
 	d:/stopwords_more.txt，d:/STOPWORDS_DIR，d:/STOPWORDS2_DIR，stopwords_dir，remove.txt
 	
-	8、显式指定分词算法
+####8、显式指定分词算法
+
 	对文本进行分词时，可显式指定特定的分词算法，如：
 	WordSegmenter.seg("APDPlat应用级产品开发平台", SegmentationAlgorithm.BidirectionalMaximumMatching);
 	
@@ -130,8 +138,11 @@
 	双向最小匹配算法：BidirectionalMinimumMatching
 	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 	全切分算法：FullSegmentation
+	最少分词算法：MinimalWordCount
+	最大Ngram分值算法：MaxNgramScore
 	
-	9、分词效果评估
+####9、分词效果评估
+
 	运行项目根目录下的脚本evaluation.bat可以对分词效果进行评估
 	评估采用的测试文本有253 3709行，共2837 4490个字符
 	评估结果位于target/evaluation目录下：
@@ -142,12 +153,14 @@
 	perfect-result-***.txt，***为各种分词算法名称，这是分词结果和人工标注标准完全一致的文本
 	wrong-result-***.txt，***为各种分词算法名称，这是分词结果和人工标注标准不一致的文本
 
-	10、分布式中文分词器
+####10、分布式中文分词器
+
 	1、在自定义配置文件word.conf或word.local.conf中指定所有的配置项*.path使用HTTP资源，同时指定配置项redis.*
 	2、配置并启动提供HTTP资源的web服务器，将项目：https://github.com/ysc/word_web部署到tomcat
 	3、配置并启动redis服务器
 	
-	11、词性标注（1.3才有这个功能）
+####11、词性标注（1.3才有这个功能）
+
 	将分词结果作为输入参数，调用PartOfSpeechTagging类的process方法，词性保存在Word类的partOfSpeech字段中
 	如下所示：
 	List<Word> words = WordSegmenter.segWithStopWords("我爱中国");
@@ -159,7 +172,8 @@
 	未标注词性：[我, 爱, 中国]
     标注词性：[我/r, 爱/v, 中国/ns]
     
-    12、refine
+####12、refine
+
     我们看一个切分例子：
     List<Word> words = WordSegmenter.segWithStopWords("我国工人阶级和广大劳动群众要更加紧密地团结在党中央周围");
     System.out.println(words);
@@ -194,7 +208,8 @@
 	这样，就能达到我们想要的效果：
 	[在, 实现, 两个一百年, 奋斗目标, 的, 伟大征程, 上, 再创, 新的, 业绩]
 	
-    13、同义标注
+####13、同义标注
+
     List<Word> words = WordSegmenter.segWithStopWords("楚离陌千方百计为无情找回记忆");
     System.out.println(words);
 	结果如下：
@@ -241,7 +256,8 @@
 	对于C来说，A C E是直接同义词
 	对于A B C来说，A B C D E是间接同义词
 	
-    14、反义标注
+####14、反义标注
+
     List<Word> words = WordSegmenter.segWithStopWords("5月初有哪些电影值得观看");
     System.out.println(words);
 	结果如下：
@@ -269,7 +285,8 @@
 	[月底, 月末, 月终]
 	注意：如果没有反义词，getAntonym()返回空集合：Collections.emptyList()
 	
-	15、拼音标注
+####15、拼音标注
+
 	List<Word> words = WordSegmenter.segWithStopWords("《速度与激情7》的中国内地票房自4月12日上映以来，在短短两周内突破20亿人民币");
 	System.out.println(words);
 	结果如下：
@@ -415,6 +432,8 @@
 	双向最小匹配算法：BidirectionalMinimumMatching
 	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 	全切分算法：FullSegmentation
+	最少分词算法：MinimalWordCount
+	最大Ngram分值算法：MaxNgramScore
 	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
 	5、如果需要指定特定的配置文件：
@@ -459,6 +478,8 @@
 	双向最小匹配算法：BidirectionalMinimumMatching
 	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 	全切分算法：FullSegmentation
+	最少分词算法：MinimalWordCount
+	最大Ngram分值算法：MaxNgramScore
 	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
 
