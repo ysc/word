@@ -179,6 +179,9 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
     @Override
     public boolean contains(String item, int start, int length) {
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("开始查词典：{}", item.substring(start, start + length));
+        }
         if(base==null){
             return false;
         }
@@ -197,6 +200,9 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         }
 
         if (base[b] < 0 && b == check[b]) {
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("在词典中查到词：{}", item.substring(start, start + length));
+            }
             return true;
         }
         return false;
