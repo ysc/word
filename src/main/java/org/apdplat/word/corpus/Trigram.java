@@ -24,10 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.util.AutoDetector;
-import org.apdplat.word.util.GenericTrie;
-import org.apdplat.word.util.ResourceLoader;
-import org.apdplat.word.util.WordConfTools;
+import org.apdplat.word.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Trigram {
     private static final Logger LOGGER = LoggerFactory.getLogger(Trigram.class);
-    private static final GenericTrie<Integer> GENERIC_TRIE = new GenericTrie();
+    private static final DoubleArrayGenericTrie DOUBLE_ARRAY_GENERIC_TRIE = new DoubleArrayGenericTrie(WordConfTools.getInt("trigram.double.array.trie.size", 9800000));
     private static int maxFrequency = 0;
     static{
         reload();
@@ -47,50 +44,41 @@ public class Trigram {
 
             @Override
             public void clear() {
-                GENERIC_TRIE.clear();
+                DOUBLE_ARRAY_GENERIC_TRIE.clear();
             }
 
             @Override
             public void load(List<String> lines) {
                 LOGGER.info("初始化trigram");
-                int count=0;
+                Map<String, Integer> map = new HashMap<>();
                 for(String line : lines){
                     try{
-                        addLine(line);
-                        count++;
+                        addLine(line, map);
                     }catch(Exception e){
                         LOGGER.error("错误的trigram数据："+line);
                     }
                 }
-                LOGGER.info("trigram初始化完毕，trigram数据条数：" + count);
+                DOUBLE_ARRAY_GENERIC_TRIE.putAll(map);
+                LOGGER.info("trigram初始化完毕，trigram数据条数：" + map.size());
             }
 
             @Override
             public void add(String line) {
-                try{
-                    addLine(line);
-                }catch(Exception e){
-                    LOGGER.error("错误的trigram数据："+line);
-                }
+                throw new RuntimeException("not yet support menthod!");
             }
 
-            private void addLine(String line){
+            private void addLine(String line, Map<String, Integer> map){
                 String[] attr = line.split("\\s+");
                 int frequency = Integer.parseInt(attr[1]);
                 if(frequency > maxFrequency){
                     maxFrequency = frequency;
                 }
-                GENERIC_TRIE.put(attr[0], frequency);
+                map.put(attr[0], frequency);
             }
 
             @Override
             public void remove(String line) {
-                try{
-                    String[] attr = line.split("\\s+");
-                    GENERIC_TRIE.remove(attr[0]);
-                }catch(Exception e){
-                    LOGGER.error("错误的trigram数据："+line);
-                }
+                throw new RuntimeException("not yet support menthod!");
             }
         
         }, WordConfTools.get("trigram.path", "classpath:trigram.txt"));
@@ -168,7 +156,7 @@ public class Trigram {
     }
 
     public static int getFrequency(String first, String second, String third) {
-        Integer value = GENERIC_TRIE.get(first+":"+second+":"+third);
+        Integer value = DOUBLE_ARRAY_GENERIC_TRIE.get(first+":"+second+":"+third);
         if(value == null){
             return 0;
         }
