@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apdplat.word.dictionary.Dictionary;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class DictionaryTrie implements Dictionary{
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryTrie.class);
     //词表的首字母数量在一个可控范围内，默认值为24000
-    private static final int INDEX_LENGTH = 24000;
+    private static final int INDEX_LENGTH = WordConfTools.getInt("dictionary.trie.index.size", 24000);;
     private final TrieNode[] ROOT_NODES_INDEX = new TrieNode[INDEX_LENGTH];
     private int maxLength;
     public DictionaryTrie(){
