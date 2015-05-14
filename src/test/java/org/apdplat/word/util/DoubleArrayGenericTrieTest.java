@@ -79,7 +79,7 @@ public class DoubleArrayGenericTrieTest {
                     map.put(attrs[0], Integer.parseInt(attrs[1]));
                 }
             });
-            DoubleArrayGenericTrie doubleArrayGenericTrie = new DoubleArrayGenericTrie(WordConfTools.getInt("bigram.double.array.trie.size", 5500000));
+            DoubleArrayGenericTrie doubleArrayGenericTrie = new DoubleArrayGenericTrie(WordConfTools.getInt("bigram.double.array.trie.size", 5300000));
             doubleArrayGenericTrie.putAll(map);
             map.keySet().forEach(key->assertEquals(map.get(key).intValue(), doubleArrayGenericTrie.get(key)));
         }catch (Exception e){
@@ -98,7 +98,7 @@ public class DoubleArrayGenericTrieTest {
                     map.put(attrs[0], Integer.parseInt(attrs[1]));
                 }
             });
-            DoubleArrayGenericTrie doubleArrayGenericTrie = new DoubleArrayGenericTrie(WordConfTools.getInt("trigram.double.array.trie.size", 10100000));
+            DoubleArrayGenericTrie doubleArrayGenericTrie = new DoubleArrayGenericTrie(WordConfTools.getInt("trigram.double.array.trie.size", 9800000));
             doubleArrayGenericTrie.putAll(map);
             map.keySet().forEach(key->assertEquals(map.get(key).intValue(), doubleArrayGenericTrie.get(key)));
         }catch (Exception e){
