@@ -115,9 +115,19 @@ public class FullSegmentation extends AbstractSegmentation{
         //文本长度
         final int textLen = text.length();
         //以每一个字作为词的开始，所能切分的词
-        List<String>[] sequence = new LinkedList[textLen];
-        for(int start=0; start<textLen; start++){
-            sequence[start] = fullSeg(text, start);
+        final List<String>[] sequence = new LinkedList[textLen];
+        if(isParallelSeg()){
+            //并行化
+            List<Integer> list = new ArrayList<>(textLen);
+            for(int i=0; i<textLen; i++){
+                list.add(i);
+            }
+            list.parallelStream().forEach(i->sequence[i] = fullSeg(text, i));
+        }else {
+            //串行化
+            for (int i = 0; i < textLen; i++) {
+                sequence[i] = fullSeg(text, i);
+            }
         }
         if(LOGGER.isDebugEnabled()){
             LOGGER.debug("全切分中间结果：");
@@ -139,7 +149,6 @@ public class FullSegmentation extends AbstractSegmentation{
             sequence[j].clear();
             sequence[j] = null;
         }
-        sequence = null;
         //从所有树叶开始反向遍历出全切分结果
         List<Word>[] res = toWords(leaf);
         leaf.clear();

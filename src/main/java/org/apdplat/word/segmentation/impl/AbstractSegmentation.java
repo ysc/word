@@ -53,6 +53,9 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
     //允许动态更改词典操作接口实现
     private static Dictionary dictionary = DictionaryFactory.getDictionary();
 
+    public boolean isParallelSeg(){
+        return PARALLEL_SEG;
+    }
     /**
      * 为基于词典的中文分词接口指定词典操作接口
      * @param dictionary 词典操作接口
