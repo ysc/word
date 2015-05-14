@@ -47,6 +47,16 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         private int depth;
         private int left;
         private int right;
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "code=" + code + "["+ (char)code + "]" +
+                    ", depth=" + depth +
+                    ", left=" + left +
+                    ", right=" + right +
+                    '}';
+        }
     };
 
     private int[] check;
@@ -90,25 +100,28 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         if (!siblings.isEmpty()) {
             siblings.get(siblings.size() - 1).right = parent.right;
         }
-
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("************************************************");
+            LOGGER.debug("树信息：");
+            siblings.forEach(s -> LOGGER.debug(s.toString()));
+            LOGGER.debug("************************************************");
+        }
         return siblings;
     }
 
     private int toDoubleArray(List<Node> siblings, List<String> words) {
         int begin = 0;
         int pos = (siblings.get(0).code > nextCheckPos) ? siblings.get(0).code : nextCheckPos;
-        int nonzero_num = 0;
-        int first = 0;
+        boolean isFirst = true;
 
         outer: while (true) {
             pos++;
 
             if (check[pos] != 0) {
-                nonzero_num++;
                 continue;
-            } else if (first == 0) {
+            } else if (isFirst) {
                 nextCheckPos = pos;
-                first = 1;
+                isFirst = false;
             }
 
             begin = pos - siblings.get(0).code;
@@ -125,9 +138,6 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
             break;
         }
-
-        if (1.0 * nonzero_num / (pos - nextCheckPos + 1) >= 0.95)
-            nextCheckPos = pos;
 
         used[begin] = true;
 
@@ -186,20 +196,20 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
             return false;
         }
 
-        int b = base[0];
-        int p;
+        //base[0]=1
+        int lastChar = base[0];
+        int index;
 
-        char[] wordChars = item.toCharArray();
         for (int i = start; i < start+length; i++) {
-            p = b + (int) (wordChars[i]);
-            if (b == check[p]) {
-                b = base[p];
+            index = lastChar + (int) item.charAt(i);
+            if (lastChar == check[index]) {
+                lastChar = base[index];
             }else {
                 return false;
             }
         }
 
-        if (base[b] < 0 && b == check[b]) {
+        if (base[lastChar] < 0 && lastChar == check[lastChar]) {
             if(LOGGER.isDebugEnabled()) {
                 LOGGER.debug("在词典中查到词：{}", item.substring(start, start + length));
             }
@@ -232,6 +242,12 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
                 })
                 .sorted()
                 .collect(Collectors.toList());
+        if(LOGGER.isDebugEnabled()){
+            //for debug
+            if (items.size()<10){
+                items.forEach(item->LOGGER.debug(item));
+            }
+        }
         init(items);
     }
 
