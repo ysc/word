@@ -21,42 +21,88 @@
 package org.apdplat.word.util;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  *
  * @author 杨尚川
  */
 public class GenericTrieTest {
-    private final GenericTrie<Integer> trie = new GenericTrie<>();
+    private final GenericTrie<Integer> genericTrie = new GenericTrie<>();
     @Before
     public void setUp() {
-        trie.put("杨尚川", 100);
-        trie.put("杨尚喜", 99);
-        trie.put("杨尚丽", 98);
-        trie.put("中华人民共和国", 1);
+        genericTrie.put("杨尚川", 100);
+        genericTrie.put("杨尚喜", 99);
+        genericTrie.put("杨尚丽", 98);
+        genericTrie.put("中华人民共和国", 1);
     }
     @After
     public void tearDown() {
-        trie.clear();
+        genericTrie.clear();
     }
     @Test
     public void testClear() {
-        Assert.assertEquals(100, trie.get("杨尚川"), 0);
-        Assert.assertEquals(1, trie.get("中华人民共和国"), 0);
-        trie.clear();
-        Assert.assertEquals(null, trie.get("杨尚川"));
-        Assert.assertEquals(null, trie.get("中华人民共和国"));
+        assertEquals(100, genericTrie.get("杨尚川").intValue());
+        assertEquals(1, genericTrie.get("中华人民共和国").intValue());
+        genericTrie.clear();
+        assertEquals(null, genericTrie.get("杨尚川"));
+        assertEquals(null, genericTrie.get("中华人民共和国"));
     }
     @Test
     public void testGet() {
-        Assert.assertEquals(100, trie.get("杨尚川"), 0);
-        Assert.assertEquals(99, trie.get("杨尚喜"), 0);
-        Assert.assertEquals(98, trie.get("杨尚丽"), 0);
-        Assert.assertEquals(1, trie.get("中华人民共和国"), 0);
-        Assert.assertEquals(null, trie.get("杨"));
-        Assert.assertEquals(null, trie.get("杨尚"));
+        assertEquals(100, genericTrie.get("杨尚川").intValue());
+        assertEquals(99, genericTrie.get("杨尚喜").intValue());
+        assertEquals(98, genericTrie.get("杨尚丽").intValue());
+        assertEquals(1, genericTrie.get("中华人民共和国").intValue());
+        assertEquals(null, genericTrie.get("杨"));
+        assertEquals(null, genericTrie.get("杨尚"));
+    }
+    @Test
+    public void testBigram(){
+        try {
+            GenericTrie<Integer> genericTrie = new GenericTrie<>();
+            Map<String, Integer> map = new HashMap<>();
+            List<String> lines = Files.readAllLines(Paths.get("src/test/resources/bigram.txt"));
+            lines.forEach(line -> {
+                String[] attrs = line.split("\\s+");
+                if(attrs!=null && attrs.length==2){
+                    map.put(attrs[0], Integer.parseInt(attrs[1]));
+                    genericTrie.put(attrs[0], map.get(attrs[0]));
+                }
+            });
+            map.keySet().forEach(key->assertEquals(map.get(key).intValue(), genericTrie.get(key).intValue()));
+        }catch (Exception e){
+            e.printStackTrace();
+            fail();
+        }
+    }
+    @Test
+    public void testTrigram(){
+        try {
+            GenericTrie<Integer> genericTrie = new GenericTrie<>();
+            Map<String, Integer> map = new HashMap<>();
+            List<String> lines = Files.readAllLines(Paths.get("src/test/resources/trigram.txt"));
+            lines.forEach(line -> {
+                String[] attrs = line.split("\\s+");
+                if(attrs!=null && attrs.length==2){
+                    map.put(attrs[0], Integer.parseInt(attrs[1]));
+                    genericTrie.put(attrs[0], map.get(attrs[0]));
+                }
+            });
+            map.keySet().forEach(key->assertEquals(map.get(key).intValue(), genericTrie.get(key).intValue()));
+        }catch (Exception e){
+            e.printStackTrace();
+            fail();
+        }
     }
 }
