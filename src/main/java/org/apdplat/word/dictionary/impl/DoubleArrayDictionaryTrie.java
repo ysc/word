@@ -100,12 +100,12 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
         if (!siblings.isEmpty()) {
             siblings.get(siblings.size() - 1).right = parent.right;
-        }
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("************************************************");
-            LOGGER.debug("树信息：");
-            siblings.forEach(s -> LOGGER.debug(s.toString()));
-            LOGGER.debug("************************************************");
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("************************************************");
+                LOGGER.debug("树信息：");
+                siblings.forEach(s -> LOGGER.debug(s.toString()));
+                LOGGER.debug("************************************************");
+            }
         }
         return siblings;
     }
