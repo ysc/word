@@ -203,6 +203,8 @@ public class DoubleArrayGenericTrie{
 
         items.clear();
         items = null;
+        map.clear();
+        map=null;
         used = null;
     }
 
