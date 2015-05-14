@@ -22,6 +22,7 @@ package org.apdplat.word.dictionary.impl;
 
 
 import org.apdplat.word.dictionary.Dictionary;
+import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,13 +35,13 @@ import java.util.stream.Collectors;
 /**
  * 双数组前缀树的Java实现
  * 用于查找一个指定的字符串是否在词典中
+ * An Implementation of Double-Array Trie: http://linux.thai.net/~thep/datrie/datrie.html
  * @author 杨尚川
  */
 public class DoubleArrayDictionaryTrie implements Dictionary{
     private static final Logger LOGGER = LoggerFactory.getLogger(DoubleArrayDictionaryTrie.class);
-
-    private static final int SIZE = 3000000;
     private AtomicInteger maxLength = new AtomicInteger();
+    private static final int SIZE = WordConfTools.getInt("double.array.dictionary.trie.size", 2600000);
 
     private static class Node {
         private int code;
@@ -111,20 +112,20 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
     private int toDoubleArray(List<Node> siblings, List<String> words) {
         int begin = 0;
-        int pos = (siblings.get(0).code > nextCheckPos) ? siblings.get(0).code : nextCheckPos;
+        int index = (siblings.get(0).code > nextCheckPos) ? siblings.get(0).code : nextCheckPos;
         boolean isFirst = true;
 
         outer: while (true) {
-            pos++;
+            index++;
 
-            if (check[pos] != 0) {
+            if (check[index] != 0) {
                 continue;
             } else if (isFirst) {
-                nextCheckPos = pos;
+                nextCheckPos = index;
                 isFirst = false;
             }
 
-            begin = pos - siblings.get(0).code;
+            begin = index - siblings.get(0).code;
 
             if (used[begin]) {
                 continue;
@@ -141,14 +142,15 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
         used[begin] = true;
 
-        for (int i = 0; i < siblings.size(); i++)
+        for (int i = 0; i < siblings.size(); i++) {
             check[begin + siblings.get(i).code] = begin;
+        }
 
         for (int i = 0; i < siblings.size(); i++) {
             List<Node> newSiblings = toTree(siblings.get(i), words);
 
             if (newSiblings.isEmpty()) {
-                base[begin + siblings.get(i).code] = -siblings.get(i).left - 1;
+                base[begin + siblings.get(i).code] = -1;
             } else {
                 int h = toDoubleArray(newSiblings, words);
                 base[begin + siblings.get(i).code] = h;
@@ -156,17 +158,21 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         }
         return begin;
     }
-
-    private void init(List<String> words) {
-        if (words == null || words.isEmpty())
-            return ;
-
-        base = new int[SIZE];
-        check = new int[SIZE];
-        used = new boolean[SIZE];
-
-        base[0] = 1;
+    private void allocate(int size){
+        check = null;
+        base = null;
+        used = null;
         nextCheckPos = 0;
+
+        base = new int[size];
+        check = new int[size];
+        used = new boolean[size];
+        base[0] = 1;
+    }
+    private void init(List<String> words) {
+        if (words == null || words.isEmpty()) {
+            return;
+        }
 
         //前缀树的虚拟根节点
         Node rootNode = new Node();
@@ -174,8 +180,18 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
         rootNode.right = words.size();
         rootNode.depth = 0;
 
-        List<Node> siblings = toTree(rootNode, words);
-        toDoubleArray(siblings, words);
+        int size = SIZE;
+        while (true) {
+            try {
+                allocate(size);
+                List<Node> siblings = toTree(rootNode, words);
+                toDoubleArray(siblings, words);
+                break;
+            } catch (Exception e) {
+                size += size/10;
+                LOGGER.error("分配空间不够，增加至： " + size);
+            }
+        }
 
         words.clear();
         words = null;
@@ -202,6 +218,9 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
         for (int i = start; i < start+length; i++) {
             index = lastChar + (int) item.charAt(i);
+            if(index >= check.length){
+                return false;
+            }
             if (lastChar == check[index]) {
                 lastChar = base[index];
             }else {
