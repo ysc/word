@@ -58,8 +58,9 @@ public class Bigram {
                         LOGGER.error("错误的bigram数据："+line);
                     }
                 }
+                int size = map.size();
                 DOUBLE_ARRAY_GENERIC_TRIE.putAll(map);
-                LOGGER.info("bigram初始化完毕，bigram数据条数：" + map.size());
+                LOGGER.info("bigram初始化完毕，bigram数据条数：" + size);
             }
 
             @Override

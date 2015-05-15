@@ -58,8 +58,9 @@ public class Trigram {
                         LOGGER.error("错误的trigram数据："+line);
                     }
                 }
+                int size = map.size();
                 DOUBLE_ARRAY_GENERIC_TRIE.putAll(map);
-                LOGGER.info("trigram初始化完毕，trigram数据条数：" + map.size());
+                LOGGER.info("trigram初始化完毕，trigram数据条数：" + size);
             }
 
             @Override
