@@ -218,10 +218,7 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
 
         for (int i = start; i < start+length; i++) {
             index = lastChar + (int) item.charAt(i);
-            if(index >= check.length){
-                return false;
-            }
-            if(index < 0){
+            if(index >= check.length || index < 0){
                 return false;
             }
             if (lastChar == check[index]) {
@@ -230,8 +227,11 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
                 return false;
             }
         }
-
-        if (base[lastChar] < 0 && lastChar == check[lastChar]) {
+        index = lastChar;
+        if(index >= check.length || index < 0){
+            return false;
+        }
+        if (base[index] < 0 && index == check[index]) {
             if(LOGGER.isDebugEnabled()) {
                 LOGGER.debug("在词典中查到词：{}", item.substring(start, start + length));
             }
