@@ -521,3 +521,11 @@
 ###相关项目：
    
 [Java开源项目cws_evaluation：中文分词器分词效果评估](https://github.com/ysc/cws_evaluation/)
+
+[Java开源项目QuestionAnsweringSystem：人机问答系统](https://github.com/ysc/QuestionAnsweringSystem)
+
+###相关文献：
+
+[An Implementation of Double-Array Trie](http://linux.thai.net/~thep/datrie/datrie.html)
+
+[MMSEG: A Word Identification System for Mandarin Chinese Text Based on Two Variants of the Maximum Matching Algorithm](http://technology.chtsai.org/mmseg/)
