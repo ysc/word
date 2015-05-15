@@ -222,10 +222,7 @@ public class DoubleArrayGenericTrie{
 
         for (int i = start; i < start+length; i++) {
             index = lastChar + (int) item.charAt(i);
-            if(index >= check.length){
-                return Integer.MIN_VALUE;
-            }
-            if(index < 0){
+            if(index >= check.length || index < 0){
                 return Integer.MIN_VALUE;
             }
             if (lastChar == check[index]) {
@@ -234,8 +231,11 @@ public class DoubleArrayGenericTrie{
                 return Integer.MIN_VALUE;
             }
         }
-
-        if (base[lastChar] < 0) {
+        index = lastChar;
+        if(index >= check.length || index < 0){
+            return Integer.MIN_VALUE;
+        }
+        if (base[index] < 0) {
             if(LOGGER.isDebugEnabled()) {
                 LOGGER.debug("在词典中查到词：{}", item.substring(start, start + length));
             }
