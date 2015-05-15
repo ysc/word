@@ -225,6 +225,9 @@ public class DoubleArrayGenericTrie{
             if(index >= check.length){
                 return Integer.MIN_VALUE;
             }
+            if(index < 0){
+                return Integer.MIN_VALUE;
+            }
             if (lastChar == check[index]) {
                 lastChar = base[index];
             }else {
