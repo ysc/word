@@ -529,3 +529,5 @@
 [An Implementation of Double-Array Trie](http://linux.thai.net/~thep/datrie/datrie.html)
 
 [MMSEG: A Word Identification System for Mandarin Chinese Text Based on Two Variants of the Maximum Matching Algorithm](http://technology.chtsai.org/mmseg/)
+
+[With Google’s new tool Ngram Viewer, you can visualise the rise and fall of concepts across 5 million books and 500 years!](https://books.google.com/ngrams)
