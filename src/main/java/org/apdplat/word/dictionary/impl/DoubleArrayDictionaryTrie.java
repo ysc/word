@@ -221,6 +221,9 @@ public class DoubleArrayDictionaryTrie implements Dictionary{
             if(index >= check.length){
                 return false;
             }
+            if(index < 0){
+                return false;
+            }
             if (lastChar == check[index]) {
                 lastChar = base[index];
             }else {
