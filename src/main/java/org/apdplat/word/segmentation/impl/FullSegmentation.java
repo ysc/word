@@ -22,6 +22,7 @@ package org.apdplat.word.segmentation.impl;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
@@ -64,7 +65,7 @@ public class FullSegmentation extends AbstractSegmentation{
     }
     private List<Word> disambiguity(Map<List<Word>, Float> words){
         //按分值排序
-        List<Entry<List<Word>, Float>> entrys = Utils.getSortedMapByValue(words);
+        List<Entry<List<Word>, Float>> entrys = words.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).collect(Collectors.toList());
         if(LOGGER.isDebugEnabled()){
             LOGGER.debug("ngram分值：");
             int i=1;
