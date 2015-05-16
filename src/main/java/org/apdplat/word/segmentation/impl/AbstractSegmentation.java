@@ -31,6 +31,7 @@ import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.segmentation.DictionaryBasedSegmentation;
 import org.apdplat.word.segmentation.Segmentation;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.recognition.Punctuation;
 import org.apdplat.word.util.WordConfTools;
@@ -77,6 +78,11 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
      * @return 分词结果
      */
     public abstract List<Word> segImpl(String text);
+    /**
+     * 分词器使用的算法
+     * @return 分词算法
+     */
+    public abstract SegmentationAlgorithm getSegmentationAlgorithm();
     /**
      * 是否启用ngram
      * @return 是或否
