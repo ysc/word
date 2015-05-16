@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apdplat.word.util.Utils;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,8 +155,8 @@ public class Distance {
             value /= max;
             result.put(key, value);
         }
-        //排序
-        List<Entry<String, Float>> list = Utils.getSortedMapByValue(result);
+        //按分值排序
+        List<Entry<String, Float>> list = result.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).collect(Collectors.toList());
         //限制结果数目
         if(limit > list.size()){
             limit = list.size();
