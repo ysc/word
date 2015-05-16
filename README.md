@@ -440,6 +440,73 @@
 	
 	如果有自己的文本内容，可以使用脚本demo-word-vector-file.bat来对文本分词、建立词向量、计算相似性
 	
+####21、词频统计：
+
+org.apdplat.word.WordFrequencyStatistics 提供了词频统计的功能。
+
+使用方法如下：
+
+	//词频统计设置
+	WordFrequencyStatistics wordFrequencyStatistics = new WordFrequencyStatistics();
+	wordFrequencyStatistics.setRemoveStopWord(false);
+	wordFrequencyStatistics.setResultPath("word-frequency-statistics.txt");
+	wordFrequencyStatistics.setSegmentationAlgorithm(SegmentationAlgorithm.MaxNgramScore);
+	//开始分词
+	wordFrequencyStatistics.seg("明天下雨，结合成分子，明天有关于分子和原子的课程，下雨了也要去听课");
+	//输出词频统计结果
+	wordFrequencyStatistics.dump();
+	//准备文件
+	Files.write(Paths.get("text-to-seg.txt"), Arrays.asList("word分词是一个Java实现的分布式中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。"));
+	//清除之前的统计结果
+	wordFrequencyStatistics.reset();
+	//对文件进行分词
+	wordFrequencyStatistics.seg(new File("text-to-seg.txt"), new File("text-seg-result.txt"));
+	//输出词频统计结果
+	wordFrequencyStatistics.dump("file-seg-statistics-result.txt");
+
+第一句话的词频统计结果：
+
+	1、下雨 2
+	2、明天 2
+	3、分子 2
+	4、课程 1
+	5、听课 1
+	6、结合 1
+	7、原子 1
+	8、去 1
+	9、成 1
+	10、关于 1
+	11、和 1
+	12、也要 1
+	13、有 1
+	14、的 1
+	15、了 1
+	
+第二句话的词频统计结果：
+
+	1、分词 2
+	2、的 2
+	3、基于 1
+	4、word 1
+	5、组件 1
+	6、词典 1
+	7、ngram 1
+	8、多种 1
+	9、实现 1
+	10、并 1
+	11、利用 1
+	12、消除歧义 1
+	13、中文分词 1
+	14、算法 1
+	15、是 1
+	16、分布式 1
+	17、了 1
+	18、提供 1
+	19、模型 1
+	20、来 1
+	21、一个 1
+	22、Java 1	
+	
 ###分词算法效果评估：
 
 	1、word分词 最大Ngram分值算法：
