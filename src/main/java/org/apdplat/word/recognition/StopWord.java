@@ -21,8 +21,11 @@
 package org.apdplat.word.recognition;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.AutoDetector;
 import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
@@ -115,6 +118,24 @@ public class StopWord {
         word = word.trim();
         return isStopChar(word) || stopwords.contains(word);
     }
+    /**
+     * 停用词过滤，删除输入列表中的停用词
+     * @param words 词列表
+     */
+    public static void filterStopWords(List<Word> words){
+        Iterator<Word> iter = words.iterator();
+        while(iter.hasNext()){
+            Word word = iter.next();
+            if(is(word.getText())){
+                //去除停用词
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("去除停用词：" + word.getText());
+                }
+                iter.remove();
+            }
+        }
+    }
+
     public static void main(String[] args){
         LOGGER.info("停用词：");
         int i=1;
