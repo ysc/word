@@ -92,6 +92,20 @@ public class Utils {
      * @throws Exception
      */
     public static void seg(File input, File output, boolean removeStopWords, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
+        seg(input, output, removeStopWords, segmentationAlgorithm, null);
+    }
+
+    /**
+     *
+     * 对文件进行分词
+     * @param input 输入文件
+     * @param output 输出文件
+     * @param removeStopWords 是否移除停用词
+     * @param segmentationAlgorithm 分词算法
+     * @param fileSegmentationCallback 分词结果回调
+     * @throws Exception
+     */
+    public static void seg(File input, File output, boolean removeStopWords, SegmentationAlgorithm segmentationAlgorithm, FileSegmentationCallback fileSegmentationCallback) throws Exception{
         LOGGER.info("开始对文件进行分词："+input.toString());
         Segmentation segmentation = SegmentationFactory.getSegmentation(segmentationAlgorithm);
         float max=(float)Runtime.getRuntime().maxMemory()/1000000;
@@ -122,6 +136,9 @@ public class Utils {
                     continue;
                 }
                 for(Word word : words){
+                    if(fileSegmentationCallback != null) {
+                        fileSegmentationCallback.callback(word);
+                    }
                     writer.write(word.getText()+" ");
                 }
                 writer.write("\n");
@@ -144,6 +161,10 @@ public class Utils {
         LOGGER.info(pre);
         LOGGER.info(post);
         LOGGER.info("将文件 "+input.toString()+" 的分词结果保存到文件 "+output);
+    }
+
+    public static interface FileSegmentationCallback{
+        public void callback(Word word);
     }
 
     /**
