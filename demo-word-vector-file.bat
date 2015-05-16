@@ -3,7 +3,7 @@ rem 在这里指定文本文件的路径
 set TEXT_FILE=d:/text.txt
 if not exist %TEXT_FILE% goto END
 
-call mvn clean install dependency:copy-dependencies
+call mvn -Dmaven.test.skip clean install dependency:copy-dependencies
 set JAVA_OPTS=-Xms12000m -Xmx12000m
 set CLASS_PATH=target/classes;target/dependency/slf4j-api-1.6.4.jar;target/dependency/logback-classic-0.9.28.jar;target/dependency/logback-core-0.9.28.jar
 set EXECUTOR=java %JAVA_OPTS% -cp %CLASS_PATH%
