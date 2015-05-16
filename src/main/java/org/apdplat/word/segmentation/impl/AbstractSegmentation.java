@@ -79,11 +79,6 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
      */
     public abstract List<Word> segImpl(String text);
     /**
-     * 分词器使用的算法
-     * @return 分词算法
-     */
-    public abstract SegmentationAlgorithm getSegmentationAlgorithm();
-    /**
      * 是否启用ngram
      * @return 是或否
      */

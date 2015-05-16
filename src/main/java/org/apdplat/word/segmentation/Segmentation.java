@@ -34,4 +34,9 @@ public interface Segmentation {
      * @return 词
      */
     public List<Word> seg(String text);
+    /**
+     * 分词器使用的算法
+     * @return 分词算法
+     */
+    public SegmentationAlgorithm getSegmentationAlgorithm();
 }
