@@ -41,6 +41,11 @@ public class BidirectionalMaximumMinimumMatching extends AbstractSegmentation{
     private static final AbstractSegmentation RMM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
     private static final AbstractSegmentation MIM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.MinimumMatching);
     private static final AbstractSegmentation RMIM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMinimumMatching);
+
+    @Override
+    public SegmentationAlgorithm getSegmentationAlgorithm() {
+        return SegmentationAlgorithm.BidirectionalMaximumMinimumMatching;
+    }
     @Override
     public List<Word> segImpl(final String text) {
         //逆向最大匹配为默认选择，如果分值都一样的话

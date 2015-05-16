@@ -44,6 +44,11 @@ public class FullSegmentation extends AbstractSegmentation{
     private static final int PROCESS_TEXT_LENGTH_LESS_THAN = 50;
     //长度小于等于18的文本单字成词，大于18的文本只有无词时才单字成词
     private static final int CHAR_IS_WORD_LENGTH_LESS_THAN = 18;
+
+    @Override
+    public SegmentationAlgorithm getSegmentationAlgorithm() {
+        return SegmentationAlgorithm.FullSegmentation;
+    }
     @Override
     public List<Word> segImpl(String text) {
         if(text.length() > PROCESS_TEXT_LENGTH_LESS_THAN){

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import org.apdplat.word.recognition.RecognitionTool;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.Word;
 
 /**
@@ -32,6 +33,11 @@ import org.apdplat.word.segmentation.Word;
  * @author 杨尚川
  */
 public class ReverseMinimumMatching extends AbstractSegmentation{
+
+    @Override
+    public SegmentationAlgorithm getSegmentationAlgorithm() {
+        return SegmentationAlgorithm.ReverseMinimumMatching;
+    }
     @Override
     public List<Word> segImpl(String text) {
         Stack<Word> result = new Stack<>();

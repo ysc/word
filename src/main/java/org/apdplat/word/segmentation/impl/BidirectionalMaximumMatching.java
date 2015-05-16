@@ -34,6 +34,11 @@ import org.apdplat.word.segmentation.Word;
 public class BidirectionalMaximumMatching extends AbstractSegmentation{
     private static final AbstractSegmentation MM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaximumMatching);
     private static final AbstractSegmentation RMM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMaximumMatching);
+
+    @Override
+    public SegmentationAlgorithm getSegmentationAlgorithm() {
+        return SegmentationAlgorithm.BidirectionalMaximumMatching;
+    }
     @Override
     public List<Word> segImpl(final String text) {
         //逆向最大匹配

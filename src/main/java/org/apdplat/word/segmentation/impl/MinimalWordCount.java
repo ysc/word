@@ -23,6 +23,7 @@ package org.apdplat.word.segmentation.impl;
 import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.segmentation.Segmentation;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.Word;
 
 import java.util.*;
@@ -38,6 +39,11 @@ import java.util.*;
  * @author 杨尚川
  */
 public class MinimalWordCount extends AbstractSegmentation{
+
+    @Override
+    public SegmentationAlgorithm getSegmentationAlgorithm() {
+        return SegmentationAlgorithm.MinimalWordCount;
+    }
     @Override
     public List<Word> segImpl(String text) {
         //文本长度

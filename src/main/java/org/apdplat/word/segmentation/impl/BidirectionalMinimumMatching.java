@@ -34,6 +34,11 @@ import org.apdplat.word.segmentation.Word;
 public class BidirectionalMinimumMatching extends AbstractSegmentation{
     private static final AbstractSegmentation MIM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.MinimumMatching);
     private static final AbstractSegmentation RMIM = (AbstractSegmentation)SegmentationFactory.getSegmentation(SegmentationAlgorithm.ReverseMinimumMatching);
+
+    @Override
+    public SegmentationAlgorithm getSegmentationAlgorithm() {
+        return SegmentationAlgorithm.BidirectionalMinimumMatching;
+    }
     @Override
     public List<Word> segImpl(final String text) {
         //逆向最小匹配

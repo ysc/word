@@ -23,6 +23,7 @@ package org.apdplat.word.segmentation.impl;
 import java.util.ArrayList;
 import java.util.List;
 import org.apdplat.word.recognition.RecognitionTool;
+import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.Word;
 
 /**
@@ -31,6 +32,11 @@ import org.apdplat.word.segmentation.Word;
  * @author 杨尚川
  */
 public class MaximumMatching extends AbstractSegmentation{
+
+    @Override
+    public SegmentationAlgorithm getSegmentationAlgorithm() {
+        return SegmentationAlgorithm.MaximumMatching;
+    }
     @Override
     public List<Word> segImpl(String text) {
         List<Word> result = new ArrayList<>();
