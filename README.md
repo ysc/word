@@ -442,9 +442,15 @@
 	
 ####21、词频统计：
 
-org.apdplat.word.WordFrequencyStatistics 提供了词频统计的功能。
+org.apdplat.word.WordFrequencyStatistics 提供了词频统计的功能
+	
+命令行脚本的调用方法如下：
 
-使用方法如下：
+	将需要统计词频的文本写入文件：text.txt
+	chmod +x wfs.sh & wfs.sh -textFile=text.txt -statisticsResultFile=statistics-result.txt
+	程序运行结束后打开文件statistics-result.txt查看词频统计结果
+
+在程序中的调用方法如下：
 
 	//词频统计设置
 	WordFrequencyStatistics wordFrequencyStatistics = new WordFrequencyStatistics();

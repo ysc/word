@@ -32,9 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -245,6 +243,30 @@ public class WordFrequencyStatistics {
     }
 
     public static void main(String[] args) throws Exception{
+        if(args.length > 0){
+            //词频统计设置
+            WordFrequencyStatistics wordFrequencyStatistics = new WordFrequencyStatistics();
+            Set<String> textFiles = new HashSet<>();
+            for(String arg : args) {
+                if(arg.equals("-removeStopWord")){
+                    wordFrequencyStatistics.setRemoveStopWord(true);
+                }
+                if(arg.startsWith("-textFile=")){
+                    textFiles.add(arg.replace("-textFile=", ""));
+                }
+                if(arg.startsWith("-statisticsResultFile=")){
+                    wordFrequencyStatistics.setResultPath(arg.replace("-statisticsResultFile=", ""));
+                }
+                if(arg.startsWith("-segmentationAlgorithm=")){
+                    wordFrequencyStatistics.setSegmentationAlgorithm(SegmentationAlgorithm.valueOf(arg.replace("-segmentationAlgorithm=", "")));
+                }
+            }
+            for (String textFile : textFiles){
+                wordFrequencyStatistics.seg(new File(textFile), (new File(textFile+".seg.txt")));
+            }
+            wordFrequencyStatistics.dump();
+            return;
+        }
         //词频统计设置
         WordFrequencyStatistics wordFrequencyStatistics = new WordFrequencyStatistics();
         wordFrequencyStatistics.setRemoveStopWord(false);
