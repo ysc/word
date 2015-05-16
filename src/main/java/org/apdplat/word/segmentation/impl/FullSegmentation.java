@@ -29,7 +29,6 @@ import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.util.Utils;
 
 /**
  * 基于词典的全切分算法
