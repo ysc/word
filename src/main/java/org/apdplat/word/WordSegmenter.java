@@ -37,6 +37,7 @@ import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.recognition.StopWord;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +102,7 @@ public class WordSegmenter {
      * @throws Exception 
      */
     public static void segWithStopWords(File input, File output, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
-        seg(input, output, false, segmentationAlgorithm);
+        Utils.seg(input, output, false, segmentationAlgorithm);
     }
     /**
      * 对文件进行分词，保留停用词
@@ -111,7 +112,7 @@ public class WordSegmenter {
      * @throws Exception 
      */
     public static void segWithStopWords(File input, File output) throws Exception{
-        seg(input, output, false, SegmentationAlgorithm.BidirectionalMaximumMatching);
+        Utils.seg(input, output, false, SegmentationAlgorithm.BidirectionalMaximumMatching);
     }
     /**
      * 对文件进行分词，移除停用词
@@ -122,7 +123,7 @@ public class WordSegmenter {
      * @throws Exception 
      */
     public static void seg(File input, File output, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
-        seg(input, output, true, segmentationAlgorithm);
+        Utils.seg(input, output, true, segmentationAlgorithm);
     }
     /**
      * 对文件进行分词，移除停用词
@@ -132,70 +133,7 @@ public class WordSegmenter {
      * @throws Exception 
      */
     public static void seg(File input, File output) throws Exception{
-        seg(input, output, true, SegmentationAlgorithm.BidirectionalMaximumMatching);
-    }
-    /**
-     * 
-     * 对文件进行分词
-     * @param input 输入文件
-     * @param output 输出文件
-     * @param removeStopWords 是否移除停用词
-     * @param segmentationAlgorithm 分词算法
-     * @throws Exception
-     */
-    private static void seg(File input, File output, boolean removeStopWords, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
-        LOGGER.info("开始对文件进行分词："+input.toString());
-        float max=(float)Runtime.getRuntime().maxMemory()/1000000;
-        float total=(float)Runtime.getRuntime().totalMemory()/1000000;
-        float free=(float)Runtime.getRuntime().freeMemory()/1000000;
-        String pre="执行之前剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input),"utf-8"));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"))){
-            long size = Files.size(input.toPath());
-            LOGGER.info("size:"+size);
-            LOGGER.info("文件大小："+(float)size/1024/1024+" MB");
-            int textLength=0;
-            int progress=0;
-            long start = System.currentTimeMillis();
-            String line = null;
-            while((line = reader.readLine()) != null){
-                if("".equals(line.trim())){
-                    writer.write("\n");
-                    continue;
-                }
-                textLength += line.length();
-                List<Word> words = null;
-                if(removeStopWords){
-                    words = seg(line, segmentationAlgorithm);
-                }else{
-                    words = segWithStopWords(line, segmentationAlgorithm);
-                }
-                if(words == null){
-                    continue;
-                }
-                for(Word word : words){
-                    writer.write(word.getText()+" ");
-                }
-                writer.write("\n");
-                progress += line.length();
-                if( progress > 500000){
-                    progress = 0;
-                    LOGGER.info("分词进度："+(int)((float)textLength*2/size*100)+"%");
-                }
-            }
-            long cost = System.currentTimeMillis() - start;
-            float rate = textLength/cost;
-            LOGGER.info("字符数目："+textLength);
-            LOGGER.info("分词耗时："+cost+" 毫秒");
-            LOGGER.info("分词速度："+rate+" 字符/毫秒");
-        }
-        max=(float)Runtime.getRuntime().maxMemory()/1000000;
-        total=(float)Runtime.getRuntime().totalMemory()/1000000;
-        free=(float)Runtime.getRuntime().freeMemory()/1000000;
-        String post="执行之后剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
-        LOGGER.info(pre);
-        LOGGER.info(post);
-        LOGGER.info("将文件 "+input.toString()+" 的分词结果保存到文件 "+output);
+        Utils.seg(input, output, true, SegmentationAlgorithm.BidirectionalMaximumMatching);
     }
     private static void demo(){
         long start = System.currentTimeMillis();
