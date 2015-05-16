@@ -76,7 +76,9 @@ public class WordSegmenter {
      */
     public static List<Word> seg(String text, SegmentationAlgorithm segmentationAlgorithm){        
         List<Word> words = SegmentationFactory.getSegmentation(segmentationAlgorithm).seg(text);
-        return filterStopWords(words);
+        //停用词过滤
+        StopWord.filterStopWords(words);
+        return words;
     }
     /**
      * 对文本进行分词，移除停用词
@@ -86,25 +88,8 @@ public class WordSegmenter {
      */
     public static List<Word> seg(String text){
         List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg(text);
-        return filterStopWords(words);
-    }    
-    /**
-     * 移除停用词
-     * @param words 词列表
-     * @return 无停用词的词列表
-     */
-    public static List<Word> filterStopWords(List<Word> words){
-        Iterator<Word> iter = words.iterator();
-        while(iter.hasNext()){
-            Word word = iter.next();
-            if(StopWord.is(word.getText())){
-                //去除停用词
-                if(LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("去除停用词：" + word.getText());
-                }
-                iter.remove();
-            }
-        }
+        //停用词过滤
+        StopWord.filterStopWords(words);
         return words;
     }
     /**
@@ -156,7 +141,7 @@ public class WordSegmenter {
      * @param output 输出文件
      * @param removeStopWords 是否移除停用词
      * @param segmentationAlgorithm 分词算法
-     * @throws Exception 
+     * @throws Exception
      */
     private static void seg(File input, File output, boolean removeStopWords, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
         LOGGER.info("开始对文件进行分词："+input.toString());
