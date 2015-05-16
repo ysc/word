@@ -275,6 +275,11 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
                 }
                 return words;
             }
+
+            @Override
+            public SegmentationAlgorithm getSegmentationAlgorithm() {
+                return null;
+            }
         };
         System.out.println(englishSegmentation.seg("i love programming"));
     }
