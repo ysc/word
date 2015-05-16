@@ -593,9 +593,11 @@ org.apdplat.word.WordFrequencyStatistics 提供了词频统计的功能
    
 ###相关项目：
    
-[Java开源项目cws_evaluation：中文分词器分词效果评估](https://github.com/ysc/cws_evaluation/)
+[Java开源项目cws_evaluation：中文分词器分词效果评估对比](https://github.com/ysc/cws_evaluation/)
 
-[Java开源项目QuestionAnsweringSystem：人机问答系统](https://github.com/ysc/QuestionAnsweringSystem)
+[Java开源项目QuestionAnsweringSystem：人机问答系统](https://github.com/ysc/QuestionAnsweringSystem/)
+   
+[Java开源项目word_web：通过web服务器对word分词的资源进行集中统一管理](https://github.com/ysc/word_web/)
 
 ###相关文献：
 
