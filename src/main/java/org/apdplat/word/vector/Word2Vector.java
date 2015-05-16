@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +104,8 @@ public class Word2Vector {
                 writer.write(item+"\n");
             }
             list.clear();
-            for(Entry<String, Integer> entry : Utils.getSortedMapByValue(frq)){
+            List<Entry<String, Integer>> entrys = frq.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).collect(Collectors.toList());
+            for(Entry<String, Integer> entry : entrys){
                 vocabularyWriter.write(entry.getKey()+" "+entry.getValue()+"\n");
             }            
             LOGGER.info("输出完毕，耗时："+ (System.currentTimeMillis()-start)/1000+" 秒，数据项："+list.size());
