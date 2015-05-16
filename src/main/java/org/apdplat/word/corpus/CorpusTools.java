@@ -46,6 +46,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.apdplat.word.dictionary.DictionaryTools;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
@@ -327,9 +328,9 @@ public class CorpusTools {
             for(String word : WORDS.keySet()){
                 writer.write(word+"\n");
             }
-            List<Entry<String, Integer>> entrys = Utils.getSortedMapByValue(WORDS);
+            List<Entry<String, Integer>> entrys = WORDS.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).collect(Collectors.toList());
             for(Entry<String, Integer> entry : entrys){
-                writerFreq.write(entry.getKey()+" "+ entry.getValue()+"\n");                
+                writerFreq.write(entry.getKey()+" "+ entry.getValue()+"\n");
             }
         }catch(Exception e){
             LOGGER.info("保存词典文件失败：", e);
