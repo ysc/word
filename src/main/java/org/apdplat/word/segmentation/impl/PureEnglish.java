@@ -34,8 +34,8 @@ import java.util.regex.Pattern;
  * 针对纯英文文本的分词器
  * @author 杨尚川
  */
-public class PureEnglishSegmentation implements Segmentation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PureEnglishSegmentation.class);
+public class PureEnglish implements Segmentation {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PureEnglish.class);
     private static final Pattern NUMBER = Pattern.compile("\\d+");
     private static final Pattern UNICODE = Pattern.compile("[uU][0-9a-fA-F]{4}");
 
@@ -153,7 +153,7 @@ public class PureEnglishSegmentation implements Segmentation {
     }
 
     public static void main(String[] args) {
-        Segmentation segmentation = new PureEnglishSegmentation();
+        Segmentation segmentation = new PureEnglish();
         System.out.println(segmentation.seg("Your function may also be added permanently to Hive, however this requires a small modification to a Hive Java file and then rebuilding Hive."));
     }
 }
