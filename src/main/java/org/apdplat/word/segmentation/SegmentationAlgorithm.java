@@ -67,7 +67,12 @@ public enum SegmentationAlgorithm {
     /**
      * 最大Ngram分值算法
      */
-    MaxNgramScore("最大Ngram分值算法");
+    MaxNgramScore("最大Ngram分值算法"),
+
+    /**
+     * 针对纯英文文本的分词算法
+     */
+    PureEnglish("针对纯英文文本的分词算法");
 
     private SegmentationAlgorithm(String des){
         this.des = des;
