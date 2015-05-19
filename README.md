@@ -513,6 +513,44 @@ org.apdplat.word.WordFrequencyStatistics 提供了词频统计的功能
 	21、一个 1
 	22、Java 1	
 	
+####22、文本相似度：
+
+word分词提供了两种文本相似度计算方式：
+
+方式一：余弦相似度，通过计算两个向量的夹角余弦值来评估他们的相似度
+
+实现类：org.apdplat.word.analysis.CosineTextSimilarity
+	
+	String text1 = "我爱学习";
+	String text2 = "我爱读书";
+	TextSimilarity textSimilarity = new CosineTextSimilarity();
+	System.out.println(text1+" 和 "+text1+" 的相似度分值："+textSimilarity.similarScore(text1, text1));
+	System.out.println(text1+" 和 "+text2+" 的相似度分值："+textSimilarity.similarScore(text1, text2));
+	System.out.println(text2+" 和 "+text2+" 的相似度分值："+textSimilarity.similarScore(text2, text2));
+	
+运行结果如下：
+	
+	我爱学习 和 我爱学习 的相似度分值：1.0
+    我爱学习 和 我爱读书 的相似度分值：0.4
+    我爱读书 和 我爱读书 的相似度分值：1.0
+
+方式二：简单共有词，通过计算两篇文档有多少个相同的词来评估他们的相似度
+
+实现类：org.apdplat.word.analysis.SimpleTextSimilarity
+	
+	String text1 = "我爱学习";
+	String text2 = "我爱读书";
+	TextSimilarity textSimilarity = new CosineTextSimilarity();
+	System.out.println(text1+" 和 "+text1+" 的相似度分值："+textSimilarity.similarScore(text1, text1));
+	System.out.println(text1+" 和 "+text2+" 的相似度分值："+textSimilarity.similarScore(text1, text2));
+	System.out.println(text2+" 和 "+text2+" 的相似度分值："+textSimilarity.similarScore(text2, text2));
+	
+运行结果如下：
+
+	我爱学习 和 我爱学习 的相似度分值：1.0
+	我爱学习 和 我爱读书 的相似度分值：0.4
+	我爱读书 和 我爱读书 的相似度分值：1.0
+
 ###分词算法效果评估：
 
 	1、word分词 最大Ngram分值算法：
