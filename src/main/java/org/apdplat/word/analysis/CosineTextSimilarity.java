@@ -91,7 +91,7 @@ public class CosineTextSimilarity extends TextSimilarity {
     }
 
     public static void main(String[] args) {
-        String text1 = "我爱学习";
+        String text1 = "我爱购物";
         String text2 = "我爱读书";
         String text3 = "他是黑客";
         TextSimilarity textSimilarity = new CosineTextSimilarity();
