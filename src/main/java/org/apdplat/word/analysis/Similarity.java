@@ -29,13 +29,17 @@ import java.util.List;
  * @author 杨尚川
  */
 public interface Similarity {
+    //相似性阈值
+    float thresholdRate = 0.5F;
     /**
      * 对象1和对象2是否相似
      * @param object1 对象1
      * @param object2 对象2
      * @return 是否相似
      */
-    boolean isSimilar(String object1, String object2);
+    default boolean isSimilar(String object1, String object2){
+        return similarScore(object1, object2) >= thresholdRate;
+    }
 
     /**
      * 对象1和对象2的相似度分值
@@ -51,7 +55,9 @@ public interface Similarity {
      * @param words2 词列表2
      * @return 是否相似
      */
-    boolean isSimilar(List<Word> words1, List<Word> words2);
+    default boolean isSimilar(List<Word> words1, List<Word> words2){
+        return similarScore(words1, words2) >= thresholdRate;
+    }
 
     /**
      * 词列表1和词列表2的相似度分值

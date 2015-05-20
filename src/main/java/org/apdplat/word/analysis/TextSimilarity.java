@@ -28,10 +28,7 @@ import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 文本相似度
@@ -42,31 +39,8 @@ public abstract class TextSimilarity implements Similarity{
 
     //默认分词器
     protected Segmentation segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
-    //相似性阈值
-    protected float thresholdRate = 0.5F;
     //是否忽略停用词
     protected boolean filterStopWord = false;
-
-    /**
-     * 文本1和文本2是否相似
-     * @param text1 文本1
-     * @param text2 文本2
-     * @return 是否相似
-     */
-    @Override
-    public boolean isSimilar(String text1, String text2) {
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("文本1：");
-            LOGGER.debug("\t" + text1);
-            LOGGER.debug("文本2：");
-            LOGGER.debug("\t" + text2);
-        }
-        //分词
-        List<Word> words1 = seg(text1);
-        List<Word> words2 = seg(text2);
-        //判断相似度
-        return isSimilar(words1, words2);
-    }
 
     /**
      * 文本1和文本2的相似度分值
@@ -87,17 +61,6 @@ public abstract class TextSimilarity implements Similarity{
         List<Word> words2 = seg(text2);
         //计算相似度分值
         return similarScore(words1, words2);
-    }
-
-    /**
-     * 词列表1和词列表2是否相似
-     * @param words1 词列表1
-     * @param words2 词列表2
-     * @return 是否相似
-     */
-    @Override
-    public boolean isSimilar(List<Word> words1, List<Word> words2) {
-        return similarScore(words1, words2) >= thresholdRate;
     }
 
     /**
