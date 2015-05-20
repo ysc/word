@@ -60,7 +60,7 @@ public class SimpleTextSimilarity extends TextSimilarity {
         String text1 = "我爱学习";
         String text2 = "我爱读书";
         String text3 = "他是黑客";
-        TextSimilarity textSimilarity = new CosineTextSimilarity();
+        TextSimilarity textSimilarity = new SimpleTextSimilarity();
         double score1pk1 = textSimilarity.similarScore(text1, text1);
         double score1pk2 = textSimilarity.similarScore(text1, text2);
         double score1pk3 = textSimilarity.similarScore(text1, text3);
