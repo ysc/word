@@ -21,13 +21,8 @@
 package org.apdplat.word.analysis;
 
 import org.apdplat.word.segmentation.Word;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 文本相似度计算
@@ -42,40 +37,34 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 所以编辑距离（Edit Distance）又称Levenshtein距离
  * @author 杨尚川
  */
-public class EditDistanceTextSimilarity implements Similarity {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EditDistanceTextSimilarity.class);
-
+public class EditDistanceTextSimilarity extends TextSimilarity {
     /**
-     * 对象1和对象2的相似度分值
-     * @param object1 对象1
-     * @param object2 对象2
-     * @return 相似度分值
-     */
-    @Override
-    public double similarScore(String object1, String object2){
-        int distance = distance(object1, object2);
-        int maxTextLength = Math.max(object1.length(), object2.length());
-        return (1 - distance / (double)maxTextLength);
-    }
-
-    /**
-     * 词列表1和词列表2的相似度分值
+     * 计算相似度分值
      * @param words1 词列表1
      * @param words2 词列表2
      * @return 相似度分值
      */
     @Override
-    public double similarScore(List<Word> words1, List<Word> words2){
-        LOGGER.warn("You should call the method 'public double similarScore(String object1, String object2)' not this");
-        //因为这个算法不是基于分词的，所以如果调用这个方法，那么就把词转换为文本
+    protected double scoreImpl(List<Word> words1, List<Word> words2){
+        //文本1
         StringBuilder text1 = new StringBuilder();
         words1.forEach(word -> text1.append(word.getText()));
+        //文本2
         StringBuilder text2 = new StringBuilder();
         words2.forEach(word -> text2.append(word.getText()));
-        return similarScore(text1.toString(), text2.toString());
+        //计算文本1和文本2的编辑距离
+        int editDistance = editDistance(text1.toString(), text2.toString());
+        int maxTextLength = Math.max(text1.length(), text2.length());
+        double score = (1 - editDistance / (double)maxTextLength);
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("文本1和文本2的编辑距离："+editDistance);
+            LOGGER.debug("文本1和文本2的最大长度："+maxTextLength);
+            LOGGER.debug("文本1和文本2的相似度分值：1 - "+editDistance+" / (double)"+maxTextLength+"="+score);
+        }
+        return score;
     }
 
-    private int distance(String text1, String text2) {
+    private int editDistance(String text1, String text2) {
         int text1Length = text1.length();
         int text2Length = text2.length();
         if (text1Length == 0) {
@@ -126,7 +115,7 @@ public class EditDistanceTextSimilarity implements Similarity {
         String text1 = "我爱购物";
         String text2 = "我爱读书";
         String text3 = "他是黑客";
-        Similarity textSimilarity = new EditDistanceTextSimilarity();
+        TextSimilarity textSimilarity = new EditDistanceTextSimilarity();
         double score1pk1 = textSimilarity.similarScore(text1, text1);
         double score1pk2 = textSimilarity.similarScore(text1, text2);
         double score1pk3 = textSimilarity.similarScore(text1, text3);
