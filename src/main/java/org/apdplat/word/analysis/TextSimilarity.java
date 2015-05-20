@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class TextSimilarity implements Similarity{
     protected static final Logger LOGGER = LoggerFactory.getLogger(TextSimilarity.class);
     //默认分词器
-    private static final Segmentation SEGMENTATION = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
+    protected Segmentation segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
     //相似性阈值
     protected float thresholdRate = 0.5F;
     //是否忽略停用词
@@ -53,7 +53,11 @@ public abstract class TextSimilarity implements Similarity{
      */
     @Override
     public boolean isSimilar(String text1, String text2) {
-        return similarScore(text1, text2) >= thresholdRate;
+        //分词
+        List<Word> words1 = seg(text1);
+        List<Word> words2 = seg(text2);
+        //判断相似度
+        return isSimilar(words1, words2);
     }
     /**
      * 文本1和文本2的相似度分值
@@ -63,8 +67,35 @@ public abstract class TextSimilarity implements Similarity{
      */
     @Override
     public double similarScore(String text1, String text2) {
-        if(text1 != null && text2 != null){
-            double score = score(text1, text2);
+        //分词
+        List<Word> words1 = seg(text1);
+        List<Word> words2 = seg(text2);
+        //计算相似度分值
+        return similarScore(words1, words2);
+    }
+
+    /**
+     * 词列表1和词列表2是否相似
+     * @param words1 词列表1
+     * @param words2 词列表2
+     * @return 是否相似
+     */
+    @Override
+    public boolean isSimilar(List<Word> words1, List<Word> words2) {
+        return similarScore(words1, words2) >= thresholdRate;
+    }
+
+    /**
+     * 词列表1和词列表2的相似度分值
+     * @param words1 词列表1
+     * @param words2 词列表2
+     * @return 相似度分值
+     */
+    @Override
+    public double similarScore(List<Word> words1, List<Word> words2) {
+        if(words1 != null && words2 != null
+                && !words1.isEmpty() && !words2.isEmpty()){
+            double score = score(words1, words2);
             if(LOGGER.isDebugEnabled()){
                 LOGGER.debug("分值："+score);
             }
@@ -76,10 +107,8 @@ public abstract class TextSimilarity implements Similarity{
         }
         return 0;
     }
-    private double score(String text1, String text2){
-        //分词
-        List<Word> words1 = seg(text1);
-        List<Word> words2 = seg(text2);
+
+    private double score(List<Word> words1, List<Word> words2){
         //词频统计
         Map<Word, AtomicInteger> frequency1 = frequency(words1);
         Map<Word, AtomicInteger> frequency2 = frequency(words2);
@@ -95,7 +124,7 @@ public abstract class TextSimilarity implements Similarity{
     protected abstract double scoreImpl(Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2);
 
     private List<Word> seg(String text){
-        List<Word> words = SEGMENTATION.seg(text);
+        List<Word> words = segmentation.seg(text);
         if(filterStopWord) {
             //停用词过滤
             StopWord.filterStopWords(words);
