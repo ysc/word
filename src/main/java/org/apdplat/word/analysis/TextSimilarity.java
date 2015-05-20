@@ -28,7 +28,10 @@ import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 文本相似度
@@ -113,5 +116,37 @@ public abstract class TextSimilarity implements Similarity{
             StopWord.filterStopWords(words);
         }
         return words;
+    }
+
+    /**
+     * 统计词频
+     * @param words 词列表
+     * @return 词频统计结果
+     */
+    protected Map<Word, AtomicInteger> frequency(List<Word> words){
+        Map<Word, AtomicInteger> frequency =new HashMap<>();
+        words.forEach(word->{
+            frequency.putIfAbsent(word, new AtomicInteger());
+            frequency.get(word).incrementAndGet();
+        });
+        return frequency;
+    }
+
+    /**
+     * 格式化词频统计信息
+     * @param frequency 词频统计信息
+     */
+    protected String formatWordsFrequency(Map<Word, AtomicInteger> frequency){
+        StringBuilder str = new StringBuilder();
+        if(frequency != null && !frequency.isEmpty()) {
+            AtomicInteger c = new AtomicInteger();
+            frequency
+                    .entrySet()
+                    .stream()
+                    .sorted((a, b) -> b.getValue().get() - a.getValue().get())
+                    .forEach(e -> str.append("\t").append(c.incrementAndGet()).append("、").append(e.getKey()).append("=").append(e.getValue()).append("\n"));
+        }
+        str.setLength(str.length()-1);
+        return str.toString();
     }
 }

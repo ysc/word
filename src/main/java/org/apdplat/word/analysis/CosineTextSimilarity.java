@@ -106,38 +106,6 @@ public class CosineTextSimilarity extends TextSimilarity {
         return cos;
     }
 
-    /**
-     * 统计词频
-     * @param words 词列表
-     * @return 词频统计结果
-     */
-    private Map<Word, AtomicInteger> frequency(List<Word> words){
-        Map<Word, AtomicInteger> frequency =new HashMap<>();
-        words.forEach(word->{
-            frequency.putIfAbsent(word, new AtomicInteger());
-            frequency.get(word).incrementAndGet();
-        });
-        return frequency;
-    }
-
-    /**
-     * 格式化词频统计信息
-     * @param frequency 词频统计信息
-     */
-    private String formatWordsFrequency(Map<Word, AtomicInteger> frequency){
-        StringBuilder str = new StringBuilder();
-        if(frequency != null && !frequency.isEmpty()) {
-            AtomicInteger c = new AtomicInteger();
-            frequency
-                    .entrySet()
-                    .stream()
-                    .sorted((a, b) -> b.getValue().get() - a.getValue().get())
-                    .forEach(e -> str.append("\t").append(c.incrementAndGet()).append("、").append(e.getKey()).append("=").append(e.getValue()).append("\n"));
-        }
-        str.setLength(str.length()-1);
-        return str.toString();
-    }
-
     public static void main(String[] args) {
         String text1 = "我爱购物";
         String text2 = "我爱读书";
