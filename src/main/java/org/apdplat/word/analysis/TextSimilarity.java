@@ -39,12 +39,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class TextSimilarity implements Similarity{
     protected static final Logger LOGGER = LoggerFactory.getLogger(TextSimilarity.class);
+
     //默认分词器
     protected Segmentation segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
     //相似性阈值
     protected float thresholdRate = 0.5F;
     //是否忽略停用词
     protected boolean filterStopWord = false;
+
     /**
      * 文本1和文本2是否相似
      * @param text1 文本1
@@ -53,12 +55,19 @@ public abstract class TextSimilarity implements Similarity{
      */
     @Override
     public boolean isSimilar(String text1, String text2) {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("文本1：");
+            LOGGER.debug("\t" + text1);
+            LOGGER.debug("文本2：");
+            LOGGER.debug("\t" + text2);
+        }
         //分词
         List<Word> words1 = seg(text1);
         List<Word> words2 = seg(text2);
         //判断相似度
         return isSimilar(words1, words2);
     }
+
     /**
      * 文本1和文本2的相似度分值
      * @param text1 文本1
@@ -67,6 +76,12 @@ public abstract class TextSimilarity implements Similarity{
      */
     @Override
     public double similarScore(String text1, String text2) {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("文本1：");
+            LOGGER.debug("\t" + text1);
+            LOGGER.debug("文本2：");
+            LOGGER.debug("\t" + text2);
+        }
         //分词
         List<Word> words1 = seg(text1);
         List<Word> words2 = seg(text2);
@@ -95,7 +110,14 @@ public abstract class TextSimilarity implements Similarity{
     public double similarScore(List<Word> words1, List<Word> words2) {
         if(words1 != null && words2 != null
                 && !words1.isEmpty() && !words2.isEmpty()){
-            double score = score(words1, words2);
+            //输出词列表信息
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("词列表1：");
+                LOGGER.debug("\t" + words1);
+                LOGGER.debug("词列表2：");
+                LOGGER.debug("\t" + words2);
+            }
+            double score = scoreImpl(words1, words2);
             if(LOGGER.isDebugEnabled()){
                 LOGGER.debug("分值："+score);
             }
@@ -114,28 +136,7 @@ public abstract class TextSimilarity implements Similarity{
      * @param words2 词列表2
      * @return 相似度分值
      */
-    private double score(List<Word> words1, List<Word> words2){
-        //词频统计
-        Map<Word, AtomicInteger> frequency1 = frequency(words1);
-        Map<Word, AtomicInteger> frequency2 = frequency(words2);
-        //输出详细信息
-        if(LOGGER.isDebugEnabled()){
-            showDetail(words1, frequency1);
-            showDetail(words2, frequency2);
-        }
-        //计算相似度分值
-        return scoreImpl(words1, words2, frequency1, frequency2);
-    }
-
-    /**
-     * 计算相似度分值
-     * @param words1 词列表1
-     * @param words2 词列表2
-     * @param frequency1 词列表1的词频统计结果
-     * @param frequency2 词列表2的词频统计结果
-     * @return 相似度分值
-     */
-    protected abstract double scoreImpl(List<Word> words1, List<Word> words2, Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2);
+    protected abstract double scoreImpl(List<Word> words1, List<Word> words2);
 
     /**
      * 对文本进行分词
@@ -149,36 +150,5 @@ public abstract class TextSimilarity implements Similarity{
             StopWord.filterStopWords(words);
         }
         return words;
-    }
-
-    /**
-     * 统计词频
-     * @param words 词列表
-     * @return 词频统计结果
-     */
-    private Map<Word, AtomicInteger> frequency(List<Word> words){
-        Map<Word, AtomicInteger> frequency =new HashMap<>();
-        words.forEach(word->{
-            frequency.putIfAbsent(word, new AtomicInteger());
-            frequency.get(word).incrementAndGet();
-        });
-        return frequency;
-    }
-
-    /**
-     * 输出词列表和词频统计信息
-     * @param words 词列表
-     * @param frequency 词频统计信息
-     */
-    private void showDetail(List<Word> words, Map<Word, AtomicInteger> frequency){
-        LOGGER.debug("分词结果：");
-        LOGGER.debug("\t"+words);
-        LOGGER.debug("词频统计：");
-        AtomicInteger c = new AtomicInteger();
-        frequency
-                .entrySet()
-                .stream()
-                .sorted((a,b)->b.getValue().get()-a.getValue().get())
-                .forEach(e->LOGGER.debug("\t"+c.incrementAndGet()+"、"+e.getKey()+"="+e.getValue()));
     }
 }

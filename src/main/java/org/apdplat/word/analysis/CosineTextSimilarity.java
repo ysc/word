@@ -23,10 +23,7 @@ package org.apdplat.word.analysis;
 import org.apdplat.word.segmentation.Word;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -43,15 +40,22 @@ public class CosineTextSimilarity extends TextSimilarity {
      * |a|=根号[(x1)^2+(y1)^2],|b|=根号[(x2)^2+(y2)^2]
      * @param words1 词列表1
      * @param words2 词列表2
-     * @param frequency1 词列表1的词频统计结果
-     * @param frequency2 词列表2的词频统计结果
      * @return 相似度分值
      */
     @Override
-    protected double scoreImpl(List<Word> words1, List<Word> words2, Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2) {
+    protected double scoreImpl(List<Word> words1, List<Word> words2) {
+        //词频统计
+        Map<Word, AtomicInteger> frequency1 = frequency(words1);
+        Map<Word, AtomicInteger> frequency2 = frequency(words2);
+        //输出词频统计信息
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("词频统计1：\n{}", formatWordsFrequency(frequency1));
+            LOGGER.debug("词频统计2：\n{}", formatWordsFrequency(frequency2));
+        }
+        //所有的不重复词
         Set<Word> words = new HashSet<>();
-        words.addAll(frequency1.keySet());
-        words.addAll(frequency2.keySet());
+        words.addAll(words1);
+        words.addAll(words2);
         //向量的维度为words的大小，每一个维度的权重是词频
         //a.b
         AtomicInteger ab = new AtomicInteger();
@@ -91,6 +95,38 @@ public class CosineTextSimilarity extends TextSimilarity {
         BigDecimal aabb = BigDecimal.valueOf(aaa).multiply(BigDecimal.valueOf(bbb));
         double cos = ab.get()/aabb.doubleValue();
         return cos;
+    }
+
+    /**
+     * 统计词频
+     * @param words 词列表
+     * @return 词频统计结果
+     */
+    private Map<Word, AtomicInteger> frequency(List<Word> words){
+        Map<Word, AtomicInteger> frequency =new HashMap<>();
+        words.forEach(word->{
+            frequency.putIfAbsent(word, new AtomicInteger());
+            frequency.get(word).incrementAndGet();
+        });
+        return frequency;
+    }
+
+    /**
+     * 格式化词频统计信息
+     * @param frequency 词频统计信息
+     */
+    private String formatWordsFrequency(Map<Word, AtomicInteger> frequency){
+        StringBuilder str = new StringBuilder();
+        if(frequency != null && !frequency.isEmpty()) {
+            AtomicInteger c = new AtomicInteger();
+            frequency
+                    .entrySet()
+                    .stream()
+                    .sorted((a, b) -> b.getValue().get() - a.getValue().get())
+                    .forEach(e -> str.append("\t").append(c.incrementAndGet()).append("、").append(e.getKey()).append("=").append(e.getValue()).append("\n"));
+        }
+        str.setLength(str.length()-1);
+        return str.toString();
     }
 
     public static void main(String[] args) {

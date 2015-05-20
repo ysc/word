@@ -22,8 +22,9 @@ package org.apdplat.word.analysis;
 
 import org.apdplat.word.segmentation.Word;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -36,25 +37,32 @@ public class SimpleTextSimilarity extends TextSimilarity {
      * 判定相似度的方式：简单共有词
      * @param words1 词列表1
      * @param words2 词列表2
-     * @param frequency1 词列表1的词频统计结果
-     * @param frequency2 词列表2的词频统计结果
      * @return 相似度分值
      */
     @Override
-    protected double scoreImpl(List<Word> words1, List<Word> words2, Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2) {
-        //判断有几个相同的词
+    protected double scoreImpl(List<Word> words1, List<Word> words2) {
+        //计算词列表1总的字符数
+        AtomicInteger words1Length = new AtomicInteger();
+        words1.parallelStream().forEach(word -> words1Length.addAndGet(word.getText().length()));
+        //计算词列表2总的字符数
+        AtomicInteger words2Length = new AtomicInteger();
+        words2.parallelStream().forEach(word -> words2Length.addAndGet(word.getText().length()));
+        //计算词列表1和词列表2共有的词的总的字符数
+        //HashSet的contains性能要大于ArrayList的contains
+        Set<Word> words2Set = new HashSet<>();
+        words2Set.addAll(words2);
         AtomicInteger intersectionLength = new AtomicInteger();
-        frequency1.keySet().parallelStream().forEach(word -> {
-            if (frequency2.keySet().contains(word)) {
-                intersectionLength.incrementAndGet();
+        words1.parallelStream().forEach(word -> {
+            if (words2Set.contains(word)) {
+                intersectionLength.addAndGet(word.getText().length());
             }
         });
-        double score = intersectionLength.get()/(double)Math.min(frequency1.size(), frequency2.size());
+        double score = intersectionLength.get()/(double)Math.min(words1Length.get(), words2Length.get());
         if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("文本1有的词数：" + frequency1.size());
-            LOGGER.debug("文本2有的词数：" + frequency2.size());
-            LOGGER.debug("文本1和2共有的词数：" + intersectionLength.get());
-            LOGGER.debug("相似度分值=" + intersectionLength.get() + "/(double)Math.min(" + frequency1.size() + ", " + frequency2.size() + ")=" + score);
+            LOGGER.debug("词列表1总的字符数：" + words1Length.get());
+            LOGGER.debug("词列表2总的字符数：" + words2Length.get());
+            LOGGER.debug("词列表1和2共有的词的总的字符数：" + intersectionLength.get());
+            LOGGER.debug("相似度分值=" + intersectionLength.get() + "/(double)Math.min(" + words1Length.get() + ", " + words1Length.get() + ")=" + score);
         }
         return score;
     }
