@@ -65,8 +65,13 @@ public abstract class TextSimilarity implements Similarity{
     public double similarScore(String text1, String text2) {
         if(text1 != null && text2 != null){
             double score = score(text1, text2);
-            //取两位小数
-            score = (int)(score*100)/(double)100;
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug("分值："+score);
+            }
+            score = (int)(score*100+0.5)/(double)100;
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug("取两位小数，四舍五入，分值："+score);
+            }
             return score;
         }
         return 0;
