@@ -20,6 +20,10 @@
 
 package org.apdplat.word.analysis;
 
+import org.apdplat.word.segmentation.Word;
+
+import java.util.List;
+
 /**
  * 相似度
  * @author 杨尚川
@@ -32,6 +36,7 @@ public interface Similarity {
      * @return 是否相似
      */
     boolean isSimilar(String object1, String object2);
+
     /**
      * 对象1和对象2的相似度分值
      * @param object1 对象1
@@ -39,4 +44,20 @@ public interface Similarity {
      * @return 相似度分值
      */
     double similarScore(String object1, String object2);
+
+    /**
+     * 词列表1和词列表2是否相似
+     * @param words1 词列表1
+     * @param words2 词列表2
+     * @return 是否相似
+     */
+    boolean isSimilar(List<Word> words1, List<Word> words2);
+
+    /**
+     * 词列表1和词列表2的相似度分值
+     * @param words1 词列表1
+     * @param words2 词列表2
+     * @return 相似度分值
+     */
+    double similarScore(List<Word> words1, List<Word> words2);
 }
