@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author 杨尚川
  */
 public class EditDistanceTextSimilarity implements Similarity {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(EditDistanceTextSimilarity.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EditDistanceTextSimilarity.class);
 
     /**
      * 对象1和对象2的相似度分值
