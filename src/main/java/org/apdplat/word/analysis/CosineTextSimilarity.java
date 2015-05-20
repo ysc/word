@@ -36,6 +36,7 @@ public class CosineTextSimilarity extends TextSimilarity {
      * 判定相似度的方式：余弦相似度
      * 余弦夹角原理：
      * 向量a=(x1,y1),向量b=(x2,y2)
+     * similarity=a.b/|a|*|b|
      * a.b=x1x2+y1y2
      * |a|=根号[(x1)^2+(y1)^2],|b|=根号[(x2)^2+(y2)^2]
      * @param words1 词列表1
@@ -59,9 +60,9 @@ public class CosineTextSimilarity extends TextSimilarity {
         //向量的维度为words的大小，每一个维度的权重是词频
         //a.b
         AtomicInteger ab = new AtomicInteger();
-        //|a|
+        //|a|的平方
         AtomicInteger aa = new AtomicInteger();
-        //|b|
+        //|b|的平方
         AtomicInteger bb = new AtomicInteger();
         //计算
         words
@@ -88,11 +89,14 @@ public class CosineTextSimilarity extends TextSimilarity {
                     bb.addAndGet(oneOfTheDimension);
                 }
             });
-
+        //|a|
         double aaa = Math.sqrt(aa.get());
+        //|b|
         double bbb = Math.sqrt(bb.get());
         //使用BigDecimal保证精确计算浮点数
+        //|a|*|b|
         BigDecimal aabb = BigDecimal.valueOf(aaa).multiply(BigDecimal.valueOf(bbb));
+        //similarity=a.b/|a|*|b|
         double cos = ab.get()/aabb.doubleValue();
         return cos;
     }
