@@ -30,6 +30,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 文本相似度计算
  * 判定方式：简单共有词，通过计算两篇文档有多少个相同的词来评估他们的相似度
+ * 算法步骤描述：
+ * 1、分词
+ * 2、求交集（不去重），累计交集的所有的词的字符数得到 intersectionLength
+ * 3、求最短文本字符数 Math.min(words1Length, words2Length)
+ * 4、2中的值除以3中的值 intersectionLength/(double)Math.min(words1Length, words2Length)
+ * 完整计算公式：
+ * double score = intersectionLength/(double)Math.min(words1Length, words2Length);
  * @author 杨尚川
  */
 public class SimpleTextSimilarity extends TextSimilarity {
