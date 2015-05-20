@@ -22,6 +22,7 @@ package org.apdplat.word.analysis;
 
 import org.apdplat.word.segmentation.Word;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,12 +34,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SimpleTextSimilarity extends TextSimilarity {
     /**
      * 判定相似度的方式：简单共有词
-     * @param frequency1 文本1的词频统计结果
-     * @param frequency2 文本2的词频统计结果
+     * @param words1 词列表1
+     * @param words2 词列表2
+     * @param frequency1 词列表1的词频统计结果
+     * @param frequency2 词列表2的词频统计结果
      * @return 相似度分值
      */
     @Override
-    protected double scoreImpl(Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2) {
+    protected double scoreImpl(List<Word> words1, List<Word> words2, Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2) {
         //判断有几个相同的词
         AtomicInteger intersectionLength = new AtomicInteger();
         frequency1.keySet().parallelStream().forEach(word -> {

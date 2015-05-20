@@ -108,6 +108,12 @@ public abstract class TextSimilarity implements Similarity{
         return 0;
     }
 
+    /**
+     * 计算相似度分值
+     * @param words1 词列表1
+     * @param words2 词列表2
+     * @return 相似度分值
+     */
     private double score(List<Word> words1, List<Word> words2){
         //词频统计
         Map<Word, AtomicInteger> frequency1 = frequency(words1);
@@ -118,11 +124,24 @@ public abstract class TextSimilarity implements Similarity{
             showDetail(words2, frequency2);
         }
         //计算相似度分值
-        return scoreImpl(frequency1, frequency2);
+        return scoreImpl(words1, words2, frequency1, frequency2);
     }
 
-    protected abstract double scoreImpl(Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2);
+    /**
+     * 计算相似度分值
+     * @param words1 词列表1
+     * @param words2 词列表2
+     * @param frequency1 词列表1的词频统计结果
+     * @param frequency2 词列表2的词频统计结果
+     * @return 相似度分值
+     */
+    protected abstract double scoreImpl(List<Word> words1, List<Word> words2, Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2);
 
+    /**
+     * 对文本进行分词
+     * @param text 文本
+     * @return 分词结果
+     */
     private List<Word> seg(String text){
         List<Word> words = segmentation.seg(text);
         if(filterStopWord) {
@@ -132,6 +151,11 @@ public abstract class TextSimilarity implements Similarity{
         return words;
     }
 
+    /**
+     * 统计词频
+     * @param words 词列表
+     * @return 词频统计结果
+     */
     private Map<Word, AtomicInteger> frequency(List<Word> words){
         Map<Word, AtomicInteger> frequency =new HashMap<>();
         words.forEach(word->{
@@ -141,6 +165,11 @@ public abstract class TextSimilarity implements Similarity{
         return frequency;
     }
 
+    /**
+     * 输出词列表和词频统计信息
+     * @param words 词列表
+     * @param frequency 词频统计信息
+     */
     private void showDetail(List<Word> words, Map<Word, AtomicInteger> frequency){
         LOGGER.debug("分词结果：");
         LOGGER.debug("\t"+words);

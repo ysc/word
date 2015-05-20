@@ -24,6 +24,7 @@ import org.apdplat.word.segmentation.Word;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,12 +41,14 @@ public class CosineTextSimilarity extends TextSimilarity {
      * 向量a=(x1,y1),向量b=(x2,y2)
      * a.b=x1x2+y1y2
      * |a|=根号[(x1)^2+(y1)^2],|b|=根号[(x2)^2+(y2)^2]
-     * @param frequency1 文本1的词频统计结果
-     * @param frequency2 文本2的词频统计结果
+     * @param words1 词列表1
+     * @param words2 词列表2
+     * @param frequency1 词列表1的词频统计结果
+     * @param frequency2 词列表2的词频统计结果
      * @return 相似度分值
      */
     @Override
-    protected double scoreImpl(Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2) {
+    protected double scoreImpl(List<Word> words1, List<Word> words2, Map<Word, AtomicInteger> frequency1, Map<Word, AtomicInteger> frequency2) {
         Set<Word> words = new HashSet<>();
         words.addAll(frequency1.keySet());
         words.addAll(frequency2.keySet());
