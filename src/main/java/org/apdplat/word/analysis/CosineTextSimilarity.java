@@ -29,6 +29,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 文本相似度计算
  * 判定方式：余弦相似度，通过计算两个向量的夹角余弦值来评估他们的相似度
+ * 余弦夹角原理：
+ * 向量a=(x1,y1),向量b=(x2,y2)
+ * similarity=a.b/|a|*|b|
+ * a.b=x1x2+y1y2
+ * |a|=根号[(x1)^2+(y1)^2],|b|=根号[(x2)^2+(y2)^2]
  * @author 杨尚川
  */
 public class CosineTextSimilarity extends TextSimilarity {
@@ -66,7 +71,7 @@ public class CosineTextSimilarity extends TextSimilarity {
         AtomicInteger bb = new AtomicInteger();
         //计算
         words
-            .stream()
+            .parallelStream()
             .forEach(word -> {
                 AtomicInteger x1 = frequency1.get(word);
                 AtomicInteger x2 = frequency2.get(word);
