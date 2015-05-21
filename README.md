@@ -890,6 +890,12 @@ word分词提供了多种文本相似度计算方式：
    
    [12、如何利用多核提升分词速度](http://my.oschina.net/apdplat/blog/414076)
    
+   [13、利用word分词来计算文本相似度](http://my.oschina.net/apdplat/blog/417047)
+   
+   [14、利用word分词来对文本进行词频统计](http://my.oschina.net/apdplat/blog/417641)
+
+   [15、利用word分词通过计算词的语境来获得相关词](http://my.oschina.net/apdplat/blog/417922)
+   
 ###相关项目：
    
 [Java开源项目cws_evaluation：中文分词器分词效果评估对比](https://github.com/ysc/cws_evaluation/)
