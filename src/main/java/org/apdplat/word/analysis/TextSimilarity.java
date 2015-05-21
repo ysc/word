@@ -28,9 +28,11 @@ import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -119,11 +121,56 @@ public abstract class TextSimilarity implements Similarity{
     }
 
     /**
+     * 如果没有指定权重，则默认使用词频来标注词的权重
+     * 词频数据怎么来？
+     * 一个词在词列表1中出现了几次，它在词列表1中的权重就是几
+     * 一个词在词列表2中出现了几次，它在词列表2中的权重就是几
+     * 标注好的权重存储在Word类的weight字段中
+     * @param words1 词列表1
+     * @param words2 词列表2
+     */
+    protected void taggingWeightWithWordFrequency(List<Word> words1, List<Word> words2){
+        if(words1 == null || words2 == null || words1.isEmpty() || words2.isEmpty()){
+            LOGGER.error("词列表不能为空");
+            return;
+        }
+        if(words1.get(0).getWeight() != null || words2.get(0).getWeight() != null){
+            LOGGER.info("词已经被指定权重，不再使用词频进行标注");
+            return;
+        }
+        //词频统计
+        Map<Word, AtomicInteger> frequency1 = frequency(words1);
+        Map<Word, AtomicInteger> frequency2 = frequency(words2);
+        //输出词频统计信息
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("词频统计1：\n{}", formatWordsFrequency(frequency1));
+            LOGGER.debug("词频统计2：\n{}", formatWordsFrequency(frequency2));
+        }
+        //权重标注
+        Arrays.asList(frequency1, frequency2).parallelStream().forEach(frequency -> {
+            frequency.entrySet().parallelStream().forEach(entry->{
+                entry.getKey().setWeight(entry.getValue().floatValue());
+            });
+        });
+    }
+
+    /**
+     * 构造权重快速搜索容器
+     * @param words 词列表
+     * @return Map
+     */
+    protected Map<String, Float> toFastSearchMap(List<Word> words){
+        Map<String, Float> weights = new ConcurrentHashMap<>();
+        words.parallelStream().forEach(word -> weights.put(word.getText(), word.getWeight()));
+        return weights;
+    }
+
+    /**
      * 统计词频
      * @param words 词列表
      * @return 词频统计结果
      */
-    protected Map<Word, AtomicInteger> frequency(List<Word> words){
+    private Map<Word, AtomicInteger> frequency(List<Word> words){
         Map<Word, AtomicInteger> frequency =new HashMap<>();
         words.forEach(word->{
             frequency.putIfAbsent(word, new AtomicInteger());
@@ -136,7 +183,7 @@ public abstract class TextSimilarity implements Similarity{
      * 格式化词频统计信息
      * @param frequency 词频统计信息
      */
-    protected String formatWordsFrequency(Map<Word, AtomicInteger> frequency){
+    private String formatWordsFrequency(Map<Word, AtomicInteger> frequency){
         StringBuilder str = new StringBuilder();
         if(frequency != null && !frequency.isEmpty()) {
             AtomicInteger c = new AtomicInteger();
