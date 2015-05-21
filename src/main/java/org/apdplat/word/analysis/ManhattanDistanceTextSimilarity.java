@@ -82,11 +82,11 @@ public class ManhattanDistanceTextSimilarity extends TextSimilarity {
             //距离为0，表示完全相同
             score = 1;
         }else {
-            score = 1 / (double)manhattanDistance.get();
+            score = 1 / (double)(manhattanDistance.get()+1);
         }
         if(LOGGER.isDebugEnabled()){
             LOGGER.debug("文本1和文本2的曼哈顿距离："+manhattanDistance.get());
-            LOGGER.debug("文本1和文本2的相似度分值：1 / (double)"+manhattanDistance.get()+"="+score);
+            LOGGER.debug("文本1和文本2的相似度分值：1 / (double)("+manhattanDistance.get()+"+1)="+score);
         }
         return score;
     }
