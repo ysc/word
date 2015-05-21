@@ -135,7 +135,9 @@ public abstract class TextSimilarity implements Similarity{
             return;
         }
         if(words1.get(0).getWeight() != null || words2.get(0).getWeight() != null){
-            LOGGER.info("词已经被指定权重，不再使用词频进行标注");
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug("词已经被指定权重，不再使用词频进行标注");
+            }
             return;
         }
         //词频统计
