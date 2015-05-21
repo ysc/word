@@ -21,9 +21,9 @@
 package org.apdplat.word.analysis;
 
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.AtomicFloat;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 文本相似度计算
@@ -45,35 +45,32 @@ public class EuclideanDistanceTextSimilarity extends TextSimilarity {
      */
     @Override
     protected double scoreImpl(List<Word> words1, List<Word> words2) {
-        //词频统计
-        Map<Word, AtomicInteger> frequency1 = frequency(words1);
-        Map<Word, AtomicInteger> frequency2 = frequency(words2);
-        //输出词频统计信息
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("词频统计1：\n{}", formatWordsFrequency(frequency1));
-            LOGGER.debug("词频统计2：\n{}", formatWordsFrequency(frequency2));
-        }
+        //用词频来标注词的权重
+        taggingWeightWithWordFrequency(words1, words2);
+        //构造权重快速搜索容器
+        Map<String, Float> weights1 = toFastSearchMap(words1);
+        Map<String, Float> weights2 = toFastSearchMap(words2);
         //所有的不重复词
         Set<Word> words = new HashSet<>();
         words.addAll(words1);
         words.addAll(words2);
         //向量的维度为words的大小，每一个维度的权重是词频
         //(x1-x2)^2+(y1-y2)^2
-        AtomicInteger ab = new AtomicInteger();
+        AtomicFloat ab = new AtomicFloat();
         //计算
         words
             .parallelStream()
             .forEach(word -> {
-                AtomicInteger x1 = frequency1.get(word);
-                AtomicInteger x2 = frequency2.get(word);
+                Float x1 = weights1.get(word.getText());
+                Float x2 = weights2.get(word.getText());
                 if (x1 == null) {
-                    x1 = new AtomicInteger(0);
+                    x1 = 0f;
                 }
                 if (x2 == null) {
-                    x2 = new AtomicInteger(0);
+                    x2 = 0f;
                 }
                 //(x1-x2)
-                int oneOfTheDimension = x1.get() - x2.get();
+                float oneOfTheDimension = x1 - x2;
                 //(x1-x2)^2
                 //+
                 ab.addAndGet(oneOfTheDimension * oneOfTheDimension);
