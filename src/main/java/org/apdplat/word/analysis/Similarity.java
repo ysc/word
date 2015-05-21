@@ -22,7 +22,10 @@ package org.apdplat.word.analysis;
 
 import org.apdplat.word.segmentation.Word;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 相似度
@@ -66,4 +69,64 @@ public interface Similarity {
      * @return 相似度分值
      */
     double similarScore(List<Word> words1, List<Word> words2);
+
+
+    /**
+     * 词及其权重映射1和词及其权重映射2是否相似
+     * @param weights1 词及其权重映射1
+     * @param weights2 词及其权重映射2
+     * @return 是否相似
+     */
+    default boolean isSimilar(HashMap<Word, Float> weights1, HashMap<Word, Float> weights2) {
+        return similarScore(weights1, weights2) >= thresholdRate;
+    }
+
+    /**
+     * 词及其权重映射1和词及其权重映射2的相似度分值
+     * @param weights1 词及其权重映射1
+     * @param weights2 词及其权重映射2
+     * @return 相似度分值
+     */
+    default double similarScore(HashMap<Word, Float> weights1, HashMap<Word, Float> weights2){
+        List<Word> words1 = weights1.keySet().parallelStream().map(word -> {
+            word.setWeight(weights1.get(word));
+            return word;
+        }).collect(Collectors.toList());
+        List<Word> words2 = weights2.keySet().parallelStream().map(word -> {
+            word.setWeight(weights2.get(word));
+            return word;
+        }).collect(Collectors.toList());
+        return similarScore(words1, words2);
+    }
+
+
+    /**
+     * 词及其权重映射1和词及其权重映射2是否相似
+     * @param weights1 词及其权重映射1
+     * @param weights2 词及其权重映射2
+     * @return 是否相似
+     */
+    default boolean isSimilar(Map<String, Float> weights1, Map<String, Float> weights2) {
+        return similarScore(weights1, weights2) >= thresholdRate;
+    }
+
+    /**
+     * 词及其权重映射1和词及其权重映射2的相似度分值
+     * @param weights1 词及其权重映射1
+     * @param weights2 词及其权重映射2
+     * @return 相似度分值
+     */
+    default double similarScore(Map<String, Float> weights1, Map<String, Float> weights2){
+        List<Word> words1 = weights1.keySet().parallelStream().map(w -> {
+            Word word = new Word(w);
+            word.setWeight(weights1.get(w));
+            return word;
+        }).collect(Collectors.toList());
+        List<Word> words2 = weights2.keySet().parallelStream().map(w -> {
+            Word word = new Word(w);
+            word.setWeight(weights2.get(w));
+            return word;
+        }).collect(Collectors.toList());
+        return similarScore(words1, words2);
+    }
 }
