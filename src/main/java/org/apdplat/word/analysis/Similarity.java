@@ -22,6 +22,7 @@ package org.apdplat.word.analysis;
 
 import org.apdplat.word.segmentation.Word;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,15 +89,16 @@ public interface Similarity {
      * @return 相似度分值
      */
     default double similarScore(HashMap<Word, Float> weights1, HashMap<Word, Float> weights2){
-        List<Word> words1 = weights1.keySet().parallelStream().map(word -> {
-            word.setWeight(weights1.get(word));
-            return word;
+        List<List<Word>> words = Arrays.asList(weights1, weights2).parallelStream().map(weights -> {
+            return weights.keySet().parallelStream()
+                    .map(word -> {
+                        word.setWeight(weights.get(word));
+                        return word;
+                    })
+                    .collect(Collectors.toList());
         }).collect(Collectors.toList());
-        List<Word> words2 = weights2.keySet().parallelStream().map(word -> {
-            word.setWeight(weights2.get(word));
-            return word;
-        }).collect(Collectors.toList());
-        return similarScore(words1, words2);
+
+        return similarScore(words.get(0), words.get(1));
     }
 
 
@@ -117,16 +119,16 @@ public interface Similarity {
      * @return 相似度分值
      */
     default double similarScore(Map<String, Float> weights1, Map<String, Float> weights2){
-        List<Word> words1 = weights1.keySet().parallelStream().map(w -> {
-            Word word = new Word(w);
-            word.setWeight(weights1.get(w));
-            return word;
+        List<List<Word>> words = Arrays.asList(weights1, weights2).parallelStream().map(weights -> {
+            return weights.keySet().parallelStream()
+                    .map(w -> {
+                        Word word = new Word(w);
+                        word.setWeight(weights.get(w));
+                        return word;
+                    })
+                    .collect(Collectors.toList());
         }).collect(Collectors.toList());
-        List<Word> words2 = weights2.keySet().parallelStream().map(w -> {
-            Word word = new Word(w);
-            word.setWeight(weights2.get(w));
-            return word;
-        }).collect(Collectors.toList());
-        return similarScore(words1, words2);
+
+        return similarScore(words.get(0), words.get(1));
     }
 }
