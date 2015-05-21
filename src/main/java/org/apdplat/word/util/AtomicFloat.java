@@ -98,4 +98,8 @@ public class AtomicFloat extends Number {
     public long longValue() {
         return (long) get();
     }
+
+    public String toString() {
+        return Float.toString(get());
+    }
 }
