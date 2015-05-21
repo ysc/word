@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 通用的前缀树，高效存储，快速搜索
- * 为前缀树的一级节点建立索引（比二分查找要快）
+ * 词首字索引式通用前缀树，高效存储，快速搜索
+ * 为前缀树的一级节点（词首字）建立索引（比二分查找要快）
  * @author 杨尚川
  */
 public class GenericTrie<V> {

@@ -32,8 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 词首字索引式前缀树
  * 前缀树的Java实现
- * 为前缀树的一级节点建立索引（比二分查找要快）
+ * 为前缀树的一级节点（词首字）建立索引（比二分查找要快）
  * 用于查找一个指定的字符串是否在词典中
  * @author 杨尚川
  */
