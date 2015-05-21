@@ -40,39 +40,54 @@ public class AtomicFloat extends Number {
     }
 
     public final float addAndGet(float delta){
-        return Float.intBitsToFloat(bits.addAndGet(Float.floatToIntBits(delta)));
+        float expect;
+        float update;
+        do {
+            expect = get();
+            update = expect + delta;
+        } while(!this.compareAndSet(expect, update));
+
+        return update;
     }
 
     public final float getAndAdd(float delta){
-        return Float.intBitsToFloat(bits.getAndAdd(Float.floatToIntBits(delta)));
+        float expect;
+        float update;
+        do {
+            expect = get();
+            update = expect + delta;
+        } while(!this.compareAndSet(expect, update));
+
+        return expect;
     }
 
     public final float getAndDecrement(){
-        return Float.intBitsToFloat(bits.getAndDecrement());
+        return getAndAdd(-1);
     }
 
     public final float decrementAndGet(){
-        return Float.intBitsToFloat(bits.decrementAndGet());
+        return addAndGet(-1);
     }
 
     public final float getAndIncrement(){
-        return Float.intBitsToFloat(bits.getAndIncrement());
+        return getAndAdd(1);
     }
 
     public final float incrementAndGet(){
-        return Float.intBitsToFloat(bits.incrementAndGet());
+        return addAndGet(1);
     }
 
     public final float getAndSet(float newValue) {
-        return Float.intBitsToFloat(bits.getAndSet(Float.floatToIntBits(newValue)));
+        float expect;
+        do {
+            expect = get();
+        } while(!this.compareAndSet(expect, newValue));
+
+        return expect;
     }
 
     public final boolean compareAndSet(float expect, float update) {
         return bits.compareAndSet(Float.floatToIntBits(expect), Float.floatToIntBits(update));
-    }
-
-    public final boolean weakCompareAndSet(float expect, float update) {
-        return bits.weakCompareAndSet(Float.floatToIntBits(expect), Float.floatToIntBits(update));
     }
 
     public final void set(float newValue) {
