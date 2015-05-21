@@ -20,19 +20,9 @@
 
 package org.apdplat.word;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.recognition.StopWord;
@@ -66,7 +56,7 @@ public class WordSegmenter {
      * @return 分词结果
      */
     public static List<Word> segWithStopWords(String text){
-        return SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg(text);
+        return SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore).seg(text);
     }
     /**
      * 对文本进行分词，移除停用词
@@ -88,7 +78,7 @@ public class WordSegmenter {
      * @return 分词结果
      */
     public static List<Word> seg(String text){
-        List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg(text);
+        List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore).seg(text);
         //停用词过滤
         StopWord.filterStopWords(words);
         return words;
@@ -112,7 +102,7 @@ public class WordSegmenter {
      * @throws Exception 
      */
     public static void segWithStopWords(File input, File output) throws Exception{
-        Utils.seg(input, output, false, SegmentationAlgorithm.BidirectionalMaximumMatching);
+        Utils.seg(input, output, false, SegmentationAlgorithm.MaxNgramScore);
     }
     /**
      * 对文件进行分词，移除停用词
@@ -133,7 +123,7 @@ public class WordSegmenter {
      * @throws Exception 
      */
     public static void seg(File input, File output) throws Exception{
-        Utils.seg(input, output, true, SegmentationAlgorithm.BidirectionalMaximumMatching);
+        Utils.seg(input, output, true, SegmentationAlgorithm.MaxNgramScore);
     }
     private static void demo(){
         long start = System.currentTimeMillis();
