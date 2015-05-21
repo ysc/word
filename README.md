@@ -911,3 +911,5 @@ word分词提供了多种文本相似度计算方式：
 [MMSEG: A Word Identification System for Mandarin Chinese Text Based on Two Variants of the Maximum Matching Algorithm](http://technology.chtsai.org/mmseg/)
 
 [With Google’s new tool Ngram Viewer, you can visualise the rise and fall of concepts across 5 million books and 500 years!](https://books.google.com/ngrams)
+
+[word2vec](https://code.google.com/p/word2vec/)
