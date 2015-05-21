@@ -37,6 +37,8 @@ public class Word implements Comparable{
     private int frequency;
     private List<Word> synonym = null;
     private List<Word> antonym = null;
+    //权重，用于词向量分析
+    private Float weight;
 
     public Word(String text){
         this.text = text;
@@ -120,6 +122,14 @@ public class Word implements Comparable{
             Collections.sort(antonym);
             this.antonym = antonym;
         }
+    }
+
+    public Float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Float weight) {
+        this.weight = weight;
     }
 
     @Override
