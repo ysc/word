@@ -60,9 +60,9 @@ public enum SegmentationAlgorithm {
     FullSegmentation("全切分算法"),
 
     /**
-     * 最少分词算法
+     * 最少词数算法
      */
-    MinimalWordCount("最少分词算法"),
+    MinimalWordCount("最少词数算法"),
 
     /**
      * 最大Ngram分值算法

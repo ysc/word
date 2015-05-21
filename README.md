@@ -116,7 +116,7 @@
 	双向最小匹配算法：BidirectionalMinimumMatching
 	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 	全切分算法：FullSegmentation
-	最少分词算法：MinimalWordCount
+	最少词数算法：MinimalWordCount
 	最大Ngram分值算法：MaxNgramScore
 	
 ####9、分词效果评估
@@ -356,7 +356,7 @@
 	双向最小匹配算法：BidirectionalMinimumMatching
 	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 	全切分算法：FullSegmentation
-	最少分词算法：MinimalWordCount
+	最少词数算法：MinimalWordCount
 	最大Ngram分值算法：MaxNgramScore
 	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
@@ -398,7 +398,7 @@
 	双向最小匹配算法：BidirectionalMinimumMatching
 	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
 	全切分算法：FullSegmentation
-	最少分词算法：MinimalWordCount
+	最少词数算法：MinimalWordCount
 	最大Ngram分值算法：MaxNgramScore
 	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
@@ -748,7 +748,7 @@ word分词提供了多种文本相似度计算方式：
 	行数完美率：66.55%  行数错误率：33.44%  总的行数：2533709  完美行数：1686210  错误行数：847499
 	字数完美率：60.94% 字数错误率：39.05% 总的字数：28374490 完美字数：17293964 错误字数：11080526
 	
-	2、word分词 最少分词算法：
+	2、word分词 最少词数算法：
 	分词速度：330.1586 字符/毫秒
 	行数完美率：65.67%  行数错误率：34.32%  总的行数：2533709  完美行数：1663958  错误行数：869751
 	字数完美率：60.12% 字数错误率：39.87% 总的字数：28374490 完美字数：17059641 错误字数：11314849
