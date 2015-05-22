@@ -21,6 +21,7 @@
 package org.apdplat.word.vector;
 
 import org.apdplat.word.analysis.*;
+import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,14 +123,18 @@ public class Distance {
                     LOGGER.info("没有对应的词："+line);
                 }else{
                     LOGGER.info("计算词向量：" + value);
-                    LOGGER.info("限制结果数目：" + limit);
+                    LOGGER.info("显示结果数目：" + limit);
                     LOGGER.info(line+" 的相关词（"+textSimilarity.getClass().getSimpleName()+"）：");
                     LOGGER.info("----------------------------------------------------------");
+                    long start = System.currentTimeMillis();
                     List<String> list = compute(value, limit);
+                    long cost = System.currentTimeMillis() - start;
                     AtomicInteger i = new AtomicInteger();
                     for(String element : list){
                         LOGGER.info("\t"+i.incrementAndGet()+"、"+element);
                     }
+                    LOGGER.info("----------------------------------------------------------");
+                    LOGGER.info("耗时：" + Utils.getTimeDes(cost));
                     LOGGER.info("----------------------------------------------------------");
                 }
                 tip();
