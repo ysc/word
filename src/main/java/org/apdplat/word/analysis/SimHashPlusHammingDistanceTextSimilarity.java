@@ -73,24 +73,31 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
      */
     @Override
     protected double scoreImpl(List<Word> words1, List<Word> words2){
+        //用词频来标注词的权重
+        taggingWeightWithWordFrequency(words1, words2);
         //计算SimHash
         String simHash1 = simHash(words1);
         String simHash2 = simHash(words2);
         //计算SimHash值之间的汉明距离
         int hammingDistance = hammingDistance(simHash1, simHash2);
         if(hammingDistance == -1){
+            LOGGER.error("文本1：" + words1.toString());
+            LOGGER.error("文本2：" + words2.toString());
             LOGGER.error("文本1SimHash值：" + simHash1);
             LOGGER.error("文本2SimHash值：" + simHash2);
             LOGGER.error("文本1和文本2的SimHash值长度不相等，不能计算汉明距离");
             return 0;
         }
-        double score = (1 - hammingDistance / (double)simHash1.length());
+        int maxDistance = simHash1.length();
+        double score = (1 - hammingDistance / (double)maxDistance);
         if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("文本1：" + words1.toString());
+            LOGGER.debug("文本2：" + words2.toString());
             LOGGER.debug("文本1SimHash值："+simHash1);
             LOGGER.debug("文本2SimHash值："+simHash2);
             LOGGER.debug("hashBitCount："+hashBitCount);
             LOGGER.debug("SimHash值之间的汉明距离："+hammingDistance);
-            LOGGER.debug("文本1和文本2的相似度分值：1 - "+hammingDistance+" / (double)"+simHash1.length()+"="+score);
+            LOGGER.debug("文本1和文本2的相似度分值：1 - "+hammingDistance+" / (double)"+maxDistance+"="+score);
         }
         return score;
     }
@@ -98,28 +105,31 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
     /**
      * 计算词列表的SimHash值
      * @param words 词列表
-     * @return SimHash
+     * @return SimHash值
      */
     private String simHash(List<Word> words) {
-        int[] hashBit = new int[hashBitCount];
+        float[] hashBit = new float[hashBitCount];
         words.forEach(word -> {
-            BigInteger t = hash(word.getText());
+            float weight = word.getWeight()==null?1:word.getWeight();
+            BigInteger hash = hash(word.getText());
             for (int i = 0; i < hashBitCount; i++) {
-                BigInteger bitmask = new BigInteger("1").shiftLeft(i);
-                if (t.and(bitmask).signum() != 0) {
-                    hashBit[i] += 1;
+                BigInteger bitMask = new BigInteger("1").shiftLeft(i);
+                if (hash.and(bitMask).signum() != 0) {
+                    hashBit[i] += weight;
                 } else {
-                    hashBit[i] -= 1;
+                    hashBit[i] -= weight;
                 }
             }
         });
-        BigInteger fingerprint = new BigInteger("0");
+        StringBuffer fingerprint = new StringBuffer();
         for (int i = 0; i < hashBitCount; i++) {
             if (hashBit[i] >= 0) {
-                fingerprint = fingerprint.add(new BigInteger("1").shiftLeft(i));
+                fingerprint.append("1");
+            }else{
+                fingerprint.append("0");
             }
         }
-        return fingerprint.toString(2);
+        return fingerprint.toString();
     }
 
     /**
@@ -135,11 +145,11 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
         BigInteger x = BigInteger.valueOf(((long) charArray[0]) << 7);
         BigInteger m = new BigInteger("1000003");
         BigInteger mask = new BigInteger("2").pow(hashBitCount).subtract(new BigInteger("1"));
-        long wordSum = 0;
+        long sum = 0;
         for (char c : charArray) {
-            wordSum += (long)c;
+            sum += c;
         }
-        x = x.multiply(m).xor(BigInteger.valueOf(wordSum)).and(mask);
+        x = x.multiply(m).xor(BigInteger.valueOf(sum)).and(mask);
         x = x.xor(new BigInteger(String.valueOf(word.length())));
         if (x.equals(new BigInteger("-1"))) {
             x = new BigInteger("-2");
@@ -159,7 +169,8 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
             return -1;
         }
         int distance = 0;
-        for (int i = 0; i < simHash1.length(); i++) {
+        int len = simHash1.length();
+        for (int i = 0; i < len; i++) {
             if (simHash1.charAt(i) != simHash2.charAt(i)) {
                 distance++;
             }
@@ -167,7 +178,7 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
         return distance;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         String text1 = "我爱购物";
         String text2 = "我爱读书";
         String text3 = "他是黑客";
