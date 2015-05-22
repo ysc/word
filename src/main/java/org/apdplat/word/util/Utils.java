@@ -112,6 +112,10 @@ public class Utils {
         float total=(float)Runtime.getRuntime().totalMemory()/1000000;
         float free=(float)Runtime.getRuntime().freeMemory()/1000000;
         String pre="执行之前剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
+        //准备输出目录
+        if(!output.getParentFile().exists()){
+            output.getParentFile().mkdirs();
+        }
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input),"utf-8"));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"))){
             long size = Files.size(input.toPath());
