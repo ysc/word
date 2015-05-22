@@ -20,22 +20,14 @@
 
 package org.apdplat.word.vector;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * 用词向量来表达一个词
@@ -44,9 +36,9 @@ import org.slf4j.LoggerFactory;
 public class Word2Vector {
     private static final Logger LOGGER = LoggerFactory.getLogger(Word2Vector.class);
     public static void main(String[] args){
-        String input = "target/word.txt";
-        String output = "target/vector.txt";
-        String vocabulary = "target/vocabulary.txt";
+        String input = "data/word.txt";
+        String output = "data/vector.txt";
+        String vocabulary = "data/vocabulary.txt";
         int window = 2;
         int vectorLength = 30;
         if(args.length == 3){
@@ -72,9 +64,19 @@ public class Word2Vector {
         float total=(float)Runtime.getRuntime().totalMemory()/1000000;
         float free=(float)Runtime.getRuntime().freeMemory()/1000000;
         String pre="执行之前剩余内存:"+max+"-"+total+"+"+free+"="+(max-total+free);
+        File outputFile = new File(output);
+        //准备输出目录
+        if(!outputFile.getParentFile().exists()){
+            outputFile.getParentFile().mkdirs();
+        }
+        File vocabularyFile = new File(vocabulary);
+        //准备输出目录
+        if(!vocabularyFile.getParentFile().exists()){
+            vocabularyFile.getParentFile().mkdirs();
+        }
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input),"utf-8"));
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"));
-                BufferedWriter vocabularyWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(vocabulary),"utf-8"))){
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile),"utf-8"));
+                BufferedWriter vocabularyWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(vocabularyFile),"utf-8"))){
             int textLength=0;
             long start = System.currentTimeMillis();
             LOGGER.info("1、开始计算相关词");
