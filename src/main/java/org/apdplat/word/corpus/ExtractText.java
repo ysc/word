@@ -20,25 +20,14 @@
 
 package org.apdplat.word.corpus;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.nio.file.FileSystem;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 从语料库中抽取文本
@@ -50,7 +39,7 @@ public class ExtractText {
     private static final AtomicInteger CHAR_COUNT = new AtomicInteger();    
 
     public static void main(String[] args){
-        String output = "target/word.txt";
+        String output = "data/word.txt";
         String separator = " ";
         if(args.length == 1){
             output = args[0];
@@ -89,8 +78,13 @@ public class ExtractText {
      * @throws IOException 
      */
     private static void analyzeCorpus(String zipFile, String output, final String separator, final boolean includePhrase) throws IOException{
+        File outputFile = new File(output);
+        //准备输出目录
+        if(!outputFile.getParentFile().exists()){
+            outputFile.getParentFile().mkdirs();
+        }
         try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipFile), ExtractText.class.getClassLoader());
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output),"utf-8"));) {
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile),"utf-8"));) {
             for(Path path : fs.getRootDirectories()){                
                 LOGGER.info("处理目录："+path);
                 Files.walkFileTree(path, new SimpleFileVisitor<Path>(){
