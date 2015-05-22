@@ -20,83 +20,123 @@
 
 package org.apdplat.word.vector;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import org.apdplat.word.analysis.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 /**
- * 计算词和词的相似性
+ * 计算词和词的相似度
  * @author 杨尚川
  */
 public class Distance {
     private static final Logger LOGGER = LoggerFactory.getLogger(Distance.class);
-    public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException, IOException{
-        String model = "target/vector.txt";
-        String encoding = "gbk";
-        if(args.length == 1){
-            model = args[0];
-        }
-        if(args.length == 2){
-            model = args[0];
-            encoding = args[1];
-        }
+    private TextSimilarity textSimilarity = null;
+    private Map<String, String> model = null;
+    private int limit = 15;
+    public Distance(TextSimilarity textSimilarity, String model) throws Exception {
+        this.textSimilarity = textSimilarity;
+        this.model = parseModel(model);
+    }
+
+    public void setTextSimilarity(TextSimilarity textSimilarity) {
+        LOGGER.info("设置相似度算法为："+textSimilarity.getClass().getName());
+        this.textSimilarity = textSimilarity;
+    }
+
+    public void setLimit(int limit) {
+        LOGGER.info("设置显示结果条数为："+limit);
+        this.limit = limit;
+    }
+
+    private Map<String, String> parseModel(String model) throws Exception {
         Map<String, String> map = new HashMap<>();
         LOGGER.info("开始初始化模型");
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(model),"utf-8"))){
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(model), "utf-8"))) {
             String line = null;
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 String[] attr = line.split(" : ");
-                if(attr==null || attr.length != 2){
-                    LOGGER.error("错误数据："+line);
+                if (attr == null || attr.length != 2) {
+                    LOGGER.error("错误数据：" + line);
                     continue;
                 }
                 String key = attr[0];
                 String value = attr[1];
-                value = value.substring(1, value.length()-1);
+                value = value.substring(1, value.length() - 1);
                 map.put(key, value);
             }
         }
-        LOGGER.info("模型初始化完成");        
-        LOGGER.info("输入要查询的词或（exit）命令离开：");
+        LOGGER.info("模型初始化完成");
+        return map;
+    }
+    private void tip(){
+        LOGGER.info("可通过输入命令sa=cos来指定相似度算法，可用的算法有：");
+        LOGGER.info("   1、sa=cos，余弦相似度");
+        LOGGER.info("   2、sa=edi，编辑距离");
+        LOGGER.info("   3、sa=euc，欧几里得距离");
+        LOGGER.info("   4、sa=sim，简单共有词");
+        LOGGER.info("   5、sa=jac，Jaccard相似性系数");
+        LOGGER.info("   6、sa=man，曼哈顿距离");
+        LOGGER.info("   7、sa=shh，SimHash + 汉明距离");
+        LOGGER.info("可通过输入命令limit=15来指定显示结果条数");
+        LOGGER.info("可通过输入命令exit退出程序");
+        LOGGER.info("输入要查询的词或命令：");
+    }
+    private void interact(String encoding) throws Exception{
+        tip();
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, encoding))){
             String line = null;
             while((line = reader.readLine()) != null){
                 if("exit".equals(line)){
-                    return;
+                    System.exit(0);
                 }
-                String value = map.get(line);
+                if(line.startsWith("limit=")){
+                    try{
+                        setLimit(Integer.parseInt(line.replace("limit=", "").trim()));
+                    }catch (Exception e){
+                        LOGGER.error("指令不正确，数字非法");
+                    }
+                    continue;
+                }
+                if(line.startsWith("sa=")){
+                    switch (line.substring(3)){
+                        case "cos": setTextSimilarity(new CosineTextSimilarity());continue;
+                        case "edi": setTextSimilarity(new EditDistanceTextSimilarity());continue;
+                        case "euc": setTextSimilarity(new EuclideanDistanceTextSimilarity());continue;
+                        case "sim": setTextSimilarity(new SimpleTextSimilarity());continue;
+                        case "jac": setTextSimilarity(new JaccardTextSimilarity());continue;
+                        case "man": setTextSimilarity(new ManhattanDistanceTextSimilarity());continue;
+                        case "shh": setTextSimilarity(new SimHashPlusHammingDistanceTextSimilarity());continue;
+                    }
+                    continue;
+                }
+                String value = model.get(line);
                 if(value == null){
                     LOGGER.info("没有对应的词："+line);
                 }else{
-                    LOGGER.info(line+"：");
+                    LOGGER.info("计算词向量：" + value);
+                    LOGGER.info("限制结果数目：" + limit);
+                    LOGGER.info(line+" 的相关词（"+textSimilarity.getClass().getSimpleName()+"）：");
                     LOGGER.info("----------------------------------------------------------");
-                    List<String> list = distance(map, value, 15);
+                    List<String> list = compute(value, limit);
+                    AtomicInteger i = new AtomicInteger();
                     for(String element : list){
-                        LOGGER.info("\t"+element);
-                    }                    
+                        LOGGER.info("\t"+i.incrementAndGet()+"、"+element);
+                    }
                     LOGGER.info("----------------------------------------------------------");
                 }
+                tip();
             }
         }
     }
-    
-    private static List<String> distance(Map<String, String> map, String words, int limit){
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("计算词向量：" + words);
-            LOGGER.debug("限制结果数目：" + limit);
-        }
+    public List<String> compute(String words, int limit){
         Map<String, Float> wordVec = new HashMap<>();
         String[] ws = words.split(", ");
         for(String w : ws){
@@ -105,11 +145,10 @@ public class Distance {
             float v = Float.parseFloat(attr[1]);
             wordVec.put(k, v);
         }       
-        Map<String, Float> result = new HashMap<>();
-        float max=0;
-        for(String key : map.keySet()){
+        Map<String, Double> result = new HashMap<>();
+        for(String key : model.keySet()){
             //词向量
-            String value = map.get(key);
+            String value = model.get(key);
             String[] elements = value.split(", ");
             Map<String, Float> vec = new HashMap<>();
             for(String element : elements){
@@ -118,45 +157,25 @@ public class Distance {
                 float v = Float.parseFloat(attr[1]);
                 vec.put(k, v);
             }
-            //计算距离
-            float score=0;
-            int times=0;
-            for(String out : wordVec.keySet()){
-                for(String in : vec.keySet()){
-                    if(out.equals(in)){
-                        //有交集
-                        score += wordVec.get(out) * vec.get(in);
-                        times++;
-                    }
-                }
+            //忽略维度小于10的词向量
+            if(vec.size()<10){
+                continue;
             }
-            //忽略没有交集的词
+            //计算距离，也就是相似度分值
+            double score = textSimilarity.similarScore(wordVec, vec);
             if(score > 0){
-                score *= times;
                 result.put(key, score);
-                if(score > max){
-                    max = score;
-                }
             }
         }
-        if(max == 0){
-            if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug("没有相似词");
-            }
+        if(result.isEmpty()){
+            LOGGER.info("没有相似词");
             return Collections.emptyList();
         }
         if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("最大分值：" + max);
             LOGGER.debug("相似词数：" + result.size());
         }
-        //分值归一化
-        for(String key : result.keySet()){
-            float value = result.get(key);
-            value /= max;
-            result.put(key, value);
-        }
         //按分值排序
-        List<Entry<String, Float>> list = result.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).collect(Collectors.toList());
+        List<Entry<String, Double>> list = result.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).collect(Collectors.toList());
         //限制结果数目
         if(limit > list.size()){
             limit = list.size();
@@ -167,5 +186,18 @@ public class Distance {
             retValue.add(list.get(i).getKey()+" "+list.get(i).getValue());
         }
         return retValue;
+    }
+    public static void main(String[] args) throws Exception{
+        String model = "data/vector.txt";
+        String encoding = "gbk";
+        if(args.length == 1){
+            model = args[0];
+        }
+        if(args.length == 2){
+            model = args[0];
+            encoding = args[1];
+        }
+        Distance distance = new Distance(new EditDistanceTextSimilarity(), model);
+        distance.interact(encoding);
     }
 }
