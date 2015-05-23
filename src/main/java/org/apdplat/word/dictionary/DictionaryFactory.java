@@ -20,12 +20,6 @@
 
 package org.apdplat.word.dictionary;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
 import org.apdplat.word.dictionary.impl.DictionaryTrie;
 import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.util.AutoDetector;
@@ -33,6 +27,16 @@ import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 词典工厂
@@ -198,7 +202,7 @@ public final class DictionaryFactory {
         Thread.sleep(60000);
         AtomicInteger h = new AtomicInteger();
         AtomicInteger e = new AtomicInteger();
-        List<String> words = Files.readAllLines(Paths.get("src/test/resources/dic.txt"));
+        Stream<String> words = Files.lines(Paths.get("src/test/resources/dic.txt"));
         System.gc();
         Thread.sleep(60000);
         long start = System.currentTimeMillis();
