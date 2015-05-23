@@ -43,10 +43,14 @@ public abstract class TextSimilarity implements Similarity{
     protected static final Logger LOGGER = LoggerFactory.getLogger(TextSimilarity.class);
 
     //默认分词器
-    protected Segmentation segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
+    private Segmentation segmentation = null;
     //是否忽略停用词
     protected boolean filterStopWord = false;
 
+    public void setSegmentationAlgorithm(SegmentationAlgorithm segmentationAlgorithm){
+        segmentation = SegmentationFactory.getSegmentation(segmentationAlgorithm);
+        LOGGER.info("设置分词算法为："+segmentationAlgorithm.getDes());
+    }
     /**
      * 文本1和文本2的相似度分值
      * @param text1 文本1
@@ -112,6 +116,10 @@ public abstract class TextSimilarity implements Similarity{
      * @return 分词结果
      */
     private List<Word> seg(String text){
+        if(segmentation == null){
+            //延迟初始化
+            segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
+        }
         List<Word> words = segmentation.seg(text);
         if(filterStopWord) {
             //停用词过滤
