@@ -27,8 +27,8 @@ import org.junit.Test;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -69,10 +69,9 @@ public class GenericTrieTest {
     }
     @Test
     public void testBigram(){
-        try {
+        try(Stream<String> lines = Files.lines(Paths.get("src/test/resources/bigram.txt"))) {
             GenericTrie<Integer> genericTrie = new GenericTrie<>();
             Map<String, Integer> map = new HashMap<>();
-            List<String> lines = Files.readAllLines(Paths.get("src/test/resources/bigram.txt"));
             lines.forEach(line -> {
                 String[] attrs = line.split("\\s+");
                 if(attrs!=null && attrs.length==2){
@@ -88,10 +87,9 @@ public class GenericTrieTest {
     }
     @Test
     public void testTrigram(){
-        try {
+        try(Stream<String> lines = Files.lines(Paths.get("src/test/resources/trigram.txt"))) {
             GenericTrie<Integer> genericTrie = new GenericTrie<>();
             Map<String, Integer> map = new HashMap<>();
-            List<String> lines = Files.readAllLines(Paths.get("src/test/resources/trigram.txt"));
             lines.forEach(line -> {
                 String[] attrs = line.split("\\s+");
                 if(attrs!=null && attrs.length==2){

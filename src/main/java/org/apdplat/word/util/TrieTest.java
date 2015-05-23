@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * 前缀树和双数组前缀树性能测试
@@ -37,7 +37,7 @@ public class TrieTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrieTest.class);
     public static void testBigram() throws Exception{
         Map<String, Integer> map = new HashMap<>();
-        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/bigram.txt"));
+        Stream<String> lines = Files.lines(Paths.get("src/test/resources/bigram.txt"));
         lines.forEach(line -> {
             String[] attrs = line.split("\\s+");
             if(attrs!=null && attrs.length==2){
@@ -53,7 +53,7 @@ public class TrieTest {
     }
     public static void testTrigram() throws Exception{
         Map<String, Integer> map = new HashMap<>();
-        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/trigram.txt"));
+        Stream<String> lines = Files.lines(Paths.get("src/test/resources/trigram.txt"));
         lines.forEach(line -> {
             String[] attrs = line.split("\\s+");
             if(attrs!=null && attrs.length==2){
@@ -71,7 +71,7 @@ public class TrieTest {
     public static void testBigram2() throws Exception{
         GenericTrie<Integer> genericTrie = new GenericTrie<>();
         Map<String, Integer> map = new HashMap<>();
-        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/bigram.txt"));
+        Stream<String> lines = Files.lines(Paths.get("src/test/resources/bigram.txt"));
         lines.forEach(line -> {
             String[] attrs = line.split("\\s+");
             if(attrs!=null && attrs.length==2){
@@ -87,7 +87,7 @@ public class TrieTest {
     public static void testTrigram2() throws Exception{
         GenericTrie<Integer> genericTrie = new GenericTrie<>();
         Map<String, Integer> map = new HashMap<>();
-        List<String> lines = Files.readAllLines(Paths.get("src/test/resources/trigram.txt"));
+        Stream<String> lines = Files.lines(Paths.get("src/test/resources/trigram.txt"));
         lines.forEach(line -> {
             String[] attrs = line.split("\\s+");
             if(attrs!=null && attrs.length==2){
