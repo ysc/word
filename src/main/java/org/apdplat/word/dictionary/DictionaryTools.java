@@ -20,19 +20,18 @@
 
 package org.apdplat.word.dictionary;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.apdplat.word.recognition.RecognitionTool;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 /**
  * 词典工具
@@ -58,28 +57,26 @@ public class DictionaryTools {
      * @param dicPath
      */
     public static void removePhraseFromDic(String phrasePath, String dicPath) {
-        try{
+        try(Stream<String> phrases = Files.lines(Paths.get(phrasePath), Charset.forName("utf-8"));
+            Stream<String> words = Files.lines(Paths.get(dicPath), Charset.forName("utf-8"))){
             Set<String> set = new HashSet<>();
-            List<String> phrases = Files.readAllLines(Paths.get(phrasePath), Charset.forName("utf-8"));            
-            for(String phrase : phrases){
+            phrases.forEach(phrase -> {
                 String[] attr = phrase.split("=");
-                if(attr != null && attr.length == 2){
+                if (attr != null && attr.length == 2) {
                     set.add(attr[0]);
                 }
-            }
+            });
             List<String> list = new ArrayList<>();
-            List<String> words = Files.readAllLines(Paths.get(dicPath), Charset.forName("utf-8"));
-            int len = words.size();
-            for(String word : words){
+            AtomicInteger len = new AtomicInteger();
+            words.forEach(word -> {
+                len.incrementAndGet();
                 if(!set.contains(word)){
                     list.add(word);
                 }
-            }        
-            words.clear();
+            });
             set.clear();
-            Files.write(Paths.get(dicPath), list, Charset.forName("utf-8"));        
-            len = len - list.size();
-            LOGGER.info("移除短语结构数目："+len);
+            Files.write(Paths.get(dicPath), list, Charset.forName("utf-8"));
+            LOGGER.info("移除短语结构数目："+(len.get() - list.size()));
         }catch(Exception e){
             LOGGER.error("移除短语结构失败：", e);
         }
