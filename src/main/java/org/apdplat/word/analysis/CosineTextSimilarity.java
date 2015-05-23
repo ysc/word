@@ -24,7 +24,10 @@ import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.AtomicFloat;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 文本相似度计算
@@ -97,9 +100,11 @@ public class CosineTextSimilarity extends TextSimilarity {
         double bbb = Math.sqrt(bb.doubleValue());
         //使用BigDecimal保证精确计算浮点数
         //|a|*|b|
+        //double aabb = aaa * bbb;
         BigDecimal aabb = BigDecimal.valueOf(aaa).multiply(BigDecimal.valueOf(bbb));
         //similarity=a.b/|a|*|b|
-        double cos = ab.get()/aabb.doubleValue();
+        //double cos = ab.get() / aabb.doubleValue();
+        double cos = BigDecimal.valueOf(ab.get()).divide(aabb, 9, BigDecimal.ROUND_HALF_UP).doubleValue();
         return cos;
     }
 
