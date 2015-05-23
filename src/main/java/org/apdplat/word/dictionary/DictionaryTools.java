@@ -29,8 +29,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -88,33 +92,31 @@ public class DictionaryTools {
      * @throws IOException 
      */
     public static void merge(List<String> sources, String target) throws IOException{
-        List<String> lines = new ArrayList<>();
         //读取所有需要合并的词典
-        for(String source : sources){
-            lines.addAll(Files.readAllLines(Paths.get(source), Charset.forName("utf-8")));
-        }
         Set<String> set = new HashSet<>();
-        for(String line : lines){
-            line = line.trim();
-            // 词长度：大于等于2并且小于等于4
-            // 识别功能 能识别的词 就不用放到词典中了，没必要多此一举
-            //至少要两个中文字符，防止大量无意义或特殊词混入词典
-            if(line.length() > 4 
-                    || line.length() < 2
-                    || !Utils.isChineseCharAndLengthAtLeastTwo(line)
-                    || RecognitionTool.recog(line)){
-                LOGGER.debug("过滤："+line);
-                continue;
+        AtomicInteger i = new AtomicInteger();
+        for(String source : sources){
+            try(Stream<String> lines = Files.lines(Paths.get(source), Charset.forName("utf-8"))){
+                lines.forEach(line -> {
+                    i.incrementAndGet();
+                    line = line.trim();
+                    // 词长度：大于等于2并且小于等于4
+                    // 识别功能 能识别的词 就不用放到词典中了，没必要多此一举
+                    //至少要两个中文字符，防止大量无意义或特殊词混入词典
+                    if (line.length() > 4
+                            || line.length() < 2
+                            || !Utils.isChineseCharAndLengthAtLeastTwo(line)
+                            || RecognitionTool.recog(line)) {
+                        LOGGER.debug("过滤：" + line);
+                        return;
+                    }
+                    set.add(line);
+                });
             }
-            set.add(line);
         }
-        LOGGER.info("合并词数："+lines.size());
+        LOGGER.info("合并词数："+i.get());
         LOGGER.info("保留词数："+set.size());
-        lines.clear();
-        List<String> list = new ArrayList<>();
-        list.addAll(set);
-        set.clear();
-        Collections.sort(list);
+        List<String> list = set.stream().sorted().collect(Collectors.toList());
         Files.write(Paths.get(target), list, Charset.forName("utf-8"));
     }
 }
