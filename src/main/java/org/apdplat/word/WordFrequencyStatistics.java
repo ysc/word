@@ -222,7 +222,7 @@ public class WordFrequencyStatistics {
         try{
             Map<String, AtomicInteger> map = new ConcurrentHashMap<>();
             for(String resultPath : resultPaths) {
-                Files.readAllLines(Paths.get(resultPath)).parallelStream().forEach(line -> {
+                Files.lines(Paths.get(resultPath)).forEach(line -> {
                     String[] attrs = line.split("\\s+");
                     if (attrs != null && attrs.length == 2) {
                         statistics(attrs[0], Integer.parseInt(attrs[1]), map);
