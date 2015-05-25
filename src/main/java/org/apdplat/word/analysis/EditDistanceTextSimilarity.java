@@ -52,11 +52,17 @@ public class EditDistanceTextSimilarity extends TextSimilarity {
         //文本2
         StringBuilder text2 = new StringBuilder();
         words2.forEach(word -> text2.append(word.getText()));
+        int maxTextLength = Math.max(text1.length(), text2.length());
+        if(maxTextLength == 0){
+            //两个空字符串
+            return 1;
+        }
         //计算文本1和文本2的编辑距离
         int editDistance = editDistance(text1.toString(), text2.toString());
-        int maxTextLength = Math.max(text1.length(), text2.length());
         double score = (1 - editDistance / (double)maxTextLength);
         if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("文本1："+text1.toString());
+            LOGGER.debug("文本2："+text2.toString());
             LOGGER.debug("文本1和文本2的编辑距离："+editDistance);
             LOGGER.debug("文本1和文本2的最大长度："+maxTextLength);
             LOGGER.debug("文本1和文本2的相似度分值：1 - "+editDistance+" / (double)"+maxTextLength+"="+score);
@@ -65,50 +71,28 @@ public class EditDistanceTextSimilarity extends TextSimilarity {
     }
 
     private int editDistance(String text1, String text2) {
-        int text1Length = text1.length();
-        int text2Length = text2.length();
-        if (text1Length == 0) {
-            return text2Length;
-        }
-        if (text2Length == 0) {
-            return text1Length;
-        }
-        int[][] matrix = new int[text1Length + 1][text2Length + 1];
-        for (int i = 0; i <= text1Length; i++) {
-            matrix[i][0] = i;
-        }
-        for (int j = 0; j <= text2Length; j++) {
-            matrix[0][j] = j;
-        }
-        char char1;
-        char char2;
-        int cost;
-        for (int i = 1; i <= text1Length; i++) {
-            char1 = text1.charAt(i - 1);
-            for (int j = 1; j <= text2Length; j++) {
-                char2 = text2.charAt(j - 1);
-                if (char1 == char2) {
-                    cost = 0;
-                } else {
-                    cost = 1;
+        int[] costs = new int[text2.length() + 1];
+        for (int i = 0; i <= text1.length(); i++) {
+            int previousValue = i;
+            for (int j = 0; j <= text2.length(); j++) {
+                if (i == 0) {
+                    costs[j] = j;
                 }
-                matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + cost);
+                else if (j > 0) {
+                    int useValue = costs[j - 1];
+                    if (text1.charAt(i - 1) != text2.charAt(j - 1)) {
+                        useValue = Math.min(Math.min(useValue, previousValue), costs[j]) + 1;
+                    }
+                    costs[j - 1] = previousValue;
+                    previousValue = useValue;
+
+                }
+            }
+            if (i > 0) {
+                costs[text2.length()] = previousValue;
             }
         }
-        return matrix[text1Length][text2Length];
-    }
-
-    /**
-     * 求多个值中的最小值
-     * @param nums 多个值
-     * @return 最小值
-     */
-    private int min(int... nums) {
-        int min = Integer.MAX_VALUE;
-        for(int num : nums){
-            min = Math.min(min, num);
-        }
-        return min;
+        return costs[text2.length()];
     }
 
     public static void main(String[] args) {
