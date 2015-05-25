@@ -86,6 +86,8 @@ public class Distance {
         LOGGER.info("   5、sa=jac，Jaccard相似性系数");
         LOGGER.info("   6、sa=man，曼哈顿距离");
         LOGGER.info("   7、sa=shh，SimHash + 汉明距离");
+        LOGGER.info("   8、sa=ja，Jaro距离");
+        LOGGER.info("   9、sa=jaw，Jaro–Winkler距离");
         LOGGER.info("可通过输入命令limit=15来指定显示结果条数");
         LOGGER.info("可通过输入命令exit退出程序");
         LOGGER.info("输入要查询的词或命令：");
@@ -115,6 +117,8 @@ public class Distance {
                         case "jac": setTextSimilarity(new JaccardTextSimilarity());continue;
                         case "man": setTextSimilarity(new ManhattanDistanceTextSimilarity());continue;
                         case "shh": setTextSimilarity(new SimHashPlusHammingDistanceTextSimilarity());continue;
+                        case "ja": setTextSimilarity(new JaroDistanceTextSimilarity());continue;
+                        case "jaw": setTextSimilarity(new JaroWinklerDistanceTextSimilarity());continue;
                     }
                     continue;
                 }
