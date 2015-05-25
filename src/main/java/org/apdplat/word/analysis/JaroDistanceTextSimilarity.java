@@ -31,6 +31,8 @@ import java.util.List;
  * @author 杨尚川
  */
 public class JaroDistanceTextSimilarity extends TextSimilarity {
+    protected String shorterText = null;
+    protected String longerText = null;
     /**
      * 计算相似度分值
      * @param words1 词列表1
@@ -58,19 +60,19 @@ public class JaroDistanceTextSimilarity extends TextSimilarity {
 
     private double jaroDistance(String text1, String text2) {
         //假设文本1长度更短
-        String shorter = text1.toLowerCase();
-        String longer = text2.toLowerCase();
+        shorterText = text1.toLowerCase();
+        longerText = text2.toLowerCase();
         //如果假设不成立则交换变量的值
-        if (shorter.length() > longer.length()) {
-            String temp = shorter;
-            shorter = longer;
-            longer = temp;
+        if (shorterText.length() > longerText.length()) {
+            String temp = shorterText;
+            shorterText = longerText;
+            longerText = temp;
         }
         //字符交集窗口大小
-        int windowLength = (shorter.length() / 2) - 1;
+        int windowLength = (shorterText.length() / 2) - 1;
         //求字符交集，m1可能会不等于m2
-        String m1 = getCharacterConjunction(shorter, longer, windowLength);
-        String m2 = getCharacterConjunction(longer, shorter, windowLength);
+        String m1 = getCharacterConjunction(shorterText, longerText, windowLength);
+        String m2 = getCharacterConjunction(longerText, shorterText, windowLength);
         //一种或两种情况没有字符交集，完全不相关，相似度分值为0
         if (m1.length() == 0 || m2.length() == 0) {
             return 0.0;
@@ -88,8 +90,8 @@ public class JaroDistanceTextSimilarity extends TextSimilarity {
         //t is half the number of transpositions
         int t = transpositions/2;;
         //计算距离（这里的距离也就是相似度分值了）
-        double distance = ( m / (double)shorter.length() +
-                            m / (double)longer.length()  +
+        double distance = ( m / (double)shorterText.length() +
+                            m / (double)longerText.length()  +
                             (m - t) / (double)m ) / 3.0;
         return distance;
     }
