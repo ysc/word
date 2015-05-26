@@ -27,6 +27,9 @@ import java.util.List;
 /**
  * 文本相似度计算
  * 判定方式：Jaro–Winkler距离（Jaro–Winkler Distance）
+ * Jaro–Winkler在Jaro的基础上做了一些扩展
+ * Jaro–Winkler距离算法是由William E. Winkler提出的
+ * Jaro–Winkler距离算法最适合计算短文本如人名的相似度
  * 这里需要注意的是Jaro–Winkler距离也就是相似度分值
  * @author 杨尚川
  */
