@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * 文本相似度计算
- * 判定方式：Jaro距离（Jaro Distance）
+ * 判定方式：Jaro距离（Jaro Distance），编辑距离的一种类型
  * 这里需要注意的是Jaro距离也就是相似度分值
  * @author 杨尚川
  */
