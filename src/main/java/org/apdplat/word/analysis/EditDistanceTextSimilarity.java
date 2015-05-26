@@ -55,7 +55,7 @@ public class EditDistanceTextSimilarity extends TextSimilarity {
         int maxTextLength = Math.max(text1.length(), text2.length());
         if(maxTextLength == 0){
             //两个空字符串
-            return 1;
+            return 1.0;
         }
         //计算文本1和文本2的编辑距离
         int editDistance = editDistance(text1.toString(), text2.toString());

@@ -86,7 +86,7 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
             LOGGER.error("文本1SimHash值：" + simHash1);
             LOGGER.error("文本2SimHash值：" + simHash2);
             LOGGER.error("文本1和文本2的SimHash值长度不相等，不能计算汉明距离");
-            return 0;
+            return 0.0;
         }
         int maxDistance = simHash1.length();
         double score = (1 - hammingDistance / (double)maxDistance);

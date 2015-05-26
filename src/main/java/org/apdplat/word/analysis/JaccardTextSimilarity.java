@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * 文本相似度计算
- * 判定方式：Jaccard相似性系数，通过计算两个集合交集的大小除以并集的大小来评估他们的相似度
+ * 判定方式：Jaccard相似性系数（Jaccard similarity coefficient） ，通过计算两个集合交集的大小除以并集的大小来评估他们的相似度
  * 算法步骤描述：
  * 1、分词
  * 2、求交集（去重），计算交集的不重复词的个数 intersectionSize
@@ -49,7 +49,7 @@ public class JaccardTextSimilarity extends TextSimilarity {
     @Override
     protected double scoreImpl(List<Word> words1, List<Word> words2) {
         if(words1.isEmpty() && words2.isEmpty()){
-            return 1;
+            return 1.0;
         }
         //HashSet的contains性能要大于ArrayList的contains
         Set<Word> words2Set = new HashSet<>();

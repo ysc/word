@@ -28,7 +28,7 @@ import org.apdplat.word.segmentation.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +65,10 @@ public abstract class TextSimilarity implements Similarity{
             LOGGER.debug("文本2：");
             LOGGER.debug("\t" + text2);
         }
+        if(text1 == null || text2 == null){
+            //只要有一个文本为null，规定相似度分值为0，表示完全不相等
+            return 0.0;
+        }
         //分词
         List<Word> words1 = seg(text1);
         List<Word> words2 = seg(text2);
@@ -80,26 +84,34 @@ public abstract class TextSimilarity implements Similarity{
      */
     @Override
     public double similarScore(List<Word> words1, List<Word> words2) {
-        if(words1 != null && words2 != null
-                && !words1.isEmpty() && !words2.isEmpty()){
-            //输出词列表信息
-            if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug("词列表1：");
-                LOGGER.debug("\t" + words1);
-                LOGGER.debug("词列表2：");
-                LOGGER.debug("\t" + words2);
-            }
-            double score = scoreImpl(words1, words2);
-            if(LOGGER.isDebugEnabled()){
-                LOGGER.debug("分值："+score);
-            }
-            score = (int)(score*100+0.5)/(double)100;
-            if(LOGGER.isDebugEnabled()){
-                LOGGER.debug("取两位小数，四舍五入，分值："+score);
-            }
-            return score;
+        if(words1 == null || words2 == null){
+            //只要有一个文本为null，规定相似度分值为0，表示完全不相等
+            return 0.0;
         }
-        return 0;
+        if(words1.isEmpty() && words2.isEmpty()){
+            //如果两个文本都为空，规定相似度分值为1，表示完全相等
+            return 1.0;
+        }
+        if(words1.isEmpty() || words2.isEmpty()){
+            //如果一个文本为空，另一个不为空，规定相似度分值为0，表示完全不相等
+            return 0.0;
+        }
+        //输出词列表信息
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("词列表1：");
+            LOGGER.debug("\t" + words1);
+            LOGGER.debug("词列表2：");
+            LOGGER.debug("\t" + words2);
+        }
+        double score = scoreImpl(words1, words2);
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("分值："+score);
+        }
+        score = (int)(score*100+0.5)/(double)100;
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("取两位小数，四舍五入，分值："+score);
+        }
+        return score;
     }
 
     /**
@@ -116,6 +128,9 @@ public abstract class TextSimilarity implements Similarity{
      * @return 分词结果
      */
     private List<Word> seg(String text){
+        if(text == null){
+            return Collections.emptyList();
+        }
         if(segmentation == null){
             //延迟初始化
             segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
@@ -138,10 +153,6 @@ public abstract class TextSimilarity implements Similarity{
      * @param words2 词列表2
      */
     protected void taggingWeightWithWordFrequency(List<Word> words1, List<Word> words2){
-        if(words1 == null || words2 == null || words1.isEmpty() || words2.isEmpty()){
-            LOGGER.error("词列表不能为空");
-            return;
-        }
         if(words1.get(0).getWeight() != null || words2.get(0).getWeight() != null){
             if(LOGGER.isDebugEnabled()){
                 LOGGER.debug("词已经被指定权重，不再使用词频进行标注");
@@ -149,18 +160,19 @@ public abstract class TextSimilarity implements Similarity{
             return;
         }
         //词频统计
-        Map<Word, AtomicInteger> frequency1 = frequency(words1);
-        Map<Word, AtomicInteger> frequency2 = frequency(words2);
+        Map<String, AtomicInteger> frequency1 = frequency(words1);
+        Map<String, AtomicInteger> frequency2 = frequency(words2);
         //输出词频统计信息
         if(LOGGER.isDebugEnabled()){
             LOGGER.debug("词频统计1：\n{}", formatWordsFrequency(frequency1));
             LOGGER.debug("词频统计2：\n{}", formatWordsFrequency(frequency2));
         }
         //权重标注
-        Arrays.asList(frequency1, frequency2).parallelStream().forEach(frequency -> {
-            frequency.entrySet().parallelStream().forEach(entry->{
-                entry.getKey().setWeight(entry.getValue().floatValue());
-            });
+        words1.parallelStream().forEach(word->{
+            word.setWeight(frequency1.get(word.getText()).floatValue());
+        });
+        words2.parallelStream().forEach(word->{
+            word.setWeight(frequency2.get(word.getText()).floatValue());
         });
     }
 
@@ -180,11 +192,10 @@ public abstract class TextSimilarity implements Similarity{
      * @param words 词列表
      * @return 词频统计结果
      */
-    private Map<Word, AtomicInteger> frequency(List<Word> words){
-        Map<Word, AtomicInteger> frequency =new HashMap<>();
+    private Map<String, AtomicInteger> frequency(List<Word> words){
+        Map<String, AtomicInteger> frequency =new HashMap<>();
         words.forEach(word->{
-            frequency.putIfAbsent(word, new AtomicInteger());
-            frequency.get(word).incrementAndGet();
+            frequency.computeIfAbsent(word.getText(), k -> new AtomicInteger()).incrementAndGet();
         });
         return frequency;
     }
@@ -193,7 +204,7 @@ public abstract class TextSimilarity implements Similarity{
      * 格式化词频统计信息
      * @param frequency 词频统计信息
      */
-    private String formatWordsFrequency(Map<Word, AtomicInteger> frequency){
+    private String formatWordsFrequency(Map<String, AtomicInteger> frequency){
         StringBuilder str = new StringBuilder();
         if(frequency != null && !frequency.isEmpty()) {
             AtomicInteger c = new AtomicInteger();
