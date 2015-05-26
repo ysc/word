@@ -989,10 +989,69 @@ word分词提供了多种文本相似度计算方式：
 	我爱读书 和 他是黑客 的相似度分值：0.14
 	他是黑客 和 他是黑客 的相似度分值：1.0
 	
+方式八：Jaro距离（Jaro Distance），编辑距离的一种类型
+
+实现类：org.apdplat.word.analysis.JaroDistanceTextSimilarity
 	
-方式八：Jaro距离（Jaro Distance）
+用法如下：
+
+	String text1 = "我爱购物";
+	String text2 = "我爱读书";
+	String text3 = "他是黑客";
+	TextSimilarity textSimilarity = new JaroDistanceTextSimilarity();
+	double score1pk1 = textSimilarity.similarScore(text1, text1);
+	double score1pk2 = textSimilarity.similarScore(text1, text2);
+	double score1pk3 = textSimilarity.similarScore(text1, text3);
+	double score2pk2 = textSimilarity.similarScore(text2, text2);
+	double score2pk3 = textSimilarity.similarScore(text2, text3);
+	double score3pk3 = textSimilarity.similarScore(text3, text3);
+	System.out.println(text1+" 和 "+text1+" 的相似度分值："+score1pk1);
+	System.out.println(text1+" 和 "+text2+" 的相似度分值："+score1pk2);
+	System.out.println(text1+" 和 "+text3+" 的相似度分值："+score1pk3);
+	System.out.println(text2+" 和 "+text2+" 的相似度分值："+score2pk2);
+	System.out.println(text2+" 和 "+text3+" 的相似度分值："+score2pk3);
+	System.out.println(text3+" 和 "+text3+" 的相似度分值："+score3pk3);
 	
-方式九：Jaro–Winkler距离（Jaro–Winkler Distance）
+运行结果如下：
+
+	我爱购物 和 我爱购物 的相似度分值：1.0
+	我爱购物 和 我爱读书 的相似度分值：0.67
+	我爱购物 和 他是黑客 的相似度分值：0.0
+	我爱读书 和 我爱读书 的相似度分值：1.0
+	我爱读书 和 他是黑客 的相似度分值：0.0
+	他是黑客 和 他是黑客 的相似度分值：1.0
+		
+方式九：Jaro–Winkler距离（Jaro–Winkler Distance），Jaro的扩展
+	
+实现类：org.apdplat.word.analysis.JaroWinklerDistanceTextSimilarity
+	
+用法如下：
+
+	String text1 = "我爱购物";
+	String text2 = "我爱读书";
+	String text3 = "他是黑客";
+	TextSimilarity textSimilarity = new JaroWinklerDistanceTextSimilarity();
+	double score1pk1 = textSimilarity.similarScore(text1, text1);
+	double score1pk2 = textSimilarity.similarScore(text1, text2);
+	double score1pk3 = textSimilarity.similarScore(text1, text3);
+	double score2pk2 = textSimilarity.similarScore(text2, text2);
+	double score2pk3 = textSimilarity.similarScore(text2, text3);
+	double score3pk3 = textSimilarity.similarScore(text3, text3);
+	System.out.println(text1+" 和 "+text1+" 的相似度分值："+score1pk1);
+	System.out.println(text1+" 和 "+text2+" 的相似度分值："+score1pk2);
+	System.out.println(text1+" 和 "+text3+" 的相似度分值："+score1pk3);
+	System.out.println(text2+" 和 "+text2+" 的相似度分值："+score2pk2);
+	System.out.println(text2+" 和 "+text3+" 的相似度分值："+score2pk3);
+	System.out.println(text3+" 和 "+text3+" 的相似度分值："+score3pk3);
+	
+运行结果如下：
+
+	我爱购物 和 我爱购物 的相似度分值：1.0
+	我爱购物 和 我爱读书 的相似度分值：0.73
+	我爱购物 和 他是黑客 的相似度分值：0.0
+	我爱读书 和 我爱读书 的相似度分值：1.0
+	我爱读书 和 他是黑客 的相似度分值：0.0
+	他是黑客 和 他是黑客 的相似度分值：1.0
 		
 ###分词算法效果评估：
 
