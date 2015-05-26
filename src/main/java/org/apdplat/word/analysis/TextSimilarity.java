@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 文本相似度
  * @author 杨尚川
  */
-public abstract class TextSimilarity implements Similarity{
+public abstract class TextSimilarity implements Similarity, SimilarityRanker{
     protected static final Logger LOGGER = LoggerFactory.getLogger(TextSimilarity.class);
 
     //默认分词器
