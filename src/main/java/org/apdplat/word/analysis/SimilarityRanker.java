@@ -76,7 +76,7 @@ public interface SimilarityRanker extends Similarity{
                 .map(line -> line.trim())
                 .filter(line -> line.length() > 1)
                 .collect(Collectors.toList());
-        System.out.println("开始计算 "+sentences+" 句话的文本相似度");
+        System.out.println("开始计算 "+sentences.size()+" 句话的文本相似度");
         AtomicInteger i = new AtomicInteger();
         sentences.forEach(sentence -> {
             AtomicInteger j = new AtomicInteger();
