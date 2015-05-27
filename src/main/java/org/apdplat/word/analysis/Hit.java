@@ -48,4 +48,9 @@ public class Hit implements Comparable{
     public int compareTo(Object o) {
         return ((Hit)o).getScore().compareTo(score);
     }
+
+    @Override
+    public String toString() {
+        return score + " " +text;
+    }
 }
