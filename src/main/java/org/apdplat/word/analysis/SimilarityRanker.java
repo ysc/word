@@ -70,11 +70,11 @@ public interface SimilarityRanker extends Similarity{
     }
 
     static void main(String[] args) throws Exception{
-        TextSimilarity textSimilarity = new CosineTextSimilarity();
-        List<String> sentences = Files.readAllLines(Paths.get("src/test/resources/similarity-test-text.txt"))
+        TextSimilarity textSimilarity = new EditDistanceTextSimilarity();
+        List<String> sentences = Files.readAllLines(Paths.get("src/test/resources/dic.txt"))
                 .stream()
                 .map(line -> line.trim())
-                .filter(line -> !"".equals(line))
+                .filter(line -> line.length() > 1)
                 .collect(Collectors.toList());
         System.out.println("开始计算 "+sentences+" 句话的文本相似度");
         AtomicInteger i = new AtomicInteger();
