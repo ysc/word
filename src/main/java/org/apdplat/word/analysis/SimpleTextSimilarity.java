@@ -22,26 +22,24 @@ package org.apdplat.word.analysis;
 
 import org.apdplat.word.segmentation.Word;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 文本相似度计算
- * 判定方式：简单共有词，通过计算两篇文档有多少个相同的词来评估他们的相似度
+ * 判定方式：简单共有词，通过计算两篇文档共有的词的总字符数除以最长文档字符数来评估他们的相似度
  * 算法步骤描述：
  * 1、分词
- * 2、求交集（不去重），累计交集的所有的词的字符数得到 intersectionLength
- * 3、求最短文本字符数 Math.min(words1Length, words2Length)
- * 4、2中的值除以3中的值 intersectionLength/(double)Math.min(words1Length, words2Length)
+ * 2、求交集（去重），累加交集的所有的词的字符数得到 intersectionLength
+ * 3、求最长文本字符数 Math.max(words1Length, words2Length)
+ * 4、2中的值除以3中的值 intersectionLength/(double)Math.max(words1Length, words2Length)
  * 完整计算公式：
- * double score = intersectionLength/(double)Math.min(words1Length, words2Length);
+ * double score = intersectionLength/(double)Math.max(words1Length, words2Length);
  * @author 杨尚川
  */
 public class SimpleTextSimilarity extends TextSimilarity {
     /**
-     * 判定相似度的方式：简单共有词
+     * 计算相似度分值
      * @param words1 词列表1
      * @param words2 词列表2
      * @return 相似度分值
@@ -55,21 +53,17 @@ public class SimpleTextSimilarity extends TextSimilarity {
         AtomicInteger words2Length = new AtomicInteger();
         words2.parallelStream().forEach(word -> words2Length.addAndGet(word.getText().length()));
         //计算词列表1和词列表2共有的词的总的字符数
-        //HashSet的contains性能要大于ArrayList的contains
-        Set<Word> words2Set = new HashSet<>();
-        words2Set.addAll(words2);
+        words1.retainAll(words2);
         AtomicInteger intersectionLength = new AtomicInteger();
         words1.parallelStream().forEach(word -> {
-            if (words2Set.contains(word)) {
-                intersectionLength.addAndGet(word.getText().length());
-            }
+            intersectionLength.addAndGet(word.getText().length());
         });
-        double score = intersectionLength.get()/(double)Math.min(words1Length.get(), words2Length.get());
+        double score = intersectionLength.get()/(double)Math.max(words1Length.get(), words2Length.get());
         if(LOGGER.isDebugEnabled()) {
             LOGGER.debug("词列表1总的字符数：" + words1Length.get());
             LOGGER.debug("词列表2总的字符数：" + words2Length.get());
             LOGGER.debug("词列表1和2共有的词的总的字符数：" + intersectionLength.get());
-            LOGGER.debug("相似度分值=" + intersectionLength.get() + "/(double)Math.min(" + words1Length.get() + ", " + words1Length.get() + ")=" + score);
+            LOGGER.debug("相似度分值=" + intersectionLength.get() + "/(double)Math.max(" + words1Length.get() + ", " + words1Length.get() + ")=" + score);
         }
         return score;
     }
