@@ -107,9 +107,9 @@ public abstract class TextSimilarity implements Similarity, SimilarityRanker{
         if(LOGGER.isDebugEnabled()){
             LOGGER.debug("分值："+score);
         }
-        score = (int)(score*100+0.5)/(double)100;
+        score = (int)(score*1000000+0.5)/(double)1000000;
         if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("取两位小数，四舍五入，分值："+score);
+            LOGGER.debug("取六位小数，四舍五入，分值："+score);
         }
         return score;
     }
