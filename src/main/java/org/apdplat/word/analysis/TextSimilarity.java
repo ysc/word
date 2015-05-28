@@ -183,7 +183,16 @@ public abstract class TextSimilarity implements Similarity, SimilarityRanker{
      */
     protected Map<String, Float> toFastSearchMap(List<Word> words){
         Map<String, Float> weights = new ConcurrentHashMap<>();
-        words.parallelStream().forEach(word -> weights.put(word.getText(), word.getWeight()));
+        if(words == null){
+            return weights;
+        }
+        words.parallelStream().forEach(word -> {
+            if(word.getWeight() != null) {
+                weights.put(word.getText(), word.getWeight());
+            }else{
+                LOGGER.error("词没有权重信息："+word.getText());
+            }
+        });
         return weights;
     }
 
