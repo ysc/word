@@ -23,7 +23,11 @@ package org.apdplat.word.analysis;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.AtomicFloat;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 文本相似度计算
@@ -77,9 +81,11 @@ public class ManhattanDistanceTextSimilarity extends TextSimilarity {
         double score = 0;
         if(manhattanDistance.get() == 0){
             //距离为0，表示完全相同
-            score = 1;
+            score = 1.0;
         }else {
-            score = 1 / (double)(manhattanDistance.get()+1);
+            //使用BigDecimal保证精确计算浮点数
+            //score = 1 / (double)(manhattanDistance.get()+1);
+            score = BigDecimal.valueOf(1).divide(BigDecimal.valueOf(manhattanDistance.get()+1), 9, BigDecimal.ROUND_HALF_UP).doubleValue();
         }
         if(LOGGER.isDebugEnabled()){
             LOGGER.debug("文本1和文本2的曼哈顿距离："+manhattanDistance.get());
