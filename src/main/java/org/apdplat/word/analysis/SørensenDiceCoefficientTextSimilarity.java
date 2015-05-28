@@ -22,7 +22,9 @@ package org.apdplat.word.analysis;
 
 import org.apdplat.word.segmentation.Word;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 文本相似度计算
@@ -48,13 +50,16 @@ public class SørensenDiceCoefficientTextSimilarity extends TextSimilarity {
         if(words1.isEmpty() && words2.isEmpty()){
             return 1.0;
         }
+        //转变为不重复的集合
+        Set<Word> words1Set = new HashSet<>(words1);
+        Set<Word> words2Set = new HashSet<>(words2);
         // 两个集合的大小
-        int set1Size = words1.size();
-        int set2Size = words2.size();
+        int set1Size = words1Set.size();
+        int set2Size = words2Set.size();
 
         // 求交集（去重），计算交集的不重复词的个数
-        words1.retainAll(words2);
-        int intersectionSize = words1.size();
+        words1Set.retainAll(words2Set);
+        int intersectionSize = words1Set.size();
 
         //相似度分值
         double score = 2*intersectionSize / (double)(set1Size+set2Size);
