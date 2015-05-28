@@ -20,23 +20,22 @@
 
 package org.apdplat.word.segmentation.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.corpus.Trigram;
 import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.PersonName;
+import org.apdplat.word.recognition.Punctuation;
 import org.apdplat.word.segmentation.DictionaryBasedSegmentation;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.recognition.Punctuation;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 基于词典的分词算法抽象类
@@ -165,7 +164,7 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
                 result.add(new Word(sentence));
                 return result;
             }else{
-                if(!isWhiteSpace(sentence.charAt(0))){
+                if(!Character.isWhitespace(sentence.charAt(0))){
                     List<Word> result = new ArrayList<>(1);
                     result.add(new Word(sentence));
                     return result;
@@ -225,39 +224,19 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
             //保留空白字符
             return word;
         }else{
-            //忽略空白字符，包括：空格、全角空格、\t、\n                
+            //忽略空白字符
             if(len > 1){
                 //长度大于1，不会是空白字符
                 return word;
             }else{
                 //长度为1，只要非空白字符
-                if(!(isWhiteSpace(text, start, len))){
+                if(!Character.isWhitespace(text.charAt(start))){
                     //不是空白字符，保留
                     return word;           
                 }
             }
         }
         return null;
-    }
-    /**
-     * 判断索引下标为start的字符是否为空白字符
-     * 这个方法只用在这里
-     * 为了速度，不检查索引下标是否越界
-     * @param text 文本
-     * @param start 索引下标
-     * @param len 长度
-     * @return 是否
-     */
-    protected boolean isWhiteSpace(String text, int start, int len){
-        return isWhiteSpace(text.charAt(start));
-    }
-    /**
-     * 判断指定的字符是否是空白字符
-     * @param c 字符
-     * @return 是否是空白字符
-     */
-    protected boolean isWhiteSpace(char c){
-        return c == ' ' || c == '　' || c == '\t' || c == '\n';
     }
 
     public static void main(String[] args){
