@@ -1205,3 +1205,5 @@ word分词提供了多种文本相似度计算方式：
 [With Google’s new tool Ngram Viewer, you can visualise the rise and fall of concepts across 5 million books and 500 years!](https://books.google.com/ngrams)
 
 [word2vec](https://code.google.com/p/word2vec/)
+
+[魅力汉语](http://open.163.com/special/cuvocw/meilihanyu.html)
