@@ -9,6 +9,8 @@
    [word 1.1 API](http://apdplat.org/word/apidocs/1.1/)
 
    [word 1.2 API](http://apdplat.org/word/apidocs/1.2/)
+
+   [word 1.3 API](http://apdplat.org/word/apidocs/1.3/)
       
 ###编译好的jar包下载（包含依赖）：
 
@@ -17,16 +19,18 @@
    [word 1.1](http://apdplat.org/word/archive/word-v1.1.zip)
    
    [word 1.2](http://apdplat.org/word/archive/word-v1.2.zip)
+   
+   [word 1.3](http://apdplat.org/word/archive/word-v1.3.zip)
 
 ###Maven依赖：
 
-   在pom.xml中指定dependency，可用版本有1.0、1.1、1.2：
+   在pom.xml中指定dependency，可用版本有1.0、1.1、1.2、1.3：
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apdplat</groupId>
 			<artifactId>word</artifactId>
-			<version>1.2</version>
+			<version>1.3</version>
 		</dependency>
 	</dependencies>
 	
@@ -137,7 +141,7 @@
 	2、配置并启动提供HTTP资源的web服务器，将项目：https://github.com/ysc/word_web部署到tomcat
 	3、配置并启动redis服务器
 	
-####11、词性标注（1.3才有这个功能）
+####11、词性标注
 
 	将分词结果作为输入参数，调用PartOfSpeechTagging类的process方法，词性保存在Word类的partOfSpeech字段中
 	如下所示：
@@ -336,10 +340,10 @@
 	1、下载word-1.3.jar
 	下载地址：http://search.maven.org/remotecontent?filepath=org/apdplat/word/1.3/word-1.3.jar
 	
-	2、创建目录solr-5.1.0/example/solr/lib，将word-1.3.jar复制到lib目录
+	2、创建目录solr-5.2.0/example/solr/lib，将word-1.3.jar复制到lib目录
 	
 	3、配置schema指定分词器
-	将solr-5.1.0/example/solr/collection1/conf/schema.xml文件中所有的
+	将solr-5.2.0/example/solr/collection1/conf/schema.xml文件中所有的
 	<tokenizer class="solr.WhitespaceTokenizerFactory"/>和
 	<tokenizer class="solr.StandardTokenizerFactory"/>全部替换为
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory"/>
@@ -362,19 +366,19 @@
 	
 	5、如果需要指定特定的配置文件：
 	<tokenizer class="org.apdplat.word.solr.ChineseWordTokenizerFactory" segAlgorithm="ReverseMinimumMatching"
-			conf="solr-5.1.0/example/solr/nutch/conf/word.local.conf"/>
+			conf="solr-5.2.0/example/solr/nutch/conf/word.local.conf"/>
 	word.local.conf文件中可配置的内容见 word-1.3.jar 中的word.conf文件
 	如不指定，使用默认配置文件，位于 word-1.3.jar 中的word.conf文件
 	
 ####18、ElasticSearch插件：
 
 	1、打开命令行并切换到elasticsearch的bin目录
-	cd elasticsearch-1.5.1/bin
+	cd elasticsearch-2.0.0-beta1/bin
 	
 	2、运行plugin脚本安装word分词插件：
-	./plugin -u http://apdplat.org/word/archive/v1.2.zip -i word
+	./plugin install http://apdplat.org/word/archive/v1.3.zip
 	
-	3、修改文件elasticsearch-1.5.1/config/elasticsearch.yml，新增如下配置：	
+	3、修改文件elasticsearch-2.0.0-beta1/config/elasticsearch.yml，新增如下配置：	
 	index.analysis.analyzer.default.type : "word"
 	index.analysis.tokenizer.default.type : "word"
 	
@@ -382,10 +386,10 @@
 	http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
 		
 	5、自定义配置
-	修改配置文件elasticsearch-1.5.1/plugins/word/word.local.conf
+	修改配置文件elasticsearch-2.0.0-beta1/plugins/word/word.local.conf
 		
 	6、指定分词算法
-	修改文件elasticsearch-1.5.1/config/elasticsearch.yml，新增如下配置：
+	修改文件elasticsearch-2.0.0-beta1/config/elasticsearch.yml，新增如下配置：
 	index.analysis.analyzer.default.segAlgorithm : "ReverseMinimumMatching"
 	index.analysis.tokenizer.default.segAlgorithm : "ReverseMinimumMatching"
 
