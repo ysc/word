@@ -4,7 +4,7 @@
 
   <groupId>org.apdplat</groupId>
   <artifactId>word</artifactId>
-  <version>1.3</version>
+  <version>1.4</version>
   <packaging>jar</packaging>
 
   <name>word</name>
