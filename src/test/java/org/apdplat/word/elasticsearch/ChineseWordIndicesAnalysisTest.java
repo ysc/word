@@ -20,34 +20,32 @@
 
 package org.apdplat.word.elasticsearch;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apdplat.word.lucene.ChineseWordAnalyzer;
-import org.elasticsearch.Version;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.inject.Injector;
 import org.elasticsearch.common.inject.ModulesBuilder;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.SettingsModule;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.env.EnvironmentModule;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.IndexNameModule;
-import org.elasticsearch.index.settings.IndexSettingsModule;
-import org.elasticsearch.indices.analysis.IndicesAnalysisModule;
-import org.elasticsearch.indices.analysis.IndicesAnalysisService;
-import org.junit.Test;
-
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.analysis.AnalysisModule;
 import org.elasticsearch.index.analysis.AnalysisService;
 import org.elasticsearch.index.analysis.TokenizerFactory;
+import org.elasticsearch.index.settings.IndexSettingsModule;
+import org.elasticsearch.indices.analysis.IndicesAnalysisService;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -56,15 +54,18 @@ import static org.junit.Assert.assertTrue;
  * @author 杨尚川
  */
 public class ChineseWordIndicesAnalysisTest {
-    private static final Settings SETTINGS = ImmutableSettings.settingsBuilder().put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT).build();
+    private static final Settings SETTINGS = Settings.settingsBuilder()
+            .put(IndexMetaData.SETTING_VERSION_CREATED, "2010099")
+            .put("path.home", "/Users/apple/elasticsearch-2.0.0-beta1")
+            .build();
     @Test
     public void testChineseWordIndicesAnalysis() throws IOException {
         Index index = new Index("test");
         
         Injector parentInjector = new ModulesBuilder()
-                .add(new SettingsModule(SETTINGS), 
-                     new EnvironmentModule(new Environment(SETTINGS)), 
-                     new IndicesAnalysisModule())
+                .add(new SettingsModule(SETTINGS),
+                        new EnvironmentModule(new Environment(SETTINGS)),
+                        new ChineseWordIndicesAnalysisModule())
                 .createInjector();
         
         Injector injector = new ModulesBuilder().add(
@@ -79,8 +80,9 @@ public class ChineseWordIndicesAnalysisTest {
         TokenizerFactory tokenizerFactory = analysisService.tokenizer("word");
         boolean match = (tokenizerFactory instanceof ChineseWordTokenizerFactory);
         assertTrue(match);
-        
-        Tokenizer tokenizer = tokenizerFactory.create(new StringReader("他说的确实在理"));
+
+        Tokenizer tokenizer = tokenizerFactory.create();
+        tokenizer.setReader(new StringReader("他说的确实在理"));
         String exp = "[确实, 在理]";
         List<String> result = new ArrayList<>();
         while(tokenizer.incrementToken()){
@@ -96,10 +98,12 @@ public class ChineseWordIndicesAnalysisTest {
         TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
         exp = "[杨尚川, apdplat, 应用级, 产品开发, 平台, 作者]";
         result = new ArrayList<>();
+        tokenizer.reset();
         while(tokenStream.incrementToken()){
             CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
             result.add(charTermAttribute.toString());
         }
+        tokenizer.close();
         assertEquals(exp, result.toString());
     }
 }

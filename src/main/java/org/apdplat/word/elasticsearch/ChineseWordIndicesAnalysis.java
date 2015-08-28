@@ -21,20 +21,23 @@
 package org.apdplat.word.elasticsearch;
 
 import org.apache.lucene.analysis.Tokenizer;
-import org.elasticsearch.common.component.AbstractComponent;
-import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.analysis.*;
-import org.elasticsearch.indices.analysis.IndicesAnalysisService;
-import java.io.Reader;
-import java.util.Map;
 import org.apdplat.word.lucene.ChineseWordAnalyzer;
 import org.apdplat.word.lucene.ChineseWordTokenizer;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
+import org.elasticsearch.common.component.AbstractComponent;
+import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.analysis.AnalyzerScope;
+import org.elasticsearch.index.analysis.PreBuiltAnalyzerProviderFactory;
+import org.elasticsearch.index.analysis.PreBuiltTokenizerFactoryFactory;
+import org.elasticsearch.index.analysis.TokenizerFactory;
+import org.elasticsearch.indices.analysis.IndicesAnalysisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * 中文分词索引分析组件
@@ -105,7 +108,7 @@ public class ChineseWordIndicesAnalysis extends AbstractComponent {
                 return "word";
             }
             @Override
-            public Tokenizer create(Reader reader) {
+            public Tokenizer create() {
                 return new ChineseWordTokenizer(tokenizerSegmentation);
             }
         }));        

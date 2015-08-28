@@ -21,17 +21,16 @@
 package org.apdplat.word.elasticsearch;
 
 import org.apache.lucene.analysis.Tokenizer;
-import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.inject.assistedinject.Assisted;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.Index;
-import org.elasticsearch.index.settings.IndexSettings;
-import org.elasticsearch.index.analysis.AbstractTokenizerFactory;
-import java.io.Reader;
 import org.apdplat.word.lucene.ChineseWordTokenizer;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
+import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.common.inject.assistedinject.Assisted;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.Index;
+import org.elasticsearch.index.analysis.AbstractTokenizerFactory;
+import org.elasticsearch.index.settings.IndexSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +54,9 @@ public class ChineseWordTokenizerFactory extends AbstractTokenizerFactory {
             segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
         }
     }
+
     @Override
-    public Tokenizer create(Reader reader) {
+    public Tokenizer create() {
         return new ChineseWordTokenizer(segmentation);
     }
 }
