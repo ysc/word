@@ -377,7 +377,13 @@
 	
 	2、运行plugin脚本安装word分词插件：
 	./plugin install http://apdplat.org/word/archive/v1.3.zip
-	
+	安装的时候注意：
+		如果提示：
+			ERROR: failed to download 
+		或者 
+			ERROR: incorrect hash (SHA1)
+		则重新再次运行命令，如果还是不行，多试两次，
+		
 	3、修改文件elasticsearch-2.0.0-beta2/config/elasticsearch.yml，新增如下配置：	
 	index.analysis.analyzer.default.type : "word"
 	index.analysis.tokenizer.default.type : "word"
