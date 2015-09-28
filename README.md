@@ -12,15 +12,7 @@
 
    [word 1.3 API](http://apdplat.org/word/apidocs/1.3/)
       
-###编译好的jar包下载（包含依赖）：
-
-   [word 1.0](http://apdplat.org/word/archive/word-v1.0.zip)
-   
-   [word 1.1](http://apdplat.org/word/archive/word-v1.1.zip)
-   
-   [word 1.2](http://apdplat.org/word/archive/word-v1.2.zip)
-   
-   [word 1.3](http://apdplat.org/word/archive/word-v1.3.zip)
+###[编译好的jar包下载](http://pan.baidu.com/s/1dDziDFz)
 
 ###Maven依赖：
 
