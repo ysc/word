@@ -20,12 +20,14 @@
 
 package org.apdplat.word.segmentation.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apdplat.word.segmentation.Segmentation;
 import org.apdplat.word.segmentation.Word;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -117,6 +119,9 @@ public class MaximumMatchingTest {
         
         for(int i=0; i<text.size(); i++){
             List<Word> result = segmentation.seg(text.get(i));
+            for(Word word : result){
+                word.setPartOfSpeech(null);
+            }
             assertEquals(expResult.get(i).toString(), result.toString());
         }
     }
