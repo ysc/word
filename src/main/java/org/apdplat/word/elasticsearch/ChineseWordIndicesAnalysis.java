@@ -37,6 +37,7 @@ import org.elasticsearch.indices.analysis.IndicesAnalysisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Reader;
 import java.util.Map;
 
 /**
@@ -84,7 +85,7 @@ public class ChineseWordIndicesAnalysis extends AbstractComponent {
                         }
                     }
                 }
-            }            
+            }
         }
         if(analyzerSegmentation == null){
             LOGGER.info("没有为word analyzer指定segAlgorithm参数");
@@ -98,19 +99,19 @@ public class ChineseWordIndicesAnalysis extends AbstractComponent {
         }
         // 注册分析器
         indicesAnalysisService.analyzerProviderFactories()
-                .put("word", new PreBuiltAnalyzerProviderFactory("word", AnalyzerScope.GLOBAL, 
+                .put("word", new PreBuiltAnalyzerProviderFactory("word", AnalyzerScope.GLOBAL,
                         new ChineseWordAnalyzer(analyzerSegmentation)));
         // 注册分词器
         indicesAnalysisService.tokenizerFactories()
                 .put("word", new PreBuiltTokenizerFactoryFactory(new TokenizerFactory() {
-            @Override
-            public String name() {
-                return "word";
-            }
-            @Override
-            public Tokenizer create() {
-                return new ChineseWordTokenizer(tokenizerSegmentation);
-            }
-        }));        
+                    @Override
+                    public String name() {
+                        return "word";
+                    }
+                    @Override
+                    public Tokenizer create(Reader reader) {
+                        return new ChineseWordTokenizer(reader, tokenizerSegmentation);
+                    }
+                }));
     }
 }

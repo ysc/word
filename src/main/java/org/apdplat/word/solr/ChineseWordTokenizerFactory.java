@@ -20,10 +20,6 @@
 
 package org.apdplat.word.solr;
 
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Map;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
 import org.apache.lucene.util.AttributeFactory;
@@ -34,6 +30,9 @@ import org.apdplat.word.segmentation.SegmentationFactory;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Reader;
+import java.util.Map;
 
 /**
  * Lucene中文分词器工厂
@@ -75,7 +74,7 @@ public class ChineseWordTokenizerFactory extends TokenizerFactory {
         }
     }
     @Override
-    public Tokenizer create(AttributeFactory af) {
-        return new ChineseWordTokenizer(segmentation);
+    public Tokenizer create(AttributeFactory af, Reader reader) {
+        return new ChineseWordTokenizer(reader, segmentation);
     }
 }

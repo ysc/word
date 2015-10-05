@@ -20,25 +20,18 @@
 
 package org.apdplat.word.elasticsearch;
 
-import org.elasticsearch.common.component.LifecycleComponent;
+import org.elasticsearch.common.collect.ImmutableList;
 import org.elasticsearch.common.inject.Module;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.analysis.AnalysisModule;
-import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.plugins.AbstractPlugin;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * 中文分词组件（word）的ElasticSearch插件
  * @author 杨尚川
  */
-public class ChineseWordPlugin extends Plugin {
-    private final Settings settings;
-    public ChineseWordPlugin(Settings settings) {
-        this.settings = settings;
-    }
+public class ChineseWordPlugin extends AbstractPlugin {
     @Override
     public String name() {
         return "word";
@@ -48,17 +41,8 @@ public class ChineseWordPlugin extends Plugin {
         return "中文分词组件（word）";
     }
     @Override
-    public Collection<Module> nodeModules() {
-        return Collections.<Module>singletonList(new ChineseWordIndicesAnalysisModule());
-    }
-    @Override
-    public Collection<Class<? extends LifecycleComponent>> nodeServices() {
-        Collection<Class<? extends LifecycleComponent>> services = new ArrayList<>();
-        return services;
-    }
-    @Override
-    public Collection<Module> indexModules(Settings indexSettings) {
-        return Collections.<Module>singletonList(new ChineseWordIndicesAnalysisModule());
+    public Collection<Class<? extends Module>> modules() {
+        return ImmutableList.<Class<? extends Module>>of(ChineseWordIndicesAnalysisModule.class);
     }
     public void onModule(AnalysisModule module) {
         module.addProcessor(new ChineseWordAnalysisBinderProcessor());

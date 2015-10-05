@@ -20,10 +20,6 @@
 
 package org.apdplat.word.lucene;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -39,9 +35,17 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
+import org.apache.lucene.util.Version;
 import org.apdplat.word.util.Utils;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -54,13 +58,11 @@ public class ChineseWordAnalyzerTest {
             Analyzer analyzer = new ChineseWordAnalyzer();
             TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
             List<String> words = new ArrayList<>();
-            tokenStream.reset();
             while(tokenStream.incrementToken()){
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
-            tokenStream.close();
-            String expResult = "[杨尚川, apdplat, 应用级, 产品, 开发平台, 作者]";
+            String expResult = "[杨尚川, apdplat, 应用级, 产品开发, 平台, 作者]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
             fail("分词出错"+e.getMessage());
@@ -72,12 +74,10 @@ public class ChineseWordAnalyzerTest {
             Analyzer analyzer = new ChineseWordAnalyzer();
             TokenStream tokenStream = analyzer.tokenStream("text", "叔叔亲了我妈妈也亲了我");
             List<String> words = new ArrayList<>();
-            tokenStream.reset();
             while(tokenStream.incrementToken()){
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
-            tokenStream.close();
             String expResult = "[叔叔, 亲了, 妈妈, 亲了]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
@@ -130,37 +130,36 @@ public class ChineseWordAnalyzerTest {
         sentences.add("张掖市明乐县");
         sentences.add("中华人民共和国万岁万岁万万岁");
         sentences.add("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc");
-        IndexWriterConfig config = new IndexWriterConfig(analyzer);
+        IndexWriterConfig config = new IndexWriterConfig(Version.LATEST, analyzer);
         config.setUseCompoundFile(false);
         File index = new File("target/indexes");
         Utils.deleteDir(index);
-        try (Directory directory = new SimpleFSDirectory(index.toPath());
-                IndexWriter indexWriter = new IndexWriter(directory, config)) {
+        try (Directory directory = new SimpleFSDirectory(index);
+             IndexWriter indexWriter = new IndexWriter(directory, config)) {
             for(String sentence : sentences){
                 Document doc = new Document();
                 Field field = new TextField("text", sentence, Field.Store.YES);
                 doc.add(field);
                 indexWriter.addDocument(doc);
             }
-            indexWriter.commit();            
+            indexWriter.commit();
         } catch(Exception e){
-            e.printStackTrace();
             fail("索引失败"+e.getMessage());
         }
-        try (Directory directory = new SimpleFSDirectory(index.toPath());
-                DirectoryReader directoryReader = DirectoryReader.open(directory)) {
-                IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
-                QueryParser queryParser = new QueryParser("text", analyzer);
-                Query query = queryParser.parse("text:杨尚川");
-                TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
-                assertEquals(2, docs.totalHits);
-                assertEquals("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc", indexSearcher.doc(docs.scoreDocs[0].doc).get("text"));
-                assertEquals("杨尚川是APDPlat应用级产品开发平台的作者", indexSearcher.doc(docs.scoreDocs[1].doc).get("text"));
-                
-                query = queryParser.parse("text:生命");
-                docs = indexSearcher.search(query, Integer.MAX_VALUE);
-                assertEquals(1, docs.totalHits);
-                assertEquals("研究生命的起源", indexSearcher.doc(docs.scoreDocs[0].doc).get("text"));
+        try (Directory directory = new SimpleFSDirectory(index);
+             DirectoryReader directoryReader = DirectoryReader.open(directory)) {
+            IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
+            QueryParser queryParser = new QueryParser("text", analyzer);
+            Query query = queryParser.parse("text:杨尚川");
+            TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
+            assertEquals(2, docs.totalHits);
+            assertEquals("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc", indexSearcher.doc(docs.scoreDocs[0].doc).get("text"));
+            assertEquals("杨尚川是APDPlat应用级产品开发平台的作者", indexSearcher.doc(docs.scoreDocs[1].doc).get("text"));
+
+            query = queryParser.parse("text:生命");
+            docs = indexSearcher.search(query, Integer.MAX_VALUE);
+            assertEquals(1, docs.totalHits);
+            assertEquals("研究生命的起源", indexSearcher.doc(docs.scoreDocs[0].doc).get("text"));
         } catch(Exception e){
             fail("搜索失败"+e.getMessage());
         }

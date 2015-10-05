@@ -118,17 +118,17 @@ public class TextSimilarityTest {
     }
 
     private void testBasic(TextSimilarity textSimilarity){
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT1, TEXT1));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT2, TEXT2));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT3, TEXT3));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT4, TEXT4));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT5, TEXT5));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT6, TEXT6));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT7, TEXT7));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT8, TEXT8));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT9, TEXT9));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT10, TEXT10));
-        assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT11, TEXT11));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT1, TEXT1));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT2, TEXT2));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT3, TEXT3));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT4, TEXT4));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT5, TEXT5));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT6, TEXT6));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT7, TEXT7));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT8, TEXT8));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT9, TEXT9));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT10, TEXT10));
+        assertEquals("同样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT11, TEXT11));
         assertEquals("两个空文本应该相等", 1.0, textSimilarity.similarScore("", ""));
         assertEquals("只有一个文本应该不相等，没有可比性", 0.0, textSimilarity.similarScore(null, ""));
         assertEquals("只有一个文本应该不相等，没有可比性", 0.0, textSimilarity.similarScore("", null));

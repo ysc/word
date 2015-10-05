@@ -34,6 +34,8 @@ import org.elasticsearch.index.settings.IndexSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Reader;
+
 /**
  * 中文分词器工厂
  * @author 杨尚川
@@ -54,9 +56,8 @@ public class ChineseWordTokenizerFactory extends AbstractTokenizerFactory {
             segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching);
         }
     }
-
     @Override
-    public Tokenizer create() {
-        return new ChineseWordTokenizer(segmentation);
+    public Tokenizer create(Reader reader) {
+        return new ChineseWordTokenizer(reader, segmentation);
     }
 }
