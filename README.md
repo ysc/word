@@ -16,7 +16,7 @@
 
 ###Maven依赖：
 
-   在pom.xml中指定dependency，可用版本有1.0、1.1、1.2、1.3：
+   在pom.xml中指定dependency，可用版本有1.0、1.1、1.2、1.3、1.3.1：
 
 	<dependencies>
 		<dependency>
@@ -25,6 +25,9 @@
 			<version>1.3</version>
 		</dependency>
 	</dependencies>
+	
+word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.com/ysc/word/tree/ForElasticsearch1.7.2/)中编译出来的，主要目的是支持
+与lucene4.10.4、solr4.10.4和elasticsearch1.7.2兼容的版本。
 	
 ###分词使用方法：
 
@@ -369,12 +372,18 @@
 	
 	2、运行plugin脚本安装word分词插件：
 	./plugin install http://apdplat.org/word/archive/v1.3.zip
+	
 	安装的时候注意：
 		如果提示：
 			ERROR: failed to download 
 		或者 
+			Failed to install word, reason: failed to download
+		或者 
 			ERROR: incorrect hash (SHA1)
-		则重新再次运行命令，如果还是不行，多试两次，
+		则重新再次运行命令，如果还是不行，多试两次
+		
+	如果是elasticsearch1.x系列版本，则使用如下命令：
+	./plugin -u http://apdplat.org/word/archive/v1.3.1.zip -i word
 		
 	3、修改文件elasticsearch-2.0.0-beta2/config/elasticsearch.yml，新增如下配置：	
 	index.analysis.analyzer.default.type : "word"
