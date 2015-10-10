@@ -20,13 +20,10 @@
 
 package org.apdplat.word.elasticsearch;
 
-import org.elasticsearch.common.component.LifecycleComponent;
 import org.elasticsearch.common.inject.Module;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.analysis.AnalysisModule;
 import org.elasticsearch.plugins.Plugin;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -35,10 +32,6 @@ import java.util.Collections;
  * @author 杨尚川
  */
 public class ChineseWordPlugin extends Plugin {
-    private final Settings settings;
-    public ChineseWordPlugin(Settings settings) {
-        this.settings = settings;
-    }
     @Override
     public String name() {
         return "word";
@@ -49,15 +42,6 @@ public class ChineseWordPlugin extends Plugin {
     }
     @Override
     public Collection<Module> nodeModules() {
-        return Collections.<Module>singletonList(new ChineseWordIndicesAnalysisModule());
-    }
-    @Override
-    public Collection<Class<? extends LifecycleComponent>> nodeServices() {
-        Collection<Class<? extends LifecycleComponent>> services = new ArrayList<>();
-        return services;
-    }
-    @Override
-    public Collection<Module> indexModules(Settings indexSettings) {
         return Collections.<Module>singletonList(new ChineseWordIndicesAnalysisModule());
     }
     public void onModule(AnalysisModule module) {
