@@ -158,7 +158,7 @@ public class Trigram {
 
     public static int getFrequency(String first, String second, String third) {
         Integer value = DOUBLE_ARRAY_GENERIC_TRIE.get(first+":"+second+":"+third);
-        if(value == null){
+        if(value == null || value < 0){
             return 0;
         }
         return value;

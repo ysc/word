@@ -193,7 +193,7 @@ public class Bigram {
 
     public static int getFrequency(String first, String second) {
         Integer value = DOUBLE_ARRAY_GENERIC_TRIE.get(first+":"+second);
-        if(value == null){
+        if(value == null || value < 0){
             return 0;
         }
         return value;
