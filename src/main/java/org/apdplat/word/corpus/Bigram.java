@@ -156,6 +156,19 @@ public class Bigram {
         
         return map;
     }
+    public static float sentenceScore(List<Word> words){
+        if(words.size() > 1){
+            float total = words.size() - 1;
+            float match = 0;
+            for(int i=0; i<words.size()-1; i++){
+                if(getScore(words.get(i).getText(), words.get(i+1).getText()) > 0){
+                    match++;
+                }
+            }
+            return match/total;
+        }
+        return 0;
+    }
     /**
      * 计算分词结果的二元模型分值
      * @param words 分词结果
