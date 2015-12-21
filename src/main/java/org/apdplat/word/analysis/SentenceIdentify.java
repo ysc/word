@@ -82,11 +82,11 @@ public class SentenceIdentify {
     }
 
     private static void showUsage() {
-        LOGGER.info("");
-        LOGGER.info("********************************************");
-        LOGGER.info("用法: 输入句子并回车");
-        LOGGER.info("输入exit退出程序");
-        LOGGER.info("********************************************");
+        System.out.println("");
+        System.out.println("********************************************");
+        System.out.println("用法: 输入句子并回车");
+        System.out.println("输入exit退出程序");
+        System.out.println("********************************************");
     }
 
     private static void processSentence(String[] args) {
