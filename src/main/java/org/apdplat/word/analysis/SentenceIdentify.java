@@ -3,6 +3,7 @@ package org.apdplat.word.analysis;
 import org.apdplat.word.WordSegmenter;
 import org.apdplat.word.corpus.Bigram;
 import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,9 +11,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -32,7 +34,7 @@ public class SentenceIdentify {
     private static final List<String> WORDS = new ArrayList<>();
     static {
         try {
-            Files.readAllLines(Paths.get(ClassLoader.getSystemResource("dic.txt").toURI())).forEach(WORDS::add);
+            Utils.readResource("/dic.txt").forEach(WORDS::add);
         }catch (Exception e){
             LOGGER.error("load words failed", e);
         }
