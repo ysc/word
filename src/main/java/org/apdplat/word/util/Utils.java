@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -213,5 +214,21 @@ public class Utils {
         }
 
         return str.toString();
+    }
+    public static List<String> readResource(String resource){
+        List<String> data = new ArrayList<>();
+        try {
+            InputStream stream = Utils.class.getResourceAsStream(resource);
+            BufferedReader bufferReader = new BufferedReader(new InputStreamReader(stream));
+            String line = null;
+            while ((line = bufferReader.readLine()) != null) {
+                if(!"".equals(line.trim())) {
+                    data.add(line.trim());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return data;
     }
 }
