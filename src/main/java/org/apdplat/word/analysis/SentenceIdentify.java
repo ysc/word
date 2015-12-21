@@ -10,7 +10,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * 判定句子是有意义的人话的可能性
@@ -24,12 +29,34 @@ import java.util.List;
  */
 public class SentenceIdentify {
     private static final Logger LOGGER = LoggerFactory.getLogger(SentenceIdentify.class);
+    private static final List<String> WORDS = new ArrayList<>();
+    static {
+        try {
+            Files.readAllLines(Paths.get(ClassLoader.getSystemResource("dic.txt").toURI())).forEach(WORDS::add);
+        }catch (Exception e){
+            LOGGER.error("load words failed", e);
+        }
+    }
 
     public static float identify(String sentence){
         List<Word> words = WordSegmenter.segWithStopWords(sentence);
         System.out.println("随机单词: "+words);
         System.out.println("生成句子: "+sentence);
-        return Bigram.bigram(words);
+        return Bigram.sentenceScore(words);
+    }
+
+    public static List<String> generateRandomSentences(int count){
+        List<String> sentences = new ArrayList<>();
+        for(int i=0; i<count; i++){
+            StringBuilder sentence = new StringBuilder();
+            int len = new Random(System.nanoTime()).nextInt(5)+5;
+            for(int j=0; j<len; j++){
+                sentence.append(WORDS.get(new Random(System.nanoTime()).nextInt(WORDS.size())));
+            }
+            sentences.add(sentence.toString());
+            sentence.setLength(0);
+        }
+        return sentences;
     }
 
     private static void run(String encoding) {
@@ -66,13 +93,28 @@ public class SentenceIdentify {
         }
     }
 
+    public static List<Map.Entry<String, Float>> evaluation(List<String> sentences){
+        Map<String, Float> map = new ConcurrentHashMap<>();
+        sentences.parallelStream().forEach(sentence -> {
+            float score = identify(sentence);
+            map.put(sentence, score);
+        });
+        return map.entrySet().stream().sorted((a,b)->b.getValue().compareTo(a.getValue())).collect(Collectors.toList());
+    }
+
     public static void main(String[] args) {
-        System.out.println("句子概率: " + identify("我爱读书"));
-        System.out.println("句子概率: " + identify("我爱学习"));
-        System.out.println("句子概率: " + identify("我是一个人"));
-        System.out.println("句子概率: " + identify("我是一个男人你是一个女人"));
-        System.out.println("句子概率: " + identify("中话眼录学打了啊一有"));
-        System.out.println("句子概率: " + identify("天我滑去人够"));
+        List<String> list = new ArrayList<>();
+        list.add("我爱读书");
+        list.add("我爱学习");
+        list.add("我是一个人");
+        list.add("我是一个男人你是一个女人");
+        list.add("中话眼录学打了啊一有");
+        list.add("天我滑去人够");
+        list.addAll(generateRandomSentences(94));
+        AtomicInteger i = new AtomicInteger();
+        evaluation(list).forEach(entry->{
+            System.out.println(i.incrementAndGet() + ". 句子: " + entry.getKey() + ", 概率: " + entry.getValue());
+        });
         String encoding = "utf-8";
         if(args==null || args.length == 0){
             showUsage();
