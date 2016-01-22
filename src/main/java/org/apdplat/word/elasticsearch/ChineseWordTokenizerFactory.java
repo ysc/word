@@ -30,7 +30,6 @@ import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.AbstractTokenizerFactory;
-import org.elasticsearch.index.settings.IndexSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ public class ChineseWordTokenizerFactory extends AbstractTokenizerFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChineseWordTokenizerFactory.class);
     private final Segmentation segmentation;
     @Inject
-    public ChineseWordTokenizerFactory(Index index, @IndexSettings Settings indexSettings, @Assisted String name, @Assisted Settings settings) {
+    public ChineseWordTokenizerFactory(Index index, Settings indexSettings, @Assisted String name, @Assisted Settings settings) {
         super(index, indexSettings, name, settings);
         String segAlgorithm = settings.get("segAlgorithm");
         if(segAlgorithm != null){

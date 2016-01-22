@@ -30,7 +30,6 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.AbstractIndexAnalyzerProvider;
-import org.elasticsearch.index.settings.IndexSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ public class ChineseWordAnalyzerProvider extends AbstractIndexAnalyzerProvider<C
     private static final Logger LOGGER = LoggerFactory.getLogger(ChineseWordAnalyzerProvider.class);
     private final ChineseWordAnalyzer analyzer;
     @Inject
-    public ChineseWordAnalyzerProvider(Index index, @IndexSettings Settings indexSettings, Environment env, @Assisted String name, @Assisted Settings settings) {
+    public ChineseWordAnalyzerProvider(Index index, Settings indexSettings, Environment env, @Assisted String name, @Assisted Settings settings) {
         super(index, indexSettings, name, settings);
         String segAlgorithm = settings.get("segAlgorithm");
         if(segAlgorithm != null){
