@@ -39,7 +39,23 @@ import org.elasticsearch.index.analysis.AnalysisService;
 import org.elasticsearch.index.analysis.TokenizerFactory;
 import org.elasticsearch.index.settings.IndexSettingsModule;
 import org.elasticsearch.indices.analysis.IndicesAnalysisService;
+import org.elasticsearch.test.ESTestCase;
 import org.junit.Test;
+
+import org.elasticsearch.Version;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.common.inject.Injector;
+import org.elasticsearch.common.inject.ModulesBuilder;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.SettingsFilter;
+import org.elasticsearch.common.settings.SettingsModule;
+import org.elasticsearch.env.Environment;
+import org.elasticsearch.env.EnvironmentModule;
+import org.elasticsearch.index.Index;
+import org.elasticsearch.test.ESTestCase;
+import org.hamcrest.MatcherAssert;
+
+import java.io.IOException;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -53,11 +69,26 @@ import static org.junit.Assert.assertTrue;
  * ElasticSearch中文分词索引分析单元测试
  * @author 杨尚川
  */
-public class ChineseWordIndicesAnalysisTest {
+public class ChineseWordIndicesAnalysisTest extends ESTestCase {
     private static final Settings SETTINGS = Settings.settingsBuilder()
-            .put(IndexMetaData.SETTING_VERSION_CREATED, "2010099")
-            .put("path.home", "/Users/apple/elasticsearch-2.0.0-beta1")
+            .put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT)
+            .put("path.home", "/Users/apple/elasticsearch-2.1.1")
             .build();
+
+    public void testDefaultsIcuAnalysis() throws IOException {
+        Index index = new Index("test");
+        AnalysisModule analysisModule = new AnalysisModule(new Environment(settings));
+        new AnalysisSmartChinesePlugin().onModule(analysisModule);
+        SettingsModule settingsModule = new SettingsModule(settings, new SettingsFilter(settings));
+        settingsModule.registerSetting(InternalSettingsPlugin.VERSION_CREATED);
+        Injector parentInjector = new ModulesBuilder().add(settingsModule,
+                new EnvironmentModule(new Environment(settings)), analysisModule)
+                .createInjector();
+        final AnalysisService analysisService = parentInjector.getInstance(AnalysisRegistry.class).build(IndexSettingsModule.newIndexSettings(index, settings));
+        TokenizerFactory tokenizerFactory = analysisService.tokenizer("smartcn_tokenizer");
+        MatcherAssert.assertThat(tokenizerFactory, instanceOf(SmartChineseTokenizerTokenizerFactory.class));
+    }
+
     @Test
     public void testChineseWordIndicesAnalysis() throws IOException {
         Index index = new Index("test");
