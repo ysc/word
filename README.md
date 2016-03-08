@@ -301,23 +301,8 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 		OffsetAttribute offsetAttribute = tokenStream.getAttribute(OffsetAttribute.class);
 		//第几个词
 		PositionIncrementAttribute positionIncrementAttribute = tokenStream.getAttribute(PositionIncrementAttribute.class);
-		//词性
-		PartOfSpeechAttribute partOfSpeechAttribute = tokenStream.getAttribute(PartOfSpeechAttribute.class);
-		//首字母缩略拼音
-		AcronymPinyinAttribute acronymPinyinAttribute = tokenStream.getAttribute(AcronymPinyinAttribute.class);
-		//完整拼音
-		FullPinyinAttribute fullPinyinAttribute = tokenStream.getAttribute(FullPinyinAttribute.class);
-		//同义词
-		SynonymAttribute synonymAttribute = tokenStream.getAttribute(SynonymAttribute.class);
-		//反义词
-		AntonymAttribute antonymAttribute = tokenStream.getAttribute(AntonymAttribute.class);
-
+		
 		LOGGER.info(charTermAttribute.toString()+" ("+offsetAttribute.startOffset()+" - "+offsetAttribute.endOffset()+") "+positionIncrementAttribute.getPositionIncrement());
-		LOGGER.info("PartOfSpeech:"+partOfSpeechAttribute.toString());
-		LOGGER.info("AcronymPinyin:"+acronymPinyinAttribute.toString());
-		LOGGER.info("FullPinyin:"+fullPinyinAttribute.toString());
-		LOGGER.info("Synonym:"+synonymAttribute.toString());
-		LOGGER.info("Antonym:"+antonymAttribute.toString());
 	}
 	//消费完毕
 	tokenStream.close();
