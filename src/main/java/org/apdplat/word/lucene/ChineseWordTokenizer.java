@@ -135,23 +135,19 @@ public class ChineseWordTokenizer extends Tokenizer {
                 //同义标注
                 if (SYNONYM) {
                     SynonymTagging.process(Arrays.asList(word));
-                    StringBuilder synonym = new StringBuilder();
                     word.getSynonym().forEach(w -> {
                         if (!"".equals(w.getText())) {
                             tokens.offer(w.getText());
                         }
-                        synonym.append(w.getText()).append(" ");
                     });
                 }
                 //反义标注
                 if (ANTONYM) {
                     AntonymTagging.process(Arrays.asList(word));
-                    StringBuilder antonym = new StringBuilder();
                     word.getAntonym().forEach(w -> {
                         if (!"".equals(w.getText())) {
                             tokens.offer(w.getText());
                         }
-                        antonym.append(w.getText()).append(" ");
                     });
                 }
                 token = tokens.poll();
