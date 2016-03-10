@@ -198,11 +198,7 @@ public class WordRefiner {
     public static void main(String[] args) {
         List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg("我国工人阶级和广大劳动群众要更加紧密地团结在党中央周围");
         System.out.println(words);
-        words = WordRefiner.refine(words);
-        System.out.println(words);
         words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.BidirectionalMaximumMatching).seg("在实现“两个一百年”奋斗目标的伟大征程上再创新的业绩");
-        System.out.println(words);
-        words = WordRefiner.refine(words);
         System.out.println(words);
     }
 }

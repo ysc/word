@@ -26,10 +26,7 @@ import org.apdplat.word.dictionary.Dictionary;
 import org.apdplat.word.dictionary.DictionaryFactory;
 import org.apdplat.word.recognition.PersonName;
 import org.apdplat.word.recognition.Punctuation;
-import org.apdplat.word.segmentation.DictionaryBasedSegmentation;
-import org.apdplat.word.segmentation.Segmentation;
-import org.apdplat.word.segmentation.SegmentationAlgorithm;
-import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.segmentation.*;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,6 +106,13 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
         }
         return INTERCEPT_LENGTH;
     }
+    @Override
+    public List<Word> seg(String text) {
+        List<Word> words = segDefault(text);
+        //对分词结果进行微调
+        words = WordRefiner.refine(words);
+        return words;
+    }
     /**
      * 默认分词算法实现：
      * 1、把要分词的文本根据标点符号进行分割
@@ -117,8 +121,7 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
      * @param text 文本
      * @return 分词结果
      */
-    @Override
-    public List<Word> seg(String text) {
+    public List<Word> segDefault(String text) {
         List<String> sentences = Punctuation.seg(text, KEEP_PUNCTUATION);
         if(sentences.size() == 1){
             return segSentence(sentences.get(0));
