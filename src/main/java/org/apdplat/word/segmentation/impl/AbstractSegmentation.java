@@ -151,6 +151,9 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
         sentenceMap = null;
         List<Word> resultList = new ArrayList<>();
         for(List<Word> result : results){
+            if(result == null || result.isEmpty()){
+                continue;
+            }
             resultList.addAll(result);
         }
         return resultList;
