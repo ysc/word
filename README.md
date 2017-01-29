@@ -1239,3 +1239,5 @@ word分词提供了多种文本相似度计算方式：
 [word2vec](https://code.google.com/p/word2vec/)
 
 [魅力汉语](http://open.163.com/special/cuvocw/meilihanyu.html)
+
+[https://travis-ci.org/ysc/word](https://travis-ci.org/ysc/word)
