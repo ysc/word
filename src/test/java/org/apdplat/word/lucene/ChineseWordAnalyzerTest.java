@@ -20,10 +20,6 @@
 
 package org.apdplat.word.lucene;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -40,8 +36,15 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.apdplat.word.util.Utils;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  *
@@ -60,7 +63,7 @@ public class ChineseWordAnalyzerTest {
                 words.add(charTermAttribute.toString());
             }
             tokenStream.close();
-            String expResult = "[杨尚川, apdplat, 应用级, 产品, 开发平台, 作者]";
+            String expResult = "[杨尚川, apdplat, 级, 产品, 开发, 平台, 作者]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
             fail("分词出错"+e.getMessage());

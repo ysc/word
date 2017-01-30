@@ -70,7 +70,7 @@ public class DoubleArrayGenericTrieTest {
     }
     @Test
     public void testBigram(){
-        try(Stream<String> lines = Files.lines(Paths.get("src/test/resources/bigram.txt"))) {
+        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/bigram.txt"))) {
             Map<String, Integer> map = new HashMap<>();
             lines.forEach(line -> {
                 String[] attrs = line.split("\\s+");
@@ -88,7 +88,7 @@ public class DoubleArrayGenericTrieTest {
     }
     @Test
     public void testTrigram(){
-        try(Stream<String> lines = Files.lines(Paths.get("src/test/resources/trigram.txt"))) {
+        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/trigram.txt"))) {
             Map<String, Integer> map = new HashMap<>();
             lines.forEach(line -> {
                 String[] attrs = line.split("\\s+");

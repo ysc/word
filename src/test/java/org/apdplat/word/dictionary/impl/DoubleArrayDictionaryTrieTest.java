@@ -183,7 +183,7 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
         try {
             AtomicInteger h = new AtomicInteger();
             AtomicInteger e = new AtomicInteger();
-            List<String> words = Files.readAllLines(Paths.get("src/test/resources/dic.txt"));
+            List<String> words = Files.readAllLines(Paths.get("src/main/resources/dic.txt"));
             Dictionary dictionary = new DoubleArrayDictionaryTrie();
             dictionary.addAll(words);
             words.forEach(word -> {
@@ -198,8 +198,8 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
                     }
                 }
             });
-            assertEquals(3010699, e.get());
-            assertEquals(1383728, h.get());
+            assertEquals(2599239, e.get());
+            assertEquals(1211555, h.get());
         }catch (Exception e){
             e.printStackTrace();
             fail();

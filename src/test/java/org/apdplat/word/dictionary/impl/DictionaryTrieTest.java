@@ -20,14 +20,15 @@
 
 package org.apdplat.word.dictionary.impl;
 
+import org.apdplat.word.dictionary.Dictionary;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apdplat.word.dictionary.Dictionary;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -136,7 +137,7 @@ public class DictionaryTrieTest {
         try {
             AtomicInteger h = new AtomicInteger();
             AtomicInteger e = new AtomicInteger();
-            List<String> words = Files.readAllLines(Paths.get("src/test/resources/dic.txt"));
+            List<String> words = Files.readAllLines(Paths.get("src/main/resources/dic.txt"));
             Dictionary dictionary = new DictionaryTrie();
             dictionary.addAll(words);
             words.forEach(word -> {
@@ -151,9 +152,10 @@ public class DictionaryTrieTest {
                     }
                 }
             });
-            assertEquals(3010699, e.get());
-            assertEquals(1383728, h.get());
+            assertEquals(2599239, e.get());
+            assertEquals(1211555, h.get());
         }catch (Exception e){
+            e.printStackTrace();
             fail();
         }
     }
