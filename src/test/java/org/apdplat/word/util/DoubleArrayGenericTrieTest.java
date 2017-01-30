@@ -70,7 +70,7 @@ public class DoubleArrayGenericTrieTest {
     }
     @Test
     public void testBigram(){
-        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/bigram.txt"))) {
+        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/bigram.txt")).limit(1000)) {
             Map<String, Integer> map = new HashMap<>();
             lines.forEach(line -> {
                 String[] attrs = line.split("\\s+");
@@ -78,7 +78,7 @@ public class DoubleArrayGenericTrieTest {
                     map.put(attrs[0], Integer.parseInt(attrs[1]));
                 }
             });
-            DoubleArrayGenericTrie doubleArrayGenericTrie = new DoubleArrayGenericTrie(WordConfTools.getInt("bigram.double.array.trie.size", 5300000));
+            DoubleArrayGenericTrie doubleArrayGenericTrie = new DoubleArrayGenericTrie(WordConfTools.getInt("bigram.double.array.trie.size", 10000));
             doubleArrayGenericTrie.putAll(map);
             map.keySet().forEach(key->assertEquals(map.get(key).intValue(), doubleArrayGenericTrie.get(key)));
         }catch (Exception e){
@@ -88,7 +88,7 @@ public class DoubleArrayGenericTrieTest {
     }
     @Test
     public void testTrigram(){
-        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/trigram.txt"))) {
+        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/trigram.txt")).limit(1000)) {
             Map<String, Integer> map = new HashMap<>();
             lines.forEach(line -> {
                 String[] attrs = line.split("\\s+");
@@ -96,7 +96,7 @@ public class DoubleArrayGenericTrieTest {
                     map.put(attrs[0], Integer.parseInt(attrs[1]));
                 }
             });
-            DoubleArrayGenericTrie doubleArrayGenericTrie = new DoubleArrayGenericTrie(WordConfTools.getInt("trigram.double.array.trie.size", 9800000));
+            DoubleArrayGenericTrie doubleArrayGenericTrie = new DoubleArrayGenericTrie(WordConfTools.getInt("trigram.double.array.trie.size", 10000));
             doubleArrayGenericTrie.putAll(map);
             map.keySet().forEach(key->assertEquals(map.get(key).intValue(), doubleArrayGenericTrie.get(key)));
         }catch (Exception e){
