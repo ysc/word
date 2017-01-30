@@ -46,6 +46,10 @@ public class PartOfSpeechTagging {
         reload();
     }
     public static void reload(){
+        if(!WordConfTools.getBoolean("pos.tag.enable", true)){
+            LOGGER.info("未启用词性标注");
+            return;
+        }
         AutoDetector.loadAndWatch(new ResourceLoader() {
 
             @Override

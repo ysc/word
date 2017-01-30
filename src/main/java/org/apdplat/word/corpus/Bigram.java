@@ -20,13 +20,17 @@
 
 package org.apdplat.word.corpus;
 
+import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.DoubleArrayGenericTrie;
+import org.apdplat.word.util.ResourceLoader;
+import org.apdplat.word.util.WordConfTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 二元语法模型
@@ -40,6 +44,10 @@ public class Bigram {
         reload();
     }
     public static void reload(){
+        if(!"bigram".equals(WordConfTools.get("ngram", "bigram"))){
+            LOGGER.info("未启用bigram");
+            return;
+        }
         AutoDetector.loadAndWatch(new ResourceLoader(){
 
             @Override

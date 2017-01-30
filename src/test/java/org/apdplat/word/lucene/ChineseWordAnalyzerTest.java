@@ -36,6 +36,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.apdplat.word.util.Utils;
+import org.apdplat.word.util.WordConfTools;
 import org.junit.Test;
 
 import java.io.File;
@@ -63,7 +64,10 @@ public class ChineseWordAnalyzerTest {
                 words.add(charTermAttribute.toString());
             }
             tokenStream.close();
-            String expResult = "[杨尚川, apdplat, 级, 产品, 开发, 平台, 作者]";
+            String expResult = "[杨尚川, 是, apdplat, 应用级, 产品, 开发, 平台, 的, 作者]";
+            if("bigram".equals(WordConfTools.get("ngram", "bigram"))){
+                expResult = "[杨尚川, 是, apdplat, 应用, 级, 产品, 开发, 平台, 的, 作者]";
+            }
             assertEquals(expResult, words.toString());
         }catch(IOException e){
             fail("分词出错"+e.getMessage());
@@ -81,7 +85,7 @@ public class ChineseWordAnalyzerTest {
                 words.add(charTermAttribute.toString());
             }
             tokenStream.close();
-            String expResult = "[叔叔, 亲了, 妈妈, 亲了]";
+            String expResult = "[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]";
             assertEquals(expResult, words.toString());
         }catch(IOException e){
             fail("分词出错"+e.getMessage());

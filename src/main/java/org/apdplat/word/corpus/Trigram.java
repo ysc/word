@@ -20,13 +20,17 @@
 
 package org.apdplat.word.corpus;
 
+import org.apdplat.word.segmentation.Word;
+import org.apdplat.word.util.AutoDetector;
+import org.apdplat.word.util.DoubleArrayGenericTrie;
+import org.apdplat.word.util.ResourceLoader;
+import org.apdplat.word.util.WordConfTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apdplat.word.segmentation.Word;
-import org.apdplat.word.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 三元语法模型
@@ -40,6 +44,10 @@ public class Trigram {
         reload();
     }
     public static void reload(){
+        if(!"trigram".equals(WordConfTools.get("ngram", "bigram"))){
+            LOGGER.info("未启用trigram");
+            return;
+        }
         AutoDetector.loadAndWatch(new ResourceLoader(){
 
             @Override
@@ -49,6 +57,7 @@ public class Trigram {
 
             @Override
             public void load(List<String> lines) {
+                LOGGER.info("ngram: {}", WordConfTools.get("ngram", "bigram"));
                 LOGGER.info("初始化trigram");
                 Map<String, Integer> map = new HashMap<>();
                 for(String line : lines){
