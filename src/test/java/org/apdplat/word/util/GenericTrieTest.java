@@ -69,7 +69,7 @@ public class GenericTrieTest {
     }
     @Test
     public void testBigram(){
-        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/bigram.txt"))) {
+        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/bigram.txt")).limit(1000)) {
             GenericTrie<Integer> genericTrie = new GenericTrie<>();
             Map<String, Integer> map = new HashMap<>();
             lines.forEach(line -> {
@@ -87,7 +87,7 @@ public class GenericTrieTest {
     }
     @Test
     public void testTrigram(){
-        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/trigram.txt"))) {
+        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/trigram.txt")).limit(1000)) {
             GenericTrie<Integer> genericTrie = new GenericTrie<>();
             Map<String, Integer> map = new HashMap<>();
             lines.forEach(line -> {
