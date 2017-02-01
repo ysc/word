@@ -188,7 +188,7 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
                 LOGGER.error("文本 "+sentence+" 没有获得分词结果");
             }
         }
-        return null;
+        return Collections.emptyList();
     }
     /**
      * 将识别出的词放入队列
