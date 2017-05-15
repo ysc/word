@@ -1,10 +1,10 @@
-###Java分布式中文分词组件 - word分词
+### Java分布式中文分词组件 - word分词
 
-####word分词是一个Java实现的分布式的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。能通过自定义配置文件来改变组件行为，能自定义用户词库、自动检测词库变化、支持大规模分布式环境，能灵活指定多种分词算法，能使用refine功能灵活控制分词结果，还能使用词频统计、词性标注、同义标注、反义标注、拼音标注等功能。提供了10种分词算法，还提供了10种文本相似度算法，同时还无缝和Lucene、Solr、ElasticSearch、Luke集成。注意：word1.3需要JDK1.8
+#### word分词是一个Java实现的分布式的中文分词组件，提供了多种基于词典的分词算法，并利用ngram模型来消除歧义。能准确识别英文、数字，以及日期、时间等数量词，能识别人名、地名、组织机构名等未登录词。能通过自定义配置文件来改变组件行为，能自定义用户词库、自动检测词库变化、支持大规模分布式环境，能灵活指定多种分词算法，能使用refine功能灵活控制分词结果，还能使用词频统计、词性标注、同义标注、反义标注、拼音标注等功能。提供了10种分词算法，还提供了10种文本相似度算法，同时还无缝和Lucene、Solr、ElasticSearch、Luke集成。注意：word1.3需要JDK1.8
 
-###[捐赠致谢](https://github.com/ysc/QuestionAnsweringSystem/wiki/donation)
+### [捐赠致谢](https://github.com/ysc/QuestionAnsweringSystem/wiki/donation)
 
-###API在线文档：
+### API在线文档：
 
    [word 1.0 API](http://apdplat.org/word/apidocs/1.0/)
 
@@ -14,9 +14,9 @@
 
    [word 1.3 API](http://apdplat.org/word/apidocs/1.3/)
       
-###[编译好的jar包下载](http://pan.baidu.com/s/1dDziDFz)
+### [编译好的jar包下载](http://pan.baidu.com/s/1dDziDFz)
 
-###Maven依赖：
+### Maven依赖：
 
    在pom.xml中指定dependency，可用版本有1.0、1.1、1.2、1.3、1.3.1：
 
@@ -31,9 +31,9 @@
 word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.com/ysc/word/tree/ForElasticsearch1.7.2/)中编译出来的，主要目的是支持
 与lucene4.10.4、solr4.10.4和elasticsearch1.7.2兼容的版本。
 	
-###分词使用方法：
+### 分词使用方法：
 
-####1、快速体验
+#### 1、快速体验
 	
 	运行项目根目录下的脚本demo-word.bat可以快速体验分词效果
 	用法: command [text] [input] [output]
@@ -43,7 +43,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	file d:/text.txt d:/word.txt
 	exit
 	
-####2、对文本进行分词
+#### 2、对文本进行分词
 
 	移除停用词：List<Word> words = WordSegmenter.seg("杨尚川是APDPlat应用级产品开发平台的作者");
 	保留停用词：List<Word> words = WordSegmenter.segWithStopWords("杨尚川是APDPlat应用级产品开发平台的作者");
@@ -53,21 +53,21 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	移除停用词：[杨尚川, apdplat, 应用级, 产品, 开发平台, 作者]
 	保留停用词：[杨尚川, 是, apdplat, 应用级, 产品, 开发平台, 的, 作者]
 
-####3、对文件进行分词
+#### 3、对文件进行分词
 
 	String input = "d:/text.txt";
 	String output = "d:/word.txt";
 	移除停用词：WordSegmenter.seg(new File(input), new File(output));
 	保留停用词：WordSegmenter.segWithStopWords(new File(input), new File(output));
 	
-####4、自定义配置文件
+#### 4、自定义配置文件
 
 	默认配置文件为类路径下的word.conf，打包在word-x.x.jar中
 	自定义配置文件为类路径下的word.local.conf，需要用户自己提供
 	如果自定义配置和默认配置相同，自定义配置会覆盖默认配置
 	配置文件编码为UTF-8
 		
-####5、自定义用户词库
+#### 5、自定义用户词库
 
 	自定义用户词库为一个或多个文件夹或文件，可以使用绝对路径或相对路径
 	用户词库由多个词典文件组成，文件编码为UTF-8
@@ -87,12 +87,12 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
  	
 	如未指定，则默认使用类路径下的dic.txt词典文件
 	
-####6、自定义停用词词库
+#### 6、自定义停用词词库
 
 	使用方式和自定义用户词库类似，配置项为：
 	stopwords.path=classpath:stopwords.txt，d:/custom_stopwords_dic
 		
-####7、自动检测词库变化
+#### 7、自动检测词库变化
 
 	可以自动检测自定义用户词库和自定义停用词词库的变化
 	包含类路径下的文件和文件夹、非类路径下的绝对路径和相对路径
@@ -103,7 +103,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	classpath:stopwords.txt，classpath:custom_stopwords_dic_dir，
 	d:/stopwords_more.txt，d:/STOPWORDS_DIR，d:/STOPWORDS2_DIR，stopwords_dir，remove.txt
 	
-####8、显式指定分词算法
+#### 8、显式指定分词算法
 
 	对文本进行分词时，可显式指定特定的分词算法，如：
 	WordSegmenter.seg("APDPlat应用级产品开发平台", SegmentationAlgorithm.BidirectionalMaximumMatching);
@@ -120,7 +120,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	最少词数算法：MinimalWordCount
 	最大Ngram分值算法：MaxNgramScore
 	
-####9、分词效果评估
+#### 9、分词效果评估
 
 	运行项目根目录下的脚本evaluation.bat可以对分词效果进行评估
 	评估采用的测试文本有253 3709行，共2837 4490个字符
@@ -132,13 +132,13 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	perfect-result-***.txt，***为各种分词算法名称，这是分词结果和人工标注标准完全一致的文本
 	wrong-result-***.txt，***为各种分词算法名称，这是分词结果和人工标注标准不一致的文本
 
-####10、分布式中文分词器
+#### 10、分布式中文分词器
 
 	1、在自定义配置文件word.conf或word.local.conf中指定所有的配置项*.path使用HTTP资源，同时指定配置项redis.*
 	2、配置并启动提供HTTP资源的web服务器，将项目：https://github.com/ysc/word_web部署到tomcat
 	3、配置并启动redis服务器
 	
-####11、词性标注
+#### 11、词性标注
 
 	将分词结果作为输入参数，调用PartOfSpeechTagging类的process方法，词性保存在Word类的partOfSpeech字段中
 	如下所示：
@@ -151,7 +151,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	未标注词性：[我, 爱, 中国]
     标注词性：[我/r, 爱/v, 中国/ns]
     
-####12、refine
+#### 12、refine
 
     我们看一个切分例子：
     List<Word> words = WordSegmenter.segWithStopWords("我国工人阶级和广大劳动群众要更加紧密地团结在党中央周围");
@@ -187,7 +187,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	这样，就能达到我们想要的效果：
 	[在, 实现, 两个一百年, 奋斗目标, 的, 伟大征程, 上, 再创, 新的, 业绩]
 	
-####13、同义标注
+#### 13、同义标注
 
     List<Word> words = WordSegmenter.segWithStopWords("楚离陌千方百计为无情找回记忆");
     System.out.println(words);
@@ -235,7 +235,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	对于C来说，A C E是直接同义词
 	对于A B C来说，A B C D E是间接同义词
 	
-####14、反义标注
+#### 14、反义标注
 
     List<Word> words = WordSegmenter.segWithStopWords("5月初有哪些电影值得观看");
     System.out.println(words);
@@ -264,7 +264,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	[月底, 月末, 月终]
 	注意：如果没有反义词，getAntonym()返回空集合：Collections.emptyList()
 	
-####15、拼音标注
+#### 15、拼音标注
 
 	List<Word> words = WordSegmenter.segWithStopWords("《速度与激情7》的中国内地票房自4月12日上映以来，在短短两周内突破20亿人民币");
 	System.out.println(words);
@@ -280,7 +280,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	可以通过Word的getFullPinYin()方法获取完整拼音如：sudu
 	可以通过Word的getAcronymPinYin()方法获取首字母缩略拼音如：sd
 	
-####16、Lucene插件：
+#### 16、Lucene插件：
 
 	1、构造一个word分析器ChineseWordAnalyzer
     Analyzer analyzer = new ChineseWordAnalyzer();
@@ -317,7 +317,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	Query query = queryParser.parse("text:杨尚川");
 	TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
 
-####17、Solr插件：
+#### 17、Solr插件：
 	
 	1、下载word-1.3.jar
 	下载地址：http://search.maven.org/remotecontent?filepath=org/apdplat/word/1.3/word-1.3.jar
@@ -352,7 +352,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	word.local.conf文件中可配置的内容见 word-1.3.jar 中的word.conf文件
 	如不指定，使用默认配置文件，位于 word-1.3.jar 中的word.conf文件
 	
-####18、ElasticSearch插件：
+#### 18、ElasticSearch插件：
 
 	1、打开命令行并切换到elasticsearch的bin目录
 	cd elasticsearch-2.1.1/bin
@@ -400,7 +400,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	最大Ngram分值算法：MaxNgramScore
 	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
-####19、Luke插件：
+#### 19、Luke插件：
 
 	1、下载http://luke.googlecode.com/files/lukeall-4.0.0-ALPHA.jar（国内不能访问）
 
@@ -428,7 +428,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
    
    已经集成好的Luke插件下载（适用于lucene4.10.3）：[lukeall-4.10.3-with-word-1.2.jar](http://pan.baidu.com/s/1mgFt7ZU)
 	
-####20、通过计算词的语境来获得相关词：
+#### 20、通过计算词的语境来获得相关词：
 
 我们如何通过计算词的语境来获得相关词呢？
 
@@ -705,7 +705,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
     耗时：19秒,852毫秒
     ----------------------------------------------------------
   
-####21、词频统计：
+#### 21、词频统计：
 
 org.apdplat.word.WordFrequencyStatistics 提供了词频统计的功能
 	
@@ -778,7 +778,7 @@ org.apdplat.word.WordFrequencyStatistics 提供了词频统计的功能
 	21、一个 1
 	22、Java 1	
 	
-####22、文本相似度：
+#### 22、文本相似度：
 
 word分词提供了多种文本相似度计算方式：
 
@@ -1102,7 +1102,7 @@ word分词提供了多种文本相似度计算方式：
 	我爱读书 和 他是黑客 的相似度分值：0.0
 	他是黑客 和 他是黑客 的相似度分值：1.0
 
-####23、判定句子是有意义的人话的可能性：
+#### 23、判定句子是有意义的人话的可能性：
 
 	通过如下命令:
 	unix-like:
@@ -1136,7 +1136,7 @@ word分词提供了多种文本相似度计算方式：
     生成句子: 人脑的记忆是保存在生物电上还是在细胞里？
     句子概率: 0.8333333
 
-###分词算法效果评估：
+### 分词算法效果评估：
 
 	1、word分词 最大Ngram分值算法：
 	分词速度：370.9714 字符/毫秒
@@ -1188,7 +1188,7 @@ word分词提供了多种文本相似度计算方式：
 	行数完美率：36.7%  行数错误率：63.29%  总的行数：2533709  完美行数：930069  错误行数：1603640
 	字数完美率：26.72% 字数错误率：73.27% 总的字数：28374490 完美字数：7583741 错误字数：20790749
 	
-###相关文章：
+### 相关文章：
 
    [1、中文分词算法 之 基于词典的正向最大匹配算法](http://yangshangchuan.iteye.com/blog/2031813)
     
@@ -1220,7 +1220,7 @@ word分词提供了多种文本相似度计算方式：
 
    [15、利用word分词通过计算词的语境来获得相关词](http://my.oschina.net/apdplat/blog/417922)
    
-###相关项目：
+### 相关项目：
    
 [Java开源项目cws_evaluation：中文分词器分词效果评估对比](https://github.com/ysc/cws_evaluation/)
 
@@ -1228,7 +1228,7 @@ word分词提供了多种文本相似度计算方式：
    
 [Java开源项目word_web：通过web服务器对word分词的资源进行集中统一管理](https://github.com/ysc/word_web/)
 
-###相关文献：
+### 相关文献：
 
 [An Implementation of Double-Array Trie](http://linux.thai.net/~thep/datrie/datrie.html)
 
