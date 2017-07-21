@@ -43,6 +43,7 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
 
     private static final boolean PERSON_NAME_RECOGNIZE = WordConfTools.getBoolean("person.name.recognize", true);
     private static final boolean KEEP_WHITESPACE = WordConfTools.getBoolean("keep.whitespace", false);
+    private static final boolean KEEP_CASE = WordConfTools.getBoolean("keep.case", false);
     private static final boolean KEEP_PUNCTUATION = WordConfTools.getBoolean("keep.punctuation", false);
     private static final boolean PARALLEL_SEG = WordConfTools.getBoolean("parallel.seg", true);
     private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
@@ -167,12 +168,12 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
         if(sentence.length() == 1){
             if(KEEP_WHITESPACE){
                 List<Word> result = new ArrayList<>(1);
-                result.add(new Word(sentence));
+                result.add(new Word(KEEP_CASE ? sentence : sentence.toLowerCase()));
                 return result;
             }else{
                 if(!Character.isWhitespace(sentence.charAt(0))){
                     List<Word> result = new ArrayList<>(1);
-                    result.add(new Word(sentence));
+                    result.add(new Word(KEEP_CASE ? sentence : sentence.toLowerCase()));
                     return result;
                 }
             }
@@ -224,7 +225,25 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
      * @return 词或空
      */
     protected Word getWord(String text, int start, int len){
-        Word word = new Word(text.substring(start, start+len).toLowerCase());
+        if(len < 1){
+            return null;
+        }
+        if(start < 0){
+            return null;
+        }
+        if(text == null){
+            return null;
+        }
+        if(start + len > text.length()){
+            return null;
+        }
+        String wordText = null;
+        if(KEEP_CASE){
+            wordText = text.substring(start, start+len);
+        }else{
+            wordText = text.substring(start, start+len).toLowerCase();
+        }
+        Word word = new Word(wordText);
         //方便编译器优化
         if(KEEP_WHITESPACE){
             //保留空白字符
