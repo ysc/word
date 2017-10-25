@@ -38,19 +38,10 @@ import org.slf4j.LoggerFactory;
  */
 public class ChineseWordTokenizerFactory extends AbstractTokenizerFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChineseWordTokenizerFactory.class);
-    private final Segmentation segmentation;
+    private final Segmentation segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
 
     public ChineseWordTokenizerFactory(IndexSettings indexSettings, Environment environment, String name, Settings settings) {
         super(indexSettings, name, settings);
-        String segAlgorithm = settings.get("segAlgorithm");
-        if(segAlgorithm != null){
-            LOGGER.info("tokenizer使用指定分词算法："+segAlgorithm);
-            segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.valueOf(segAlgorithm));
-        }else{
-            LOGGER.info("没有为word tokenizer指定segAlgorithm参数");
-            LOGGER.info("tokenizer使用默认分词算法："+SegmentationAlgorithm.MaxNgramScore);
-            segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore);
-        }
     }
 
     @Override
