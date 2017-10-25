@@ -354,51 +354,15 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	
 #### 18、ElasticSearch插件：
 
-	1、打开命令行并切换到elasticsearch的bin目录
-	cd elasticsearch-2.1.1/bin
+	1、打开命令行并切换到elasticsearch的根目录
+	cd elasticsearch-5.4.3
 	
 	2、运行plugin脚本安装word分词插件：
-	./plugin install http://apdplat.org/word/archive/v1.4.zip
-	
-	安装的时候注意：
-		如果提示：
-			ERROR: failed to download 
-		或者 
-			Failed to install word, reason: failed to download
-		或者 
-			ERROR: incorrect hash (SHA1)
-		则重新再次运行命令，如果还是不行，多试两次
+	bin/elasticsearch-plugin install http://apdplat.org/word/archive/v1.4.1.zip
 		
-	如果是elasticsearch1.x系列版本，则使用如下命令：
-	./plugin -u http://apdplat.org/word/archive/v1.3.1.zip -i word
-		
-	3、修改文件elasticsearch-2.1.1/config/elasticsearch.yml，新增如下配置：	
-	index.analysis.analyzer.default.type : "word"
-	index.analysis.tokenizer.default.type : "word"
-	
-	4、启动ElasticSearch测试效果，在Chrome浏览器中访问：	
+	3、启动ElasticSearch测试效果，在Chrome浏览器中访问：	
+	bin/elasticsearch
 	http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
-		
-	5、自定义配置
-	修改配置文件elasticsearch-2.1.1/plugins/word/word.local.conf
-		
-	6、指定分词算法
-	修改文件elasticsearch-2.1.1/config/elasticsearch.yml，新增如下配置：
-	index.analysis.analyzer.default.segAlgorithm : "ReverseMinimumMatching"
-	index.analysis.tokenizer.default.segAlgorithm : "ReverseMinimumMatching"
-
-	这里segAlgorithm可指定的值有：
-	正向最大匹配算法：MaximumMatching
-	逆向最大匹配算法：ReverseMaximumMatching
-	正向最小匹配算法：MinimumMatching
-	逆向最小匹配算法：ReverseMinimumMatching
-	双向最大匹配算法：BidirectionalMaximumMatching
-	双向最小匹配算法：BidirectionalMinimumMatching
-	双向最大最小匹配算法：BidirectionalMaximumMinimumMatching
-	全切分算法：FullSegmentation
-	最少词数算法：MinimalWordCount
-	最大Ngram分值算法：MaxNgramScore
-	如不指定，默认使用双向最大匹配算法：BidirectionalMaximumMatching
 	
 #### 19、Luke插件：
 
