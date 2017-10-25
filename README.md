@@ -358,7 +358,9 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	cd elasticsearch-5.4.3
 	
 	2、运行plugin脚本安装word分词插件：
-	bin/elasticsearch-plugin install http://apdplat.org/word/archive/v1.4.1.zip
+	wget http://apdplat.org/word/archive/v1.4.1.zip
+	mkdir plugins/word
+	unzip -d plugins/word v1.4.1.zip
 		
 	3、启动ElasticSearch测试效果，在Chrome浏览器中访问：	
 	bin/elasticsearch
