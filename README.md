@@ -357,13 +357,15 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	1、打开命令行并切换到elasticsearch的根目录
 	cd elasticsearch-5.4.3
 	
-	2、运行plugin脚本安装word分词插件：
+	2、安装word分词插件：
 	wget http://apdplat.org/word/archive/v1.4.1.zip
 	mkdir plugins/word
 	unzip -d plugins/word v1.4.1.zip
 		
-	3、启动ElasticSearch测试效果，在Chrome浏览器中访问：	
+	3、启动ElasticSearch	
 	bin/elasticsearch
+	
+	4、测试效果，在Chrome浏览器中访问：
 	http://localhost:9200/_analyze?analyzer=word&text=杨尚川是APDPlat应用级产品开发平台的作者
 	
 #### 19、Luke插件：
