@@ -140,8 +140,7 @@ public abstract class AbstractSegmentation  implements DictionaryBasedSegmentati
         }
         //用数组收集句子分词结果
         List<Word>[] results = new List[sentences.size()];
-        //使用Java8中内置的并行处理机制
-        sentenceMap.entrySet().parallelStream().forEach(entry -> {
+        sentenceMap.entrySet().stream().forEach(entry -> {
             int index = entry.getKey();
             String sentence = entry.getValue();
             results[index] = segSentence(sentence);

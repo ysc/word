@@ -20,11 +20,6 @@
 
 package org.apdplat.word.recognition;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
 import org.apdplat.word.segmentation.PartOfSpeech;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.tagging.PartOfSpeechTagging;
@@ -33,6 +28,11 @@ import org.apdplat.word.util.ResourceLoader;
 import org.apdplat.word.util.WordConfTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * 人名识别
@@ -228,7 +228,7 @@ public class PersonName {
             if(LOGGER.isDebugEnabled()) {
                 LOGGER.debug("词序列：{} 的词性序列：{}", candidateWord, seqStr);
             }
-            POS_SEQ.keySet().parallelStream().forEach(pos_seq -> {
+            POS_SEQ.keySet().stream().forEach(pos_seq -> {
                 if (seqStr.contains(pos_seq)) {
                     int sc = POS_SEQ.get(pos_seq);
                     if(LOGGER.isDebugEnabled()) {

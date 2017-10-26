@@ -96,7 +96,7 @@ public class PartOfSpeechTagging {
         }, WordConfTools.get("part.of.speech.dic.path", "classpath:part_of_speech_dic.txt"));
     }
     public static void process(List<Word> words){
-        words.parallelStream().forEach(word->{
+        words.stream().forEach(word->{
             if(word.getPartOfSpeech()!=null){
                 if(LOGGER.isDebugEnabled()) {
                     LOGGER.debug("忽略已经标注过的词：{}", word);
