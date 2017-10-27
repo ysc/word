@@ -152,8 +152,44 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 #### 10、分布式中文分词器
 
 	1、在自定义配置文件word.conf或word.local.conf中指定所有的配置项*.path使用HTTP资源，同时指定配置项redis.*
-	2、配置并启动提供HTTP资源的web服务器，将项目：https://github.com/ysc/word_web部署到tomcat
-	3、配置并启动redis服务器
+
+        #词典
+        dic.path=http://localhost:8080/word_web/resources/dic.txt
+        #词性标注数据
+        part.of.speech.dic.path=http://localhost:8080/word_web/resources/part_of_speech_dic.txt
+        #词性说明数据
+        part.of.speech.des.path=http://localhost:8080/word_web/resources/part_of_speech_des.txt
+        #二元模型
+        bigram.path=http://localhost:8080/word_web/resources/bigram.txt
+        #三元模型
+        trigram.path=http://localhost:8080/word_web/resources/trigram.txt
+        #停用词词典
+        stopwords.path=http://localhost:8080/word_web/resources/stopwords.txt
+        #用于分割词的标点符号
+        punctuation.path=http://localhost:8080/word_web/resources/punctuation.txt
+        #百家姓
+        surname.path=http://localhost:8080/word_web/resources/surname.txt
+        #数量词
+        quantifier.path=http://localhost:8080/word_web/resources/quantifier.txt
+
+        #redis服务，用于实时检测HTTP资源变更
+        #redis主机
+        redis.host=localhost
+        #redis端口
+        redis.port=6379
+
+	2、配置并启动redis服务器
+
+	    所有的分词器都会订阅redis服务器, 当redis服务器收到用户对资源的新增或删除指令后, 会通知所有的分词器进行相应的操作
+
+	3、配置并启动提供HTTP资源的web服务器，即将项目：https://github.com/ysc/word_web 部署到tomcat的8080端口
+
+        // 通知所有的分词器增加"杨尚川"这个词
+        http://localhost:8080/word_web/admin/dic.jsp?action=add&dic=杨尚川
+        // 通知所有的分词器删除"笔记本"这个词
+        http://localhost:8080/word_web/admin/dic.jsp?action=remove&dic=笔记本
+
+        dic.jsp收到用户的请求后会将消息投递到redis服务器, redis服务器在发布消息给所有订阅的分词器
 	
 #### 11、词性标注
 
