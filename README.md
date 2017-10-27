@@ -86,6 +86,23 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 			dic.path=classpath:dic.txt，d:/custom_dic
  	
 	如未指定，则默认使用类路径下的dic.txt词典文件
+
+	除此之外, 还可以在程序中用代码维护词库, 方法如下:
+
+    // 单个操作
+    // 添加一个自定义词
+    DictionaryFactory.getDictionary().add("杨尚川");
+    // 删除一个自定义词
+    DictionaryFactory.getDictionary().remove("刘诗诗");
+    // 批量操作
+    List<String> words = new ArrayList<>();
+    words.add("刘德华");
+    words.add("景甜");
+    words.add("赵丽颖");
+    // 添加一批自定义词
+    DictionaryFactory.getDictionary().addAll(words);
+    // 删除一批自定义词
+    DictionaryFactory.getDictionary().removeAll(words);
 	
 #### 6、自定义停用词词库
 
