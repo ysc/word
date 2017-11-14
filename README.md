@@ -414,6 +414,7 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
 	wget http://apdplat.org/word/archive/v1.4.1.zip
 	mkdir plugins/word
 	unzip -d plugins/word v1.4.1.zip
+	注意：如果elasticsearch的版本大于5.4.3，比如为5.6.4，则将文件plugins/word/plugin-descriptor.properties中的配置改为：elasticsearch.version=5.6.4
 		
 	3、启动ElasticSearch	
 	bin/elasticsearch
