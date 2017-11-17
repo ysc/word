@@ -245,7 +245,7 @@ public class PersonName {
             map.put(candidateWord, score.get());
         });
         //选择分值最高的
-        List<Word> result = map.entrySet().parallelStream().sorted((a,b)->b.getValue().compareTo(a.getValue())).map(e->e.getKey()).collect(Collectors.toList()).get(0);
+        List<Word> result = map.entrySet().stream().sorted((a,b)->b.getValue().compareTo(a.getValue())).map(e->e.getKey()).collect(Collectors.toList()).get(0);
         if(LOGGER.isDebugEnabled()){
             LOGGER.debug("选择结果："+result);
         }
