@@ -172,6 +172,8 @@ word 1.3.1这个版本是从代码分支[ForElasticsearch1.7.2](https://github.c
         #数量词
         quantifier.path=http://localhost:8080/word_web/resources/quantifier.txt
 
+        #是否使用redis的发布订阅服务来实时检测HTTP资源变更
+        redis.enable=false
         #redis服务，用于实时检测HTTP资源变更
         #redis主机
         redis.host=localhost

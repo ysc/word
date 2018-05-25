@@ -155,7 +155,10 @@ public class AutoDetector {
                 result.add(line);
             }
         }
-        watchHttp(resource, resourceLoader);
+        String redisEnable = WordConfTools.get("redis.enable", "true");
+        if("true".equalsIgnoreCase(redisEnable)) {
+            watchHttp(resource, resourceLoader);
+        }
         return result;
     }
     private static void watchHttp(String resource, final ResourceLoader resourceLoader){
