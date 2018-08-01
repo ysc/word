@@ -56,11 +56,10 @@ public class FullSegmentation extends AbstractSegmentation{
         }
         //获取全切分结果
         List<Word>[] array = fullSeg(text);
-        Set<Word> words = new HashSet<Word>();
-        for(List<Word> wordList : array){
-        	words.addAll(wordList);
-        }
-        List<Word> result =  new ArrayList<Word>(words);
+        //利用ngram计算分值
+        Map<List<Word>, Float> words = ngram(array);
+        //歧义消解（ngram分值优先、词个数少优先）
+        List<Word> result = disambiguity(words);
         return result;
     }
     private List<Word> disambiguity(Map<List<Word>, Float> words){
