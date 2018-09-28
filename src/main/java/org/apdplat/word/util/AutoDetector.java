@@ -1,21 +1,21 @@
 /**
- * 
+ *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 package org.apdplat.word.util;
@@ -57,12 +57,10 @@ import redis.clients.jedis.JedisPubSub;
 public class AutoDetector {
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoDetector.class);
     //已经被监控的文件
-    private static final Set<String> FILE_WATCHERS = new HashSet<>();
-    private static final Set<String> HTTP_WATCHERS = new HashSet<>();
     private static final Map<DirectoryWatcher, String> RESOURCES = new HashMap<>();
     private static final Map<DirectoryWatcher, ResourceLoader> RESOURCE_LOADERS = new HashMap<>();
     private static final Map<DirectoryWatcher.WatcherCallback, DirectoryWatcher> WATCHER_CALLBACKS = new HashMap<>();
-    
+
     /**
      * 加载资源并自动检测资源变化
      * 当资源发生变化的时候重新自动加载
@@ -99,7 +97,7 @@ public class AutoDetector {
         LOGGER.info("加载资源 "+result.size()+" 行");
         //调用自定义加载逻辑
         resourceLoader.clear();
-        resourceLoader.load(result);        
+        resourceLoader.load(result);
         long cost = System.currentTimeMillis() - start;
         LOGGER.info("完成加载资源，耗时"+cost+" 毫秒");
     }
@@ -109,7 +107,7 @@ public class AutoDetector {
      * @param resourceLoader 资源自定义加载逻辑
      * @param resourcePaths 资源的所有路径，用于资源监控
      * @return 资源内容
-     * @throws IOException 
+     * @throws IOException
      */
     private static List<String> loadClasspathResource(String resource, ResourceLoader resourceLoader, String resourcePaths) throws IOException{
         List<String> result = new ArrayList<>();
@@ -133,7 +131,7 @@ public class AutoDetector {
                 result.addAll(load(file.getAbsolutePath()));
                 //监控文件
                 watchFile(file, resourceLoader, resourcePaths);
-            }            
+            }
         }
         return result;
     }
@@ -164,10 +162,6 @@ public class AutoDetector {
     private static void watchHttp(String resource, final ResourceLoader resourceLoader){
         String[] attrs = resource.split("/");
         final String channel = attrs[attrs.length-1];
-        if(HTTP_WATCHERS.contains(channel)){
-            return;
-        }
-        HTTP_WATCHERS.add(channel);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -180,7 +174,7 @@ public class AutoDetector {
                     try{
                         JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), host, port);
                         final Jedis jedis = jedisPool.getResource();
-                        LOGGER.info("redis守护线程启动");                
+                        LOGGER.info("redis守护线程启动");
                         jedis.subscribe(new HttpResourceChangeRedisListener(resourceLoader), new String[]{channel_add, channel_remove});
                         jedisPool.returnResource(jedis);
                         LOGGER.info("redis守护线程结束");
@@ -259,7 +253,7 @@ public class AutoDetector {
      * @param resourceLoader 资源自定义加载逻辑
      * @param resourcePaths 资源的所有路径，用于资源监控
      * @return 资源内容
-     * @throws IOException 
+     * @throws IOException
      */
     private static List<String> loadNoneClasspathResource(String resource, ResourceLoader resourceLoader, String resourcePaths) throws IOException {
         List<String> result = new ArrayList<>();
@@ -303,12 +297,6 @@ public class AutoDetector {
         } catch (IOException ex) {
             LOGGER.error("加载资源失败："+path, ex);
         }
-        
-        if(FILE_WATCHERS.contains(path.toString())){
-            //之前已经注册过监控服务，此次忽略
-            return result;
-        }
-        FILE_WATCHERS.add(path.toString());
         DirectoryWatcher.WatcherCallback watcherCallback = new DirectoryWatcher.WatcherCallback(){
 
             private long lastExecute = System.currentTimeMillis();
@@ -334,11 +322,11 @@ public class AutoDetector {
                     StandardWatchEventKinds.ENTRY_MODIFY,
                     StandardWatchEventKinds.ENTRY_DELETE);
         directoryWatcher.watchDirectoryTree(path);
-        
+
         WATCHER_CALLBACKS.put(watcherCallback, directoryWatcher);
         RESOURCES.put(directoryWatcher, resourcePaths);
         RESOURCE_LOADERS.put(directoryWatcher, resourceLoader);
-        
+
         return result;
     }
     /**
@@ -355,7 +343,7 @@ public class AutoDetector {
                 in = AutoDetector.class.getClassLoader().getResourceAsStream(path.replace("classpath:", ""));
             }else{
                 in = new FileInputStream(path);
-            }        
+            }
             try(BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"))){
                 String line;
                 while((line = reader.readLine()) != null){
@@ -376,11 +364,6 @@ public class AutoDetector {
      * @param file 文件
      */
     private static void watchFile(final File file, ResourceLoader resourceLoader, String resourcePaths) {
-        if(FILE_WATCHERS.contains(file.toString())){
-            //之前已经注册过监控服务，此次忽略
-            return;
-        }
-        FILE_WATCHERS.add(file.toString());
         LOGGER.info("监控文件："+file.toString());
         DirectoryWatcher.WatcherCallback watcherCallback = new DirectoryWatcher.WatcherCallback(){
             private long lastExecute = System.currentTimeMillis();
@@ -403,10 +386,10 @@ public class AutoDetector {
             }
 
         };
-        DirectoryWatcher fileWatcher = DirectoryWatcher.getDirectoryWatcher(watcherCallback, 
+        DirectoryWatcher fileWatcher = DirectoryWatcher.getDirectoryWatcher(watcherCallback,
                 StandardWatchEventKinds.ENTRY_MODIFY,
                     StandardWatchEventKinds.ENTRY_DELETE);
-        fileWatcher.watchDirectory(file.getParent());        
+        fileWatcher.watchDirectory(file.getParent());
         WATCHER_CALLBACKS.put(watcherCallback, fileWatcher);
         RESOURCES.put(fileWatcher, resourcePaths);
         RESOURCE_LOADERS.put(fileWatcher, resourceLoader);
@@ -416,25 +399,50 @@ public class AutoDetector {
 
             @Override
             public void clear() {
-                System.out.println("清空资源");
+                System.out.println("a: 清空资源");
             }
 
             @Override
             public void load(List<String> lines) {
                 for(String line : lines){
-                    System.out.println(line);
+                    System.out.println("a: "+line);
                 }
             }
 
             @Override
             public void add(String line) {
-                System.out.println("add："+line);
+                System.out.println("a: add："+line);
             }
 
             @Override
             public void remove(String line) {
-                System.out.println("remove："+line);
+                System.out.println("a: remove："+line);
             }
-        }, "d:/DIC, d:/DIC2, d:/dic.txt, classpath:dic2.txt,classpath:dic");
+        }, "/Users/ysc/Downloads/test.txt");
+
+        AutoDetector.loadAndWatch(new ResourceLoader(){
+
+            @Override
+            public void clear() {
+                System.err.println("b: 清空资源");
+            }
+
+            @Override
+            public void load(List<String> lines) {
+                for(String line : lines){
+                    System.err.println("b: "+line);
+                }
+            }
+
+            @Override
+            public void add(String line) {
+                System.err.println("b: add："+line);
+            }
+
+            @Override
+            public void remove(String line) {
+                System.err.println("b: remove："+line);
+            }
+        }, "/Users/ysc/Downloads/test.txt");
     }
 }
