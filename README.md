@@ -14,7 +14,7 @@
 
    [word 1.3 API](http://apdplat.org/word/apidocs/1.3/)
       
-### [编译好的jar包下载](https://pan.baidu.com/s/10ORcX998Uni57oSPNNm_BA) 提取码: ncdq
+### [编译好的jar包下载](https://pan.baidu.com/s/1eisJUL47fmYZYgsdINXX4w) 提取码: ku8i
 
 ### Maven依赖：
 
